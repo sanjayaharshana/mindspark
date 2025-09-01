@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qulint Admin Panel - Modern White Theme Demo</title>
+    <link rel="stylesheet" href="css/modern-white-theme.css">
+    <link rel="stylesheet" href="css/theme-config.css">
+    <style>
+        /* Demo-specific styles */
+        .demo-section {
+            margin-bottom: 2rem;
+        }
+        .demo-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .demo-item {
+            padding: 1rem;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            background: var(--bg-card);
+        }
+        .demo-item h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--text-primary);
+        }
+        .demo-item p {
+            margin: 0;
+            color: var(--text-secondary);
+        }
+        .color-demo {
+            display: flex;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+        }
+        .color-swatch {
+            width: 30px;
+            height: 30px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-light);
+        }
+        .color-swatch.primary { background: var(--primary-color); }
+        .color-swatch.secondary { background: var(--secondary-color); }
+        .color-swatch.success { background: var(--success-color); }
+        .color-swatch.warning { background: var(--warning-color); }
+        .color-swatch.danger { background: var(--danger-color); }
+        .color-swatch.info { background: var(--info-color); }
+    </style>
+</head>
+<body class="theme-white">
+    <!-- Header -->
+    <header class="main-header">
+        <div class="header-content">
+            <a href="#" class="logo">Qulint Admin Panel</a>
+            <nav>
+                <span style="color: var(--text-secondary);">Modern White Theme Demo</span>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>Navigation</h3>
+        </div>
+        <nav class="sidebar-nav">
+            <ul class="nav-item">
+                <li><a href="#overview" class="nav-link active">Overview</a></li>
+                <li><a href="#components" class="nav-link">Components</a></li>
+                <li><a href="#themes" class="nav-link">Theme Variants</a></li>
+                <li><a href="#utilities" class="nav-link">Utilities</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-header">
+            <h1 class="page-title">Modern White Theme Demo</h1>
+            <p class="page-subtitle">Explore the beautiful and modern theme system</p>
+        </div>
+
+        <!-- Overview Section -->
+        <section id="overview" class="demo-section">
+            <h2 class="demo-title">Overview</h2>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">About This Theme</h3>
+                </div>
+                <div class="card-body">
+                    <p>The Modern White Theme provides a clean, professional, and modern appearance with excellent user experience and accessibility features.</p>
+                    <div class="color-demo">
+                        <div class="color-swatch primary" title="Primary Color"></div>
+                        <div class="color-swatch secondary" title="Secondary Color"></div>
+                        <div class="color-swatch success" title="Success Color"></div>
+                        <div class="color-swatch warning" title="Warning Color"></div>
+                        <div class="color-swatch danger" title="Danger Color"></div>
+                        <div class="color-swatch info" title="Info Color"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Components Section -->
+        <section id="components" class="demo-section">
+            <h2 class="demo-title">Components</h2>
+            
+            <!-- Cards -->
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <h4>Cards</h4>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Card Example</h3>
+                        </div>
+                        <div class="card-body">
+                            <p>This is a card component with header, body, and footer sections.</p>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-primary">Action</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="demo-item">
+                    <h4>Buttons</h4>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <button class="btn btn-primary">Primary Button</button>
+                        <button class="btn btn-secondary">Secondary Button</button>
+                        <button class="btn btn-success">Success Button</button>
+                        <button class="btn btn-warning">Warning Button</button>
+                        <button class="btn btn-danger">Danger Button</button>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn btn-primary btn-sm">Small</button>
+                            <button class="btn btn-primary">Normal</button>
+                            <button class="btn btn-primary btn-lg">Large</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Forms -->
+                <div class="demo-item">
+                    <h4>Forms</h4>
+                    <div class="form-group">
+                        <label class="form-label">Input Label</label>
+                        <input type="text" class="form-control" placeholder="Enter text...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Select</label>
+                        <select class="form-control">
+                            <option>Option 1</option>
+                            <option>Option 2</option>
+                            <option>Option 3</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Tables -->
+                <div class="demo-item">
+                    <h4>Tables</h4>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>John Doe</td>
+                                <td>john@example.com</td>
+                                <td><span class="badge badge-success">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td>Jane Smith</td>
+                                <td>jane@example.com</td>
+                                <td><span class="badge badge-warning">Pending</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Alerts -->
+                <div class="demo-item">
+                    <h4>Alerts</h4>
+                    <div class="alert alert-success">Success message - Everything is working correctly!</div>
+                    <div class="alert alert-warning">Warning message - Please review your input.</div>
+                    <div class="alert alert-danger">Error message - Something went wrong!</div>
+                    <div class="alert alert-info">Info message - Here's some helpful information.</div>
+                </div>
+
+                <!-- Badges -->
+                <div class="demo-item">
+                    <h4>Badges</h4>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <span class="badge badge-primary">Primary</span>
+                        <span class="badge badge-secondary">Secondary</span>
+                        <span class="badge badge-success">Success</span>
+                        <span class="badge badge-warning">Warning</span>
+                        <span class="badge badge-danger">Danger</span>
+                        <span class="badge badge-info">Info</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Theme Variants Section -->
+        <section id="themes" class="demo-section">
+            <h2 class="demo-title">Theme Variants</h2>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Available Themes</h3>
+                </div>
+                <div class="card-body">
+                    <p>Click the theme toggle button (🎨) in the bottom-right corner to switch between themes:</p>
+                    <ul>
+                        <li><strong>Modern White</strong> - Clean white theme with blue accents</li>
+                        <li><strong>Light Blue</strong> - Soft blue theme with light backgrounds</li>
+                        <li><strong>Light Green</strong> - Fresh green theme with natural colors</li>
+                        <li><strong>Light Purple</strong> - Elegant purple theme with soft tones</li>
+                        <li><strong>Minimal</strong> - Minimalist black and white design</li>
+                        <li><strong>Modern Gray</strong> - Sophisticated gray theme</li>
+                        <li><strong>Warm White</strong> - Warm white theme with orange accents</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Utilities Section -->
+        <section id="utilities" class="demo-section">
+            <h2 class="demo-title">Utility Classes</h2>
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <h4>Spacing</h4>
+                    <div style="margin-bottom: 0.5rem;">
+                        <div class="p-1" style="background: var(--bg-tertiary); border: 1px solid var(--border-light);">Padding 1</div>
+                    </div>
+                    <div style="margin-bottom: 0.5rem;">
+                        <div class="p-2" style="background: var(--bg-tertiary); border: 1px solid var(--border-light);">Padding 2</div>
+                    </div>
+                    <div style="margin-bottom: 0.5rem;">
+                        <div class="p-3" style="background: var(--bg-tertiary); border: 1px solid var(--border-light);">Padding 3</div>
+                    </div>
+                </div>
+
+                <div class="demo-item">
+                    <h4>Display</h4>
+                    <div class="d-flex" style="gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <div style="background: var(--primary-color); color: white; padding: 0.5rem;">Flex Item 1</div>
+                        <div style="background: var(--primary-color); color: white; padding: 0.5rem;">Flex Item 2</div>
+                    </div>
+                    <div class="d-block" style="background: var(--bg-tertiary); padding: 0.5rem; margin-bottom: 0.5rem;">Block Element</div>
+                </div>
+
+                <div class="demo-item">
+                    <h4>Text Alignment</h4>
+                    <div class="text-left" style="background: var(--bg-tertiary); padding: 0.5rem; margin-bottom: 0.5rem;">Left Aligned</div>
+                    <div class="text-center" style="background: var(--bg-tertiary); padding: 0.5rem; margin-bottom: 0.5rem;">Center Aligned</div>
+                    <div class="text-right" style="background: var(--bg-tertiary); padding: 0.5rem;">Right Aligned</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Responsive Demo -->
+        <section class="demo-section">
+            <h2 class="demo-title">Responsive Design</h2>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Mobile-Friendly</h3>
+                </div>
+                <div class="card-body">
+                    <p>This theme is fully responsive and works great on all devices:</p>
+                    <ul>
+                        <li><strong>Desktop</strong> - Full sidebar and spacious layout</li>
+                        <li><strong>Tablet</strong> - Optimized spacing and touch-friendly elements</li>
+                        <li><strong>Mobile</strong> - Collapsible sidebar and mobile-first design</li>
+                    </ul>
+                    <p>Try resizing your browser window to see the responsive behavior!</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Theme Switcher Script -->
+    <script src="js/theme-switcher.js"></script>
+    
+    <script>
+        // Demo-specific JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+
+            // Update active nav link based on scroll position
+            window.addEventListener('scroll', function() {
+                const sections = document.querySelectorAll('section[id]');
+                const navLinks = document.querySelectorAll('.nav-link');
+                
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (pageYOffset >= sectionTop - 200) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + current) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+            // Theme change event listener
+            document.addEventListener('themeChanged', function(event) {
+                console.log('Theme changed to:', event.detail.theme);
+                // You can add custom logic here when theme changes
+            });
+        });
+    </script>
+</body>
+</html>
