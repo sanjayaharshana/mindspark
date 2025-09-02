@@ -1,0 +1,37 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Qulint\Admin\Auth\Database\Menu;
+
+class AdminMenuSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        // Create Campaign menu item
+        Menu::create([
+            'parent_id' => 0,
+            'order' => 1,
+            'title' => 'Campaigns',
+            'icon' => 'fa-bullhorn',
+            'uri' => 'campaigns',
+            'permission' => null,
+        ]);
+
+        // Create Dashboard menu item if it doesn't exist
+        if (!Menu::where('title', 'Dashboard')->exists()) {
+            Menu::create([
+                'parent_id' => 0,
+                'order' => 0,
+                'title' => 'Dashboard',
+                'icon' => 'fa-tachometer-alt',
+                'uri' => '/',
+                'permission' => null,
+            ]);
+        }
+    }
+}

@@ -1,0 +1,5 @@
+---
+description: Built on Laravel + Open Admin, it’s fast, secure, and easy to extend
+globs:
+alwaysApply: true
+---

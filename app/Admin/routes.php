@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Routing\Router;
+use App\Admin\Controllers\CampaignController;
 
 Admin::routes();
 
@@ -12,5 +13,7 @@ Route::group([
 ], function (Router $router) {
 
     $router->get('/', 'HomeController@index')->name('home');
+
+    $router->resource('campaigns', CampaignController::class);
 
 });

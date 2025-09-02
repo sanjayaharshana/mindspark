@@ -1,0 +1,17 @@
+---
+description: Mindspark HR & Salary Management System is a role-based platform designed for advertising agencies to simplify staff management, campaign operations, attendance tracking, and salary calculations.
+
+The system supports three key roles:
+
+Admin – manages staff, campaigns, budgets, and payroll.
+
+Supervisor – oversees campaigns, approves promoter attendance, and manages budget allocations.
+
+Promoter – records attendance, participates in campaigns, and tracks personal earnings.
+
+With automated attendance marking linked to campaign days, the system ensures accurate salary calculations. Salary sheets can be generated per campaign or per month, including details like days worked, base pay, incentives, commissions, and deductions. Reports can be exported as Excel or PDF for payroll processing.
+
+The goal is to provide transparency, efficiency, and accountability in managing human resources and salaries within advertising campaigns
+globs:
+alwaysApply: true
+---
