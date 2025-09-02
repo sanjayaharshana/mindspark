@@ -98,49 +98,61 @@ class CampaignController extends AdminController
     {
         $form = new Form(new Campaign());
 
-        $form->text('campaign_id', __('Campaign ID'))
-            ->required()
-            ->help('Enter a unique campaign identifier');
+        // Basic Information Tab
+        $form->tab('Basic Information', function ($form) {
+            $form->text('campaign_id', __('Campaign ID'))
+                ->required()
+                ->help('Enter a unique campaign identifier');
 
-        $form->text('name', __('Campaign Name'))
-            ->required()
-            ->help('Enter the campaign name');
+            $form->text('name', __('Campaign Name'))
+                ->required()
+                ->help('Enter the campaign name');
 
-        $form->select('status', __('Status'))
-            ->options([
-                'active' => 'Active',
-                'inactive' => 'Inactive',
-                'pending' => 'Pending',
-                'completed' => 'Completed'
-            ])
-            ->default('pending')
-            ->required();
+            $form->select('status', __('Status'))
+                ->options([
+                    'active' => 'Active',
+                    'inactive' => 'Inactive',
+                    'pending' => 'Pending',
+                    'completed' => 'Completed'
+                ])
+                ->default('pending')
+                ->required();
 
-        $form->datetime('start_date', __('Start Date'))
-            ->required()
-            ->help('Select the campaign start date and time');
+            $form->number('days', __('Duration (Days)'))
+                ->min(1)
+                ->required()
+                ->help('Enter the number of days for the campaign');
+        });
 
-        $form->datetime('end_date', __('End Date'))
-            ->help('Select the campaign end date and time (optional)');
+        // Schedule Tab
+        $form->tab('Schedule', function ($form) {
+            $form->datetime('start_date', __('Start Date'))
+                ->required()
+                ->help('Select the campaign start date and time');
 
-        $form->number('days', __('Duration (Days)'))
-            ->min(1)
-            ->required()
-            ->help('Enter the number of days for the campaign');
+            $form->datetime('end_date', __('End Date'))
+                ->help('Select the campaign end date and time (optional)');
+        });
 
-        $form->textarea('notes', __('Notes'))
-            ->rows(3)
-            ->help('Additional notes about the campaign');
+        // Assignment Tab
+        $form->tab('Assignment', function ($form) {
+            $form->select('customer_id', __('Customer'))
+                ->options(\App\Models\Customers::pluck('name', 'id'))
+                ->required()
+                ->help('Select the customer for this campaign');
 
-        $form->select('customer_id', __('Customer'))
-            ->options(\App\Models\Customers::pluck('name', 'id'))
-            ->required()
-            ->help('Select the customer for this campaign');
+            $form->select('organizer_id', __('Organizer'))
+                ->options(\App\Models\Organizer::pluck('name', 'id'))
+                ->required()
+                ->help('Select the organizer for this campaign');
+        });
 
-        $form->select('organizer_id', __('Organizer'))
-            ->options(\App\Models\Organizer::pluck('name', 'id'))
-            ->required()
-            ->help('Select the organizer for this campaign');
+        // Additional Information Tab
+        $form->tab('Additional Information', function ($form) {
+            $form->textarea('notes', __('Notes'))
+                ->rows(5)
+                ->help('Additional notes about the campaign');
+        });
 
         // Add form events
         $form->saving(function (Form $form) {

@@ -18,7 +18,7 @@ class AdminMenuSeeder extends Seeder
                 'parent_id' => 0,
                 'order' => 0,
                 'title' => 'Dashboard',
-                'icon' => 'fa-tachometer-alt',
+                'icon' => 'icon-dashboard',
                 'uri' => '/',
                 'permission' => null,
             ]);
@@ -30,7 +30,7 @@ class AdminMenuSeeder extends Seeder
                 'parent_id' => 0,
                 'order' => 1,
                 'title' => 'Campaigns',
-                'icon' => 'fa-bullhorn',
+                'icon' => 'icon-bullhorn',
                 'uri' => 'campaigns',
                 'permission' => null,
             ]);
@@ -42,7 +42,7 @@ class AdminMenuSeeder extends Seeder
                 'parent_id' => 0,
                 'order' => 2,
                 'title' => 'Customers',
-                'icon' => 'fa-users',
+                'icon' => 'icon-users',
                 'uri' => 'customers',
                 'permission' => null,
             ]);
@@ -54,7 +54,7 @@ class AdminMenuSeeder extends Seeder
                 'parent_id' => 0,
                 'order' => 3,
                 'title' => 'Organizers',
-                'icon' => 'fa-user-tie',
+                'icon' => 'icon-user-tie',
                 'uri' => 'organizers',
                 'permission' => null,
             ]);
