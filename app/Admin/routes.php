@@ -15,5 +15,7 @@ Route::group([
     $router->get('/', 'HomeController@index')->name('home');
 
     $router->resource('campaigns', CampaignController::class);
+    $router->resource('customers', CustomersController::class);
+    $router->resource('organizers', OrganizerController::class);
 
 });

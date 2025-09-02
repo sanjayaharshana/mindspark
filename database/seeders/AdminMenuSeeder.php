@@ -12,16 +12,6 @@ class AdminMenuSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create Campaign menu item
-        Menu::create([
-            'parent_id' => 0,
-            'order' => 1,
-            'title' => 'Campaigns',
-            'icon' => 'fa-bullhorn',
-            'uri' => 'campaigns',
-            'permission' => null,
-        ]);
-
         // Create Dashboard menu item if it doesn't exist
         if (!Menu::where('title', 'Dashboard')->exists()) {
             Menu::create([
@@ -30,6 +20,42 @@ class AdminMenuSeeder extends Seeder
                 'title' => 'Dashboard',
                 'icon' => 'fa-tachometer-alt',
                 'uri' => '/',
+                'permission' => null,
+            ]);
+        }
+
+        // Create Campaign menu item if it doesn't exist
+        if (!Menu::where('title', 'Campaigns')->exists()) {
+            Menu::create([
+                'parent_id' => 0,
+                'order' => 1,
+                'title' => 'Campaigns',
+                'icon' => 'fa-bullhorn',
+                'uri' => 'campaigns',
+                'permission' => null,
+            ]);
+        }
+
+        // Create Customers menu item if it doesn't exist
+        if (!Menu::where('title', 'Customers')->exists()) {
+            Menu::create([
+                'parent_id' => 0,
+                'order' => 2,
+                'title' => 'Customers',
+                'icon' => 'fa-users',
+                'uri' => 'customers',
+                'permission' => null,
+            ]);
+        }
+
+        // Create Organizers menu item if it doesn't exist
+        if (!Menu::where('title', 'Organizers')->exists()) {
+            Menu::create([
+                'parent_id' => 0,
+                'order' => 3,
+                'title' => 'Organizers',
+                'icon' => 'fa-user-tie',
+                'uri' => 'organizers',
                 'permission' => null,
             ]);
         }

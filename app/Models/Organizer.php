@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Customers extends Model
+class Organizer extends Model
 {
-    /** @use HasFactory<\Database\Factories\CustomersFactory> */
+    /** @use HasFactory<\Database\Factories\OrganizerFactory> */
     use HasFactory;
 
     /**
@@ -19,17 +19,17 @@ class Customers extends Model
         'name',
         'email',
         'phone',
-        'address',
         'company',
+        'position',
         'status',
     ];
 
     /**
-     * Get the campaigns for the customer.
+     * Get the campaigns organized by this organizer.
      */
     public function campaigns()
     {
-        return $this->hasMany(Campaign::class, 'customer_id');
+        return $this->hasMany(Campaign::class, 'organizer_id');
     }
 
     /**
