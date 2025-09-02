@@ -18,5 +18,6 @@ Route::group([
     $router->resource('customers', CustomersController::class);
     $router->resource('organizers', OrganizerController::class);
     $router->resource('promoters', PromoterController::class);
+    $router->resource('supervisors', SupervisorController::class);
 
 });

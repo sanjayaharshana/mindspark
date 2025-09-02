@@ -71,5 +71,17 @@ class AdminMenuSeeder extends Seeder
                 'permission' => null,
             ]);
         }
+
+        // Create Supervisors menu item if it doesn't exist
+        if (!Menu::where('title', 'Supervisors')->exists()) {
+            Menu::create([
+                'parent_id' => 0,
+                'order' => 5,
+                'title' => 'Supervisors',
+                'icon' => 'icon-user-tie',
+                'uri' => 'supervisors',
+                'permission' => null,
+            ]);
+        }
     }
 }

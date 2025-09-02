@@ -26,6 +26,8 @@ class DatabaseSeeder extends Seeder
             AdminMenuSeeder::class,
             SampleDataSeeder::class,
             PromoterSeeder::class,
+            SupervisorSeeder::class,
+            CampaignSeeder::class,
         ]);
     }
 }

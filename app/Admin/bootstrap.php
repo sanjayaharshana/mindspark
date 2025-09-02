@@ -19,3 +19,28 @@
  */
 
 Qulint\Admin\Form::forget(['editor']);
+
+// Hide admin panel footer links (Resources, Github, Documentation, Demo)
+Admin::css('
+<style>
+/* Hide footer links */
+.footer-links,
+.admin-footer-links,
+.resources-links,
+.github-links,
+.documentation-links,
+.demo-links,
+.admin-version,
+.admin-environment {
+    display: none !important;
+}
+
+/* Hide any footer content that might contain these links */
+.footer a[href*="github"],
+.footer a[href*="documentation"],
+.footer a[href*="demo"],
+.footer a[href*="resources"] {
+    display: none !important;
+}
+</style>
+');
