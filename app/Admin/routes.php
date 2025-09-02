@@ -17,5 +17,6 @@ Route::group([
     $router->resource('campaigns', CampaignController::class);
     $router->resource('customers', CustomersController::class);
     $router->resource('organizers', OrganizerController::class);
+    $router->resource('promoters', PromoterController::class);
 
 });

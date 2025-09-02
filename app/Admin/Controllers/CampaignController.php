@@ -102,7 +102,8 @@ class CampaignController extends AdminController
         $form->tab('Basic Information', function ($form) {
             $form->text('campaign_id', __('Campaign ID'))
                 ->required()
-                ->help('Enter a unique campaign identifier');
+                ->help('Enter a unique campaign identifier or click generate button')
+                ->append('<button type="button" class="btn btn-sm btn-primary" id="generateCampaignBtn">Generate ID</button>');
 
             $form->text('name', __('Campaign Name'))
                 ->required()
@@ -161,6 +162,36 @@ class CampaignController extends AdminController
                 $form->campaign_id = 'CAM-' . date('Ymd') . '-' . strtoupper(uniqid());
             }
         });
+
+        // Add JavaScript for campaign ID generation
+        $form->html('<script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var generateBtn = document.getElementById("generateCampaignBtn");
+                if (generateBtn) {
+                    generateBtn.addEventListener("click", function() {
+                        // Get the customer select element
+                        var customerSelect = document.querySelector("select[name=\'customer_id\']");
+                        var customerId = customerSelect ? customerSelect.value : "1";
+                        
+                        // Get current date in YYYYMMDD format
+                        var today = new Date();
+                        var year = today.getFullYear();
+                        var month = String(today.getMonth() + 1).padStart(2, "0");
+                        var day = String(today.getDate()).padStart(2, "0");
+                        var dateStr = year + month + day;
+                        
+                        // Generate campaign ID in format: customer{id}/{date}
+                        var campaignId = "customer" + customerId + "/" + dateStr;
+                        
+                        // Set the campaign ID field value
+                        var campaignIdField = document.querySelector("input[name=\'campaign_id\']");
+                        if (campaignIdField) {
+                            campaignIdField.value = campaignId;
+                        }
+                    });
+                }
+            });
+        </script>');
 
         return $form;
     }

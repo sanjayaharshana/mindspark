@@ -59,5 +59,17 @@ class AdminMenuSeeder extends Seeder
                 'permission' => null,
             ]);
         }
+
+        // Create Promoters menu item if it doesn't exist
+        if (!Menu::where('title', 'Promoters')->exists()) {
+            Menu::create([
+                'parent_id' => 0,
+                'order' => 4,
+                'title' => 'Promoters',
+                'icon' => 'icon-user',
+                'uri' => 'promoters',
+                'permission' => null,
+            ]);
+        }
     }
 }
