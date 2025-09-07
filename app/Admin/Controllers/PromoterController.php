@@ -7,6 +7,7 @@ use Qulint\Admin\Form;
 use Qulint\Admin\Grid;
 use Qulint\Admin\Show;
 use \App\Models\Promoter;
+use \App\Models\EventJob;
 
 class PromoterController extends AdminController
 {
@@ -15,7 +16,7 @@ class PromoterController extends AdminController
      *
      * @var string
      */
-    protected $title = 'Promoter';
+    protected $title = 'Promoters';
 
     /**
      * Make a grid builder.
@@ -26,25 +27,31 @@ class PromoterController extends AdminController
     {
         $grid = new Grid(new Promoter());
 
-        $grid->column('id', __('Id'));
-        $grid->column('promoter_id', __('Promoter id'));
-        $grid->column('name', __('Name'));
-        $grid->column('email', __('Email'));
-        $grid->column('phone', __('Phone'));
-        $grid->column('address', __('Address'));
-        $grid->column('date_of_birth', __('Date of birth'));
-        $grid->column('gender', __('Gender'));
-        $grid->column('emergency_contact', __('Emergency contact'));
-        $grid->column('emergency_phone', __('Emergency phone'));
-        $grid->column('bank_name', __('Bank name'));
-        $grid->column('bank_account', __('Bank account'));
-        $grid->column('tax_id', __('Tax id'));
-        $grid->column('base_salary', __('Base salary'));
-        $grid->column('status', __('Status'));
-        $grid->column('join_date', __('Join date'));
-        $grid->column('notes', __('Notes'));
-        $grid->column('created_at', __('Created at'));
-        $grid->column('updated_at', __('Updated at'));
+        $grid->column('id', 'ID')->sortable();
+        $grid->column('promoter_id', 'Promoter ID')->sortable();
+        $grid->column('promoter_name', 'Name')->sortable();
+        $grid->column('id_no', 'ID Number')->sortable();
+        $grid->column('phone_no', 'Phone Number')->sortable();
+        $grid->column('bank_name', 'Bank Name')->sortable();
+        $grid->column('bank_branch_name', 'Bank Branch')->sortable();
+        $grid->column('account_number', 'Account Number')->sortable();
+        
+        // Show related event job
+        $grid->column('eventJob.job_name', 'Event Job')->sortable();
+        $grid->column('eventJob.job_number', 'Job Number')->sortable();
+
+        $grid->column('created_at', 'Created At')->sortable();
+        $grid->column('updated_at', 'Updated At')->sortable();
+
+        // Add filters
+        $grid->filter(function ($filter) {
+            $filter->like('promoter_id', 'Promoter ID');
+            $filter->like('promoter_name', 'Name');
+            $filter->like('id_no', 'ID Number');
+            $filter->like('phone_no', 'Phone Number');
+            $filter->like('bank_name', 'Bank Name');
+            $filter->equal('event_job_id', 'Event Job')->select(EventJob::all()->pluck('job_name', 'id'));
+        });
 
         return $grid;
     }
@@ -59,25 +66,27 @@ class PromoterController extends AdminController
     {
         $show = new Show(Promoter::findOrFail($id));
 
-        $show->field('id', __('Id'));
-        $show->field('promoter_id', __('Promoter id'));
-        $show->field('name', __('Name'));
-        $show->field('email', __('Email'));
-        $show->field('phone', __('Phone'));
-        $show->field('address', __('Address'));
-        $show->field('date_of_birth', __('Date of birth'));
-        $show->field('gender', __('Gender'));
-        $show->field('emergency_contact', __('Emergency contact'));
-        $show->field('emergency_phone', __('Emergency phone'));
-        $show->field('bank_name', __('Bank name'));
-        $show->field('bank_account', __('Bank account'));
-        $show->field('tax_id', __('Tax id'));
-        $show->field('base_salary', __('Base salary'));
-        $show->field('status', __('Status'));
-        $show->field('join_date', __('Join date'));
-        $show->field('notes', __('Notes'));
-        $show->field('created_at', __('Created at'));
-        $show->field('updated_at', __('Updated at'));
+        $show->field('id', 'ID');
+        $show->field('promoter_id', 'Promoter ID');
+        $show->field('promoter_name', 'Name');
+        $show->field('id_no', 'ID Number');
+        $show->field('phone_no', 'Phone Number');
+        $show->field('bank_name', 'Bank Name');
+        $show->field('bank_branch_name', 'Bank Branch');
+        $show->field('account_number', 'Account Number');
+        $show->field('created_at', 'Created At');
+        $show->field('updated_at', 'Updated At');
+
+        // Show related event job details
+        $show->field('eventJob.job_number', 'Event Job Number');
+        $show->field('eventJob.job_name', 'Event Job Name');
+        $show->field('eventJob.client_name', 'Client Name');
+        $show->field('eventJob.activation_start_date', 'Job Start Date')->as(function ($date) {
+            return $date ? date('Y-m-d', strtotime($date)) : '';
+        });
+        $show->field('eventJob.activation_end_date', 'Job End Date')->as(function ($date) {
+            return $date ? date('Y-m-d', strtotime($date)) : 'Ongoing';
+        });
 
         return $show;
     }
@@ -91,22 +100,40 @@ class PromoterController extends AdminController
     {
         $form = new Form(new Promoter());
 
-        $form->text('promoter_id', __('Promoter id'));
-        $form->text('name', __('Name'));
-        $form->email('email', __('Email'));
-        $form->phonenumber('phone', __('Phone'));
-        $form->text('address', __('Address'));
-        $form->text('date_of_birth', __('Date of birth'));
-        $form->text('gender', __('Gender'));
-        $form->text('emergency_contact', __('Emergency contact'));
-        $form->text('emergency_phone', __('Emergency phone'));
-        $form->text('bank_name', __('Bank name'));
-        $form->text('bank_account', __('Bank account'));
-        $form->text('tax_id', __('Tax id'));
-        $form->text('base_salary', __('Base salary'));
-        $form->text('status', __('Status'));
-        $form->text('join_date', __('Join date'));
-        $form->text('notes', __('Notes'));
+        $form->tab('Basic Information', function ($form) {
+            $form->select('event_job_id', 'Event Job')
+                ->options(EventJob::all()->pluck('job_name', 'id'))
+                ->required()
+                ->help('Select the event job this promoter will work on');
+            
+            $form->text('promoter_id', 'Promoter ID')
+                ->required()
+                ->help('Unique promoter identifier (e.g., PROM1001)');
+            
+            $form->text('promoter_name', 'Promoter Name')
+                ->required()
+                ->help('Full name of the promoter');
+        });
+
+        $form->tab('Personal Details', function ($form) {
+            $form->text('id_no', 'ID Number')
+                ->required()
+                ->help('National Identity Card number');
+            
+            $form->text('phone_no', 'Phone Number')
+                ->help('Contact phone number (optional)');
+        });
+
+        $form->tab('Banking Information', function ($form) {
+            $form->text('bank_name', 'Bank Name')
+                ->help('Name of the bank (optional)');
+            
+            $form->text('bank_branch_name', 'Bank Branch')
+                ->help('Bank branch name (optional)');
+            
+            $form->text('account_number', 'Account Number')
+                ->help('Bank account number (optional)');
+        });
 
         return $form;
     }

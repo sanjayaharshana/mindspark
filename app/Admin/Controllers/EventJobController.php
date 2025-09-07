@@ -109,32 +109,38 @@ class EventJobController extends AdminController
     {
         $form = new Form(new EventJob());
 
-        $form->text('job_number', 'Job Number')
-            ->required()
-            ->help('Unique job identifier (e.g., EJ1001)');
-        
-        $form->text('job_name', 'Job Name')
-            ->required()
-            ->help('Name of the event job');
-        
-        $form->text('client_name', 'Client Name')
-            ->required()
-            ->help('Name of the client company');
-        
-        $form->date('activation_start_date', 'Start Date')
-            ->required()
-            ->help('When the event job starts');
-        
-        $form->date('activation_end_date', 'End Date')
-            ->help('When the event job ends (optional for ongoing jobs)');
-        
-        $form->text('officer_name', 'Officer Name')
-            ->required()
-            ->help('Name of the responsible officer');
-        
-        $form->text('reporter_officer_name', 'Reporter Officer')
-            ->required()
-            ->help('Name of the reporting officer');
+        $form->tab('Basic Information', function ($form) {
+            $form->text('job_number', 'Job Number')
+                ->required()
+                ->help('Unique job identifier (e.g., EJ1001)');
+            
+            $form->text('job_name', 'Job Name')
+                ->required()
+                ->help('Name of the event job');
+            
+            $form->text('client_name', 'Client Name')
+                ->required()
+                ->help('Name of the client company');
+        });
+
+        $form->tab('Event Details', function ($form) {
+            $form->date('activation_start_date', 'Start Date')
+                ->required()
+                ->help('When the event job starts');
+            
+            $form->date('activation_end_date', 'End Date')
+                ->help('When the event job ends (optional for ongoing jobs)');
+        });
+
+        $form->tab('Personnel', function ($form) {
+            $form->text('officer_name', 'Officer Name')
+                ->required()
+                ->help('Name of the responsible officer');
+            
+            $form->text('reporter_officer_name', 'Reporter Officer')
+                ->required()
+                ->help('Name of the reporting officer');
+        });
 
         return $form;
     }

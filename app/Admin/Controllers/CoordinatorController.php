@@ -100,34 +100,40 @@ class CoordinatorController extends AdminController
     {
         $form = new Form(new Coordinator());
 
-        $form->select('event_job_id', 'Event Job')
-            ->options(EventJob::all()->pluck('job_name', 'id'))
-            ->required()
-            ->help('Select the event job this coordinator will work on');
-        
-        $form->text('coordinator_id', 'Coordinator ID')
-            ->required()
-            ->help('Unique coordinator identifier (e.g., COORD1001)');
-        
-        $form->text('coordinator_name', 'Coordinator Name')
-            ->required()
-            ->help('Full name of the coordinator');
-        
-        $form->text('nic_no', 'NIC Number')
-            ->required()
-            ->help('National Identity Card number');
-        
-        $form->text('phone_no', 'Phone Number')
-            ->help('Contact phone number (optional)');
-        
-        $form->text('bank_name', 'Bank Name')
-            ->help('Name of the bank (optional)');
-        
-        $form->text('bank_branch_name', 'Bank Branch')
-            ->help('Bank branch name (optional)');
-        
-        $form->text('account_number', 'Account Number')
-            ->help('Bank account number (optional)');
+        $form->tab('Basic Information', function ($form) {
+            $form->select('event_job_id', 'Event Job')
+                ->options(EventJob::all()->pluck('job_name', 'id'))
+                ->required()
+                ->help('Select the event job this coordinator will work on');
+            
+            $form->text('coordinator_id', 'Coordinator ID')
+                ->required()
+                ->help('Unique coordinator identifier (e.g., COORD1001)');
+            
+            $form->text('coordinator_name', 'Coordinator Name')
+                ->required()
+                ->help('Full name of the coordinator');
+        });
+
+        $form->tab('Personal Details', function ($form) {
+            $form->text('nic_no', 'NIC Number')
+                ->required()
+                ->help('National Identity Card number');
+            
+            $form->text('phone_no', 'Phone Number')
+                ->help('Contact phone number (optional)');
+        });
+
+        $form->tab('Banking Information', function ($form) {
+            $form->text('bank_name', 'Bank Name')
+                ->help('Name of the bank (optional)');
+            
+            $form->text('bank_branch_name', 'Bank Branch')
+                ->help('Bank branch name (optional)');
+            
+            $form->text('account_number', 'Account Number')
+                ->help('Bank account number (optional)');
+        });
 
         return $form;
     }
