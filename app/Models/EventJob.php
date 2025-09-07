@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class EventJob extends Model
+{
+    protected $table = 'event_jobs';
+
+    protected $fillable = [
+        'job_number',
+        'job_name',
+        'client_name',
+        'activation_start_date',
+        'activation_end_date',
+        'officer_name',
+        'reporter_officer_name',
+    ];
+
+    protected $casts = [
+        'activation_start_date' => 'date',
+        'activation_end_date' => 'date',
+    ];
+
+    /**
+     * Get the promoters for the event job.
+     */
+    public function promoters(): HasMany
+    {
+        return $this->hasMany(Promoter::class);
+    }
+
+    /**
+     * Get the coordinators for the event job.
+     */
+    public function coordinators(): HasMany
+    {
+        return $this->hasMany(Coordinator::class);
+    }
+}

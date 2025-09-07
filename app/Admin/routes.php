@@ -1,6 +1,10 @@
 <?php
 
 use Illuminate\Routing\Router;
+use App\Admin\Controllers\CoordinatorController;
+use App\Admin\Controllers\EventJobController;
+use App\Admin\Controllers\PromoterController;
+
 
 Admin::routes();
 
@@ -13,4 +17,7 @@ Route::group([
 
     $router->get('/', 'HomeController@index')->name('home');
 
+    $router->resource('coordinators', CoordinatorController::class);
+    $router->resource('event-jobs', EventJobController::class);
+    $router->resource('promoters', PromoterController::class);
 });
