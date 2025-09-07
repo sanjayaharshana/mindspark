@@ -23,5 +23,53 @@ class AdminMenuSeeder extends Seeder
                 'permission' => null,
             ]);
         }
+
+        // Create Event Salary Management parent menu
+        $eventSalaryMenu = Menu::firstOrCreate([
+            'title' => 'Event Salary Management',
+        ], [
+            'parent_id' => 0,
+            'order' => 1,
+            'title' => 'Event Salary Management',
+            'icon' => 'icon-calendar',
+            'uri' => '',
+            'permission' => null,
+        ]);
+
+        // Create Event Jobs menu item
+        Menu::firstOrCreate([
+            'title' => 'Event Jobs',
+        ], [
+            'parent_id' => $eventSalaryMenu->id,
+            'order' => 0,
+            'title' => 'Event Jobs',
+            'icon' => 'icon-briefcase',
+            'uri' => 'event-jobs',
+            'permission' => null,
+        ]);
+
+        // Create Promoters menu item
+        Menu::firstOrCreate([
+            'title' => 'Promoters',
+        ], [
+            'parent_id' => $eventSalaryMenu->id,
+            'order' => 1,
+            'title' => 'Promoters',
+            'icon' => 'icon-users',
+            'uri' => 'promoters',
+            'permission' => null,
+        ]);
+
+        // Create Coordinators menu item
+        Menu::firstOrCreate([
+            'title' => 'Coordinators',
+        ], [
+            'parent_id' => $eventSalaryMenu->id,
+            'order' => 2,
+            'title' => 'Coordinators',
+            'icon' => 'icon-user-tie',
+            'uri' => 'coordinators',
+            'permission' => null,
+        ]);
     }
 }
