@@ -24,10 +24,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AdminUserSeeder::class,
             AdminMenuSeeder::class,
-            SampleDataSeeder::class,
-            PromoterSeeder::class,
-            SupervisorSeeder::class,
-            CampaignSeeder::class,
+        
         ]);
     }
 }
