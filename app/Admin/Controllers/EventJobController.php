@@ -2,12 +2,14 @@
 
 namespace App\Admin\Controllers;
 
+use Qulint\Admin\Layout\Content;
 use Qulint\Admin\Controllers\AdminController;
 use Qulint\Admin\Form;
 use Qulint\Admin\Grid;
 use Qulint\Admin\Show;
-use \App\Models\EventJob;
-use \App\Models\Client;
+use App\Admin\Actions\SalarySheetAction;
+use App\Models\EventJob;
+use App\Models\Client;
 
 class EventJobController extends AdminController
 {
@@ -50,6 +52,11 @@ class EventJobController extends AdminController
             // Human readable carbon date
             return $this->created_at ? $this->created_at->diffForHumans() : '';
         })->sortable();
+
+        // Add salary sheet action
+        $grid->actions(function ($actions) {
+            $actions->add(new SalarySheetAction());
+        });
 
         // Add filters
         $grid->filter(function ($filter) {
@@ -158,4 +165,17 @@ class EventJobController extends AdminController
 
         return $form;
     }
+
+
+    public function salarySheet(Content $content)
+    {
+
+
+        return $content
+            ->title('Referrals for ')
+            ->description('Detailed view of all referrals for this user')
+            ->body(view('admin.salary-sheet'));
+    }
+
+
 }

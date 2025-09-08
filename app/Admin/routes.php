@@ -19,5 +19,6 @@ Route::group([
 
     $router->resource('coordinators', CoordinatorController::class);
     $router->resource('event-jobs', EventJobController::class);
+    $router->get('event-jobs/{id}/salary-sheet', 'EventJobController@salarySheet')->name('event-jobs.salary-sheet');
     $router->resource('promoters', PromoterController::class);
 });
