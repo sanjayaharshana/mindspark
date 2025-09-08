@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EventJob extends Model
 {
@@ -38,5 +39,13 @@ class EventJob extends Model
     public function coordinators(): HasMany
     {
         return $this->hasMany(Coordinator::class);
+    }
+
+    /**
+     * Get the client for the event job.
+     */
+    public function client(): BelongsTo
+    {
+        return $this->belongsTo(Client::class, 'client_name', 'company_name');
     }
 }

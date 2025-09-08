@@ -7,6 +7,7 @@ use Qulint\Admin\Form;
 use Qulint\Admin\Grid;
 use Qulint\Admin\Show;
 use \App\Models\EventJob;
+use \App\Models\Client;
 
 class EventJobController extends AdminController
 {
@@ -54,7 +55,7 @@ class EventJobController extends AdminController
         $grid->filter(function ($filter) {
             $filter->like('job_number', 'Job Number');
             $filter->like('job_name', 'Job Name');
-            $filter->like('client_name', 'Client Name');
+            $filter->equal('client_name', 'Client')->select(Client::all()->pluck('company_name', 'company_name'));
             $filter->between('activation_start_date', 'Start Date')->date();
             $filter->between('activation_end_date', 'End Date')->date();
         });
@@ -97,6 +98,18 @@ class EventJobController extends AdminController
             return $coordinators->count() . ' coordinators assigned';
         });
 
+        // Show client details if available
+        $show->field('client_info', 'Client Information')->as(function () {
+            $client = Client::where('company_name', $this->client_name)->first();
+            if ($client) {
+                return "Contact: {$client->contact_person_name} ({$client->contact_person_designation})<br>" .
+                       "Email: {$client->email}<br>" .
+                       "Phone: {$client->phone_number}<br>" .
+                       "Status: " . ucfirst($client->status);
+            }
+            return 'Client information not available';
+        });
+
         return $show;
     }
 
@@ -118,9 +131,10 @@ class EventJobController extends AdminController
                 ->required()
                 ->help('Name of the event job');
             
-            $form->text('client_name', 'Client Name')
+            $form->select('client_name', 'Client')
+                ->options(Client::all()->pluck('company_name', 'company_name'))
                 ->required()
-                ->help('Name of the client company');
+                ->help('Select the client company for this event job');
         });
 
         $form->tab('Event Details', function ($form) {

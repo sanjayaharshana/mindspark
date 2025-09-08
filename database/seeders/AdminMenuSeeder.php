@@ -48,12 +48,24 @@ class AdminMenuSeeder extends Seeder
             'permission' => null,
         ]);
 
+        // Create Clients menu item
+        Menu::firstOrCreate([
+            'title' => 'Clients',
+        ], [
+            'parent_id' => $eventSalaryMenu->id,
+            'order' => 1,
+            'title' => 'Clients',
+            'icon' => 'icon-building',
+            'uri' => 'clients',
+            'permission' => null,
+        ]);
+
         // Create Promoters menu item
         Menu::firstOrCreate([
             'title' => 'Promoters',
         ], [
             'parent_id' => $eventSalaryMenu->id,
-            'order' => 1,
+            'order' => 2,
             'title' => 'Promoters',
             'icon' => 'icon-users',
             'uri' => 'promoters',
@@ -65,7 +77,7 @@ class AdminMenuSeeder extends Seeder
             'title' => 'Coordinators',
         ], [
             'parent_id' => $eventSalaryMenu->id,
-            'order' => 2,
+            'order' => 3,
             'title' => 'Coordinators',
             'icon' => 'icon-user-tie',
             'uri' => 'coordinators',
