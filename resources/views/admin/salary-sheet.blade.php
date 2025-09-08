@@ -185,20 +185,28 @@
                     <!-- Promoters Tab -->
                     <div class="tab-pane fade" id="promoters" role="tabpanel">
                         @if($assignedPromoters->count() > 0)
+                            <!-- Header with Assign Button -->
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0 text-muted">Assigned Promoters ({{ $assignedPromoters->count() }})</h5>
+                                <a href="{{ admin_url('event-jobs/' . $eventJob->id . '/assign-promoters') }}" class="btn btn-primary">
+                                    <i class="icon-plus me-1"></i> Assign More Promoters
+                                </a>
+                            </div>
+                            
                             <div class="table-responsive">
                                 <table class="table table-hover">
-                                    <thead class="table-dark">
+                                    <thead class="table-primary">
                                         <tr>
-                                            <th>#</th>
-                                            <th>Promoter ID</th>
-                                            <th>Name</th>
-                                            <th>ID Number</th>
-                                            <th>Phone</th>
-                                            <th>Coordinator</th>
-                                            <th>Daily Salary</th>
-                                            <th>Coordinator Commission</th>
-                                            <th>Bank Details</th>
-                                            <th>Actions</th>
+                                            <th class="text-white">#</th>
+                                            <th class="text-white">Promoter ID</th>
+                                            <th class="text-white">Name</th>
+                                            <th class="text-white">ID Number</th>
+                                            <th class="text-white">Phone</th>
+                                            <th class="text-white">Coordinator</th>
+                                            <th class="text-white">Daily Salary</th>
+                                            <th class="text-white">Coordinator Commission</th>
+                                            <th class="text-white">Bank Details</th>
+                                            <th class="text-white">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -404,6 +412,22 @@ $(document).ready(function() {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* Promoter Table Header Styling */
+.table-primary {
+    background-color: #007bff !important;
+}
+
+.table-primary th {
+    background-color: #007bff !important;
+    color: white !important;
+    font-weight: 600;
+    border-color: #0056b3 !important;
+}
+
+.table-primary th.text-white {
+    color: white !important;
 }
 
 .metric-card {
