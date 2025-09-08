@@ -28,7 +28,6 @@ class EventJobController extends AdminController
         $grid = new Grid(new EventJob());
 
         $grid->column('id', 'ID')->sortable();
-        $grid->column('job_number', 'Job Number')->sortable();
         $grid->column('job_name', 'Job Name')->sortable();
         $grid->column('client_name', 'Client Name')->sortable();
         $grid->column('activation_start_date', 'Start Date')->display(function ($date) {
@@ -37,9 +36,8 @@ class EventJobController extends AdminController
         $grid->column('activation_end_date', 'End Date')->display(function ($date) {
             return $date ? date('Y-m-d', strtotime($date)) : 'Ongoing';
         })->sortable();
-        $grid->column('officer_name', 'Officer Name')->sortable();
-        $grid->column('reporter_officer_name', 'Reporter Officer')->sortable();
-        
+
+
         // Add relationship counts
         $grid->column('promoters_count', 'Promoters')->display(function () {
             return $this->promoters()->count();
@@ -48,8 +46,10 @@ class EventJobController extends AdminController
             return $this->coordinators()->count();
         });
 
-        $grid->column('created_at', 'Created At')->sortable();
-        $grid->column('updated_at', 'Updated At')->sortable();
+        $grid->column('created_at', 'Created At')->display(function (){
+            // Human readable carbon date
+            return $this->created_at ? $this->created_at->diffForHumans() : '';
+        })->sortable();
 
         // Add filters
         $grid->filter(function ($filter) {
@@ -126,11 +126,11 @@ class EventJobController extends AdminController
             $form->text('job_number', 'Job Number')
                 ->required()
                 ->help('Unique job identifier (e.g., EJ1001)');
-            
+
             $form->text('job_name', 'Job Name')
                 ->required()
                 ->help('Name of the event job');
-            
+
             $form->select('client_name', 'Client')
                 ->options(Client::all()->pluck('company_name', 'company_name'))
                 ->required()
@@ -141,7 +141,7 @@ class EventJobController extends AdminController
             $form->date('activation_start_date', 'Start Date')
                 ->required()
                 ->help('When the event job starts');
-            
+
             $form->date('activation_end_date', 'End Date')
                 ->help('When the event job ends (optional for ongoing jobs)');
         });
@@ -150,7 +150,7 @@ class EventJobController extends AdminController
             $form->text('officer_name', 'Officer Name')
                 ->required()
                 ->help('Name of the responsible officer');
-            
+
             $form->text('reporter_officer_name', 'Reporter Officer')
                 ->required()
                 ->help('Name of the reporting officer');
