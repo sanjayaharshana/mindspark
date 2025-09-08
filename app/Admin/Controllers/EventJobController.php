@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Models\Promoter;
 use Qulint\Admin\Layout\Content;
 use Qulint\Admin\Controllers\AdminController;
 use Qulint\Admin\Form;
@@ -167,14 +168,17 @@ class EventJobController extends AdminController
     }
 
 
-    public function salarySheet(Content $content)
+    public function salarySheet($id,Content $content)
     {
 
+        $eventJob = EventJob::findOrFail($id);
+        $promoters = Promoter::all();
 
         return $content
             ->title('Referrals for ')
             ->description('Detailed view of all referrals for this user')
-            ->body(view('admin.salary-sheet'));
+            ->body(view('admin.salary-sheet',compact(
+                'eventJob', 'promoters')));
     }
 
 
