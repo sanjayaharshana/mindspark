@@ -1,174 +1,180 @@
 
-<div class="row">
-    <div class="col-md-12">
-        <div class="card card-primary">
-            <div class="card-header">
-                <h3 class="card-title">
-                    <i class="fa fa-money"></i> Salary Sheet - {{ $eventJob->job_name }}
-                </h3>
-                <div class="card-tools">
-                    <a href="{{ admin_url('event-jobs') }}" class="btn btn-tool">
-                        <i class="fa fa-arrow-left"></i> Back to Event Jobs
-                    </a>
-                    <button class="btn btn-tool" onclick="printSalarySheet()">
-                        <i class="fa fa-print"></i> Print
-                    </button>
+<!-- Professional Header Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body py-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <div class="d-flex align-items-center">
+                            <div class="salary-icon me-3">
+                                <i class="icon-book fa-2x text-primary"></i>
+                            </div>
+                            <div>
+                                <h2 class="mb-1 text-dark fw-bold">{{ $eventJob->job_name }}</h2>
+                                <p class="mb-0 text-muted">Salary Sheet Management System</p>
+                                <small class="text-muted">Job #{{ $eventJob->job_number }} | {{ $eventJob->client_name }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="btn-group" role="group">
+                            <a href="{{ admin_url('event-jobs') }}" class="btn btn-outline-secondary">
+                                <i class="icon-arrow-left me-1"></i> Back
+                            </a>
+                            <button class="btn btn-outline-primary" onclick="printSalarySheet()">
+                                <i class="icon-printer me-1"></i> Print
+                            </button>
+                            <button class="btn btn-success" onclick="exportSalarySheet()">
+                                <i class="icon-download me-1"></i> Export
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
 
-            <div class="card-body">
-                <!-- Nav tabs -->
-                <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="nav-item">
-                        <a href="#overview" class="nav-link active" aria-controls="overview" role="tab" data-toggle="tab">
-                            <i class="fa fa-info-circle"></i> Overview
-                        </a>
+<!-- Professional Tabs Section -->
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 py-3">
+                <ul class="nav nav-tabs" id="salaryTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
+                            <i class="icon-chart me-2"></i>
+                            Overview
+                        </button>
                     </li>
-                    <li role="presentation" class="nav-item">
-                        <a href="#promoters" class="nav-link" aria-controls="promoters" role="tab" data-toggle="tab">
-                            <i class="fa fa-users"></i> Promoters ({{ $promoters->count() }})
-                        </a>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="promoters-tab" data-bs-toggle="tab" data-bs-target="#promoters" type="button" role="tab">
+                            <i class="icon-user me-2"></i>
+                            Promoters ({{ $promoters->count() }})
+                        </button>
                     </li>
-                    <li role="presentation" class="nav-item">
-                        <a href="#salary-calculation" class="nav-link" aria-controls="salary-calculation" role="tab" data-toggle="tab">
-                            <i class="fa fa-calculator"></i> Salary Calculation
-                        </a>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="calculation-tab" data-bs-toggle="tab" data-bs-target="#calculation" type="button" role="tab">
+                            <i class="icon-calculator me-2"></i>
+                            Salary Calculation
+                        </button>
                     </li>
                 </ul>
+            </div>
 
-                <!-- Tab panes -->
-                <div class="tab-content mt-3">
+            <div class="card-body p-4">
+                <div class="tab-content" id="salaryTabsContent">
                     <!-- Overview Tab -->
-                    <div role="tabpanel" class="tab-pane active" id="overview">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="info-box bg-info">
-                                    <span class="info-box-icon">
-                                        <i class="fa fa-briefcase"></i>
-                                    </span>
-                                    <div class="info-box-content">
-                                        <span class="info-box-text">Job Number</span>
-                                        <span class="info-box-number">{{ $eventJob->job_number }}</span>
+                    <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                        <!-- Key Metrics Cards -->
+                        <div class="row mb-4">
+                            <div class="col-lg-3 col-md-6 mb-3">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="icon-box"></i>
+                                    </div>
+                                    <div class="metric-content">
+                                        <h3 class="metric-value">{{ $eventJob->job_number }}</h3>
+                                        <p class="metric-label">Job Number</p>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="info-box bg-success">
-                                    <span class="info-box-icon">
-                                        <i class="fa fa-building"></i>
-                                    </span>
-                                    <div class="info-box-content">
-                                        <span class="info-box-text">Client Name</span>
-                                        <span class="info-box-number">{{ $eventJob->client_name }}</span>
+                            <div class="col-lg-3 col-md-6 mb-3">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="icon-building"></i>
+                                    </div>
+                                    <div class="metric-content">
+                                        <h3 class="metric-value">{{ Str::limit($eventJob->client_name, 15) }}</h3>
+                                        <p class="metric-label">Client</p>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="info-box bg-warning">
-                                    <span class="info-box-icon">
-                                        <i class="fa fa-calendar"></i>
-                                    </span>
-                                    <div class="info-box-content">
-                                        <span class="info-box-text">Start Date</span>
-                                        <span class="info-box-number">
-                                            {{ $eventJob->activation_start_date ? $eventJob->activation_start_date->format('Y-m-d') : 'Not Set' }}
-                                        </span>
+                            <div class="col-lg-3 col-md-6 mb-3">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="icon-user"></i>
+                                    </div>
+                                    <div class="metric-content">
+                                        <h3 class="metric-value">{{ $promoters->count() }}</h3>
+                                        <p class="metric-label">Promoters</p>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="info-box bg-danger">
-                                    <span class="info-box-icon">
-                                        <i class="fa fa-calendar"></i>
-                                    </span>
-                                    <div class="info-box-content">
-                                        <span class="info-box-text">End Date</span>
-                                        <span class="info-box-number">
-                                            {{ $eventJob->activation_end_date ? $eventJob->activation_end_date->format('Y-m-d') : 'Ongoing' }}
-                                        </span>
+                            <div class="col-lg-3 col-md-6 mb-3">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="icon-calendar"></i>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="info-box bg-primary">
-                                    <span class="info-box-icon">
-                                        <i class="fa fa-user"></i>
-                                    </span>
-                                    <div class="info-box-content">
-                                        <span class="info-box-text">Officer Name</span>
-                                        <span class="info-box-number">{{ $eventJob->officer_name }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="info-box bg-secondary">
-                                    <span class="info-box-icon">
-                                        <i class="fa fa-user-secret"></i>
-                                    </span>
-                                    <div class="info-box-content">
-                                        <span class="info-box-text">Reporter Officer</span>
-                                        <span class="info-box-number">{{ $eventJob->reporter_officer_name }}</span>
+                                    <div class="metric-content">
+                                        <h3 class="metric-value">
+                                            @if($eventJob->activation_start_date && $eventJob->activation_end_date)
+                                                {{ $eventJob->activation_start_date->diffInDays($eventJob->activation_end_date) + 1 }}
+                                            @else
+                                                N/A
+                                            @endif
+                                        </h3>
+                                        <p class="metric-label">Duration (Days)</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- Detailed Information -->
                         <div class="row">
-                            <div class="col-md-12">
-                                <div class="card card-info">
-                                    <div class="card-header">
-                                        <h3 class="card-title">Job Summary</h3>
+                            <div class="col-md-6">
+                                <div class="info-card">
+                                    <div class="info-card-header">
+                                        <h5 class="mb-0"><i class="icon-book me-2 text-primary"></i>Job Details</h5>
                                     </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-3">
-                                                <div class="description-block">
-                                                    <span class="description-percentage text-green">
-                                                        <i class="fa fa-users"></i>
-                                                    </span>
-                                                    <h5 class="description-header">{{ $promoters->count() }}</h5>
-                                                    <span class="description-text">Total Promoters</span>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="description-block">
-                                                    <span class="description-percentage text-blue">
-                                                        <i class="fa fa-calendar-o"></i>
-                                                    </span>
-                                                    <h5 class="description-header">
-                                                        @if($eventJob->activation_start_date && $eventJob->activation_end_date)
-                                                            {{ $eventJob->activation_start_date->diffInDays($eventJob->activation_end_date) + 1 }}
-                                                        @else
-                                                            N/A
-                                                        @endif
-                                                    </h5>
-                                                    <span class="description-text">Duration (Days)</span>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="description-block">
-                                                    <span class="description-percentage text-yellow">
-                                                        <i class="fa fa-clock-o"></i>
-                                                    </span>
-                                                    <h5 class="description-header">{{ $eventJob->created_at->diffForHumans() }}</h5>
-                                                    <span class="description-text">Created</span>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="description-block">
-                                                    <span class="description-percentage text-red">
-                                                        <i class="fa fa-money"></i>
-                                                    </span>
-                                                    <h5 class="description-header">Rs. 0</h5>
-                                                    <span class="description-text">Total Salary</span>
-                                                </div>
-                                            </div>
+                                    <div class="info-card-body">
+                                        <div class="info-item">
+                                            <span class="info-label">Job Name:</span>
+                                            <span class="info-value">{{ $eventJob->job_name }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Start Date:</span>
+                                            <span class="info-value">
+                                                {{ $eventJob->activation_start_date ? $eventJob->activation_start_date->format('M d, Y') : 'Not Set' }}
+                                            </span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">End Date:</span>
+                                            <span class="info-value">
+                                                {{ $eventJob->activation_end_date ? $eventJob->activation_end_date->format('M d, Y') : 'Ongoing' }}
+                                            </span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Created:</span>
+                                            <span class="info-value">{{ $eventJob->created_at->format('M d, Y') }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-card">
+                                    <div class="info-card-header">
+                                        <h5 class="mb-0"><i class="icon-user me-2 text-success"></i>Personnel</h5>
+                                    </div>
+                                    <div class="info-card-body">
+                                        <div class="info-item">
+                                            <span class="info-label">Officer:</span>
+                                            <span class="info-value">{{ $eventJob->officer_name }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Reporter:</span>
+                                            <span class="info-value">{{ $eventJob->reporter_officer_name }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Status:</span>
+                                            <span class="info-value">
+                                                <span class="badge bg-success">Active</span>
+                                            </span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Last Updated:</span>
+                                            <span class="info-value">{{ $eventJob->updated_at->diffForHumans() }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -177,41 +183,42 @@
                     </div>
 
                     <!-- Promoters Tab -->
-                    <div role="tabpanel" class="tab-pane" id="promoters">
+                    <div class="tab-pane fade" id="promoters" role="tabpanel">
                         @if($promoters->count() > 0)
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped">
-                                    <thead>
+                                <table class="table table-hover">
+                                    <thead class="table-dark">
                                         <tr>
                                             <th>#</th>
                                             <th>Promoter ID</th>
                                             <th>Name</th>
                                             <th>ID Number</th>
-                                            <th>Phone Number</th>
-                                            <th>Bank Name</th>
-                                            <th>Branch</th>
-                                            <th>Account Number</th>
+                                            <th>Phone</th>
+                                            <th>Bank Details</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach($promoters as $index => $promoter)
                                             <tr>
-                                                <td>{{ $index + 1 }}</td>
-                                                <td>{{ $promoter->promoter_id }}</td>
-                                                <td>{{ $promoter->promoter_name }}</td>
+                                                <td class="fw-bold">{{ $index + 1 }}</td>
+                                                <td><span class="badge bg-primary">{{ $promoter->promoter_id }}</span></td>
+                                                <td class="fw-medium">{{ $promoter->promoter_name }}</td>
                                                 <td>{{ $promoter->id_no }}</td>
                                                 <td>{{ $promoter->phone_no }}</td>
-                                                <td>{{ $promoter->bank_name }}</td>
-                                                <td>{{ $promoter->bank_branch_name }}</td>
-                                                <td>{{ $promoter->account_number }}</td>
                                                 <td>
-                                                    <button class="btn btn-sm btn-primary" onclick="editPromoter({{ $promoter->id }})">
-                                                        <i class="fa fa-edit"></i> Edit
-                                                    </button>
-                                                    <button class="btn btn-sm btn-success" onclick="calculateSalary({{ $promoter->id }})">
-                                                        <i class="fa fa-calculator"></i> Calculate
-                                                    </button>
+                                                    <small class="text-muted">{{ $promoter->bank_name }}</small><br>
+                                                    <small>{{ $promoter->account_number }}</small>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm" role="group">
+                                                        <button class="btn btn-outline-primary" onclick="editPromoter({{ $promoter->id }})">
+                                                            <i class="icon-edit"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-success" onclick="calculateSalary({{ $promoter->id }})">
+                                                            <i class="icon-calculator"></i>
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -219,69 +226,70 @@
                                 </table>
                             </div>
                         @else
-                            <div class="alert alert-warning">
-                                <i class="fa fa-warning"></i> No promoters assigned to this event job yet.
+                            <div class="empty-state">
+                                <div class="empty-state-icon">
+                                    <i class="icon-user fa-3x text-muted"></i>
+                                </div>
+                                <h4 class="empty-state-title">No Promoters Assigned</h4>
+                                <p class="empty-state-text">This event job doesn't have any promoters assigned yet.</p>
+                                <button class="btn btn-primary">
+                                    <i class="icon-plus me-1"></i> Add Promoters
+                                </button>
                             </div>
                         @endif
                     </div>
 
                     <!-- Salary Calculation Tab -->
-                    <div role="tabpanel" class="tab-pane" id="salary-calculation">
+                    <div class="tab-pane fade" id="calculation" role="tabpanel">
                         <div class="row">
-                            <div class="col-md-12">
-                                <div class="card card-success">
-                                    <div class="card-header">
-                                        <h3 class="card-title">Salary Calculation Settings</h3>
+                            <div class="col-md-8">
+                                <div class="calculation-card">
+                                    <div class="calculation-header">
+                                        <h5 class="mb-0"><i class="icon-calculator me-2 text-primary"></i>Salary Calculation</h5>
                                     </div>
-                                    <div class="card-body">
+                                    <div class="calculation-body">
                                         <form id="salary-form">
                                             <div class="row">
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label for="daily_rate">Daily Rate (Rs.)</label>
-                                                        <input type="number" class="form-control" id="daily_rate" name="daily_rate" placeholder="Enter daily rate">
+                                                        <label class="form-label">Daily Rate (Rs.)</label>
+                                                        <input type="number" class="form-control" id="daily_rate" placeholder="Enter daily rate">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label for="overtime_rate">Overtime Rate (Rs.)</label>
-                                                        <input type="number" class="form-control" id="overtime_rate" name="overtime_rate" placeholder="Enter overtime rate">
+                                                        <label class="form-label">Overtime Rate (Rs.)</label>
+                                                        <input type="number" class="form-control" id="overtime_rate" placeholder="Enter overtime rate">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label for="bonus">Bonus (Rs.)</label>
-                                                        <input type="number" class="form-control" id="bonus" name="bonus" placeholder="Enter bonus amount">
+                                                        <label class="form-label">Bonus (Rs.)</label>
+                                                        <input type="number" class="form-control" id="bonus" placeholder="Enter bonus amount">
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <button type="button" class="btn btn-primary" onclick="calculateAllSalaries()">
-                                                        <i class="fa fa-calculator"></i> Calculate All Salaries
-                                                    </button>
-                                                    <button type="button" class="btn btn-success" onclick="generateSalarySheet()">
-                                                        <i class="fa fa-file-excel-o"></i> Generate Salary Sheet
-                                                    </button>
-                                                </div>
+                                            <div class="calculation-actions">
+                                                <button type="button" class="btn btn-primary" onclick="calculateAllSalaries()">
+                                                    <i class="icon-calculator me-1"></i> Calculate All Salaries
+                                                </button>
+                                                <button type="button" class="btn btn-success" onclick="generateSalarySheet()">
+                                                    <i class="icon-file me-1"></i> Generate Report
+                                                </button>
                                             </div>
                                         </form>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card card-info">
-                                    <div class="card-header">
-                                        <h3 class="card-title">Salary Summary</h3>
+                            <div class="col-md-4">
+                                <div class="summary-card">
+                                    <div class="summary-header">
+                                        <h5 class="mb-0"><i class="icon-chart me-2 text-success"></i>Summary</h5>
                                     </div>
-                                    <div class="card-body">
-                                        <div id="salary-summary">
-                                            <div class="alert alert-info">
-                                                <i class="fa fa-info-circle"></i> Please set the salary calculation parameters and click "Calculate All Salaries" to see the summary.
-                                            </div>
+                                    <div class="summary-body" id="salary-summary">
+                                        <div class="summary-placeholder">
+                                            <i class="icon-info text-muted"></i>
+                                            <p class="text-muted">Set parameters and calculate to see summary</p>
                                         </div>
                                     </div>
                                 </div>
@@ -327,43 +335,29 @@ function calculateAllSalaries() {
     var grandTotal = totalSalary + totalOvertime + totalBonus;
 
     var summaryHtml = `
-        <div class="row">
-            <div class="col-md-3">
-                <div class="description-block">
-                    <span class="description-percentage text-green">
-                        <i class="fa fa-users"></i>
-                    </span>
-                    <h5 class="description-header">${totalPromoters}</h5>
-                    <span class="description-text">Promoters</span>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="description-block">
-                    <span class="description-percentage text-blue">
-                        <i class="fa fa-calendar"></i>
-                    </span>
-                    <h5 class="description-header">${totalDays}</h5>
-                    <span class="description-text">Days</span>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="description-block">
-                    <span class="description-percentage text-yellow">
-                        <i class="fa fa-money"></i>
-                    </span>
-                    <h5 class="description-header">Rs. ${totalSalary.toLocaleString()}</h5>
-                    <span class="description-text">Base Salary</span>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="description-block">
-                    <span class="description-percentage text-red">
-                        <i class="fa fa-money"></i>
-                    </span>
-                    <h5 class="description-header">Rs. ${grandTotal.toLocaleString()}</h5>
-                    <span class="description-text">Total Amount</span>
-                </div>
-            </div>
+        <div class="summary-item">
+            <div class="summary-label">Total Promoters</div>
+            <div class="summary-value">${totalPromoters}</div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-label">Total Days</div>
+            <div class="summary-value">${totalDays}</div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-label">Base Salary</div>
+            <div class="summary-value">Rs. ${totalSalary.toLocaleString()}</div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-label">Overtime</div>
+            <div class="summary-value">Rs. ${totalOvertime.toLocaleString()}</div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-label">Bonus</div>
+            <div class="summary-value">Rs. ${totalBonus.toLocaleString()}</div>
+        </div>
+        <div class="summary-item total">
+            <div class="summary-label">Grand Total</div>
+            <div class="summary-value">Rs. ${grandTotal.toLocaleString()}</div>
         </div>
     `;
 
@@ -372,6 +366,10 @@ function calculateAllSalaries() {
 
 function generateSalarySheet() {
     alert('Salary sheet generation functionality will be implemented here');
+}
+
+function exportSalarySheet() {
+    alert('Export functionality will be implemented here');
 }
 
 function printSalarySheet() {
@@ -385,9 +383,241 @@ $(document).ready(function() {
 </script>
 
 <style>
+/* Professional UI Styles */
+.salary-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.metric-card {
+    background: #f5f5f5;
+    border: 1px solid #cfcfcf;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: #dee2e6;
+}
+
+.metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #924f89 0%, #3093f6 100%);
+}
+
+.metric-icon {
+    font-size: 1.5rem;
+    color: #6c757d !important;
+    width: 40px;
+    height: 40px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.metric-content {
+    flex: 1;
+}
+
+.metric-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: #212529 !important;
+    line-height: 1.2;
+}
+
+.metric-label {
+    font-size: 0.875rem;
+    color: #6c757d !important;
+    margin: 0;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.info-card-header {
+    background: #f8f9fa;
+    padding: 15px 20px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.info-card-body {
+    padding: 20px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f3f4;
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #6c757d !important;
+}
+
+.info-value {
+    font-weight: 500;
+    color: #212529 !important;
+}
+
+.calculation-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.summary-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    height: fit-content;
+}
+
+.calculation-header, .summary-header {
+    background: #f8f9fa;
+    padding: 12px 15px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.calculation-body, .summary-body {
+    padding: 15px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #495057 !important;
+    margin-bottom: 8px;
+}
+
+.calculation-actions {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.empty-state-icon {
+    margin-bottom: 20px;
+}
+
+.empty-state-title {
+    color: #6c757d;
+    margin-bottom: 10px;
+}
+
+.empty-state-text {
+    color: #adb5bd;
+    margin-bottom: 30px;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f1f3f4;
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+}
+
+.summary-item.total {
+    background: #f8f9fa;
+    margin: 10px -20px -20px -20px;
+    padding: 15px 20px;
+    border-radius: 0 0 15px 15px;
+    font-weight: bold;
+    color: #28a745;
+}
+
+.summary-label {
+    font-weight: 500;
+    color: #6c757d !important;
+}
+
+.summary-value {
+    font-weight: 600;
+    color: #212529 !important;
+}
+
+.summary-placeholder {
+    text-align: left;
+    padding: 15px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+}
+
+.summary-placeholder i {
+    font-size: 1.2rem;
+    margin: 0;
+    color: #6c757d !important;
+}
+
+.summary-placeholder p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #6c757d !important;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
 /* Print styles */
 @media print {
-    .card-tools, .nav-tabs, .btn {
+    .btn-group, .nav-pills, .btn {
         display: none !important;
     }
 
@@ -401,29 +631,39 @@ $(document).ready(function() {
     }
 }
 
-/* Custom styling */
-.info-box {
-    margin-bottom: 15px;
+/* Additional color fixes */
+.card-body {
+    color: #212529 !important;
 }
 
-.description-block {
-    text-align: center;
-    padding: 15px;
+.card-body h1, .card-body h2, .card-body h3, .card-body h4, .card-body h5, .card-body h6 {
+    color: #212529 !important;
 }
 
-.description-percentage {
-    font-size: 24px;
-    margin-bottom: 10px;
+.card-body p, .card-body span, .card-body div {
+    color: inherit;
 }
 
-.description-header {
-    font-size: 28px;
-    font-weight: bold;
-    margin-bottom: 5px;
+.table td, .table th {
+    color: #212529 !important;
 }
 
-.description-text {
-    font-size: 14px;
-    color: #666;
+.btn {
+    color: inherit !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .metric-card {
+        margin-bottom: 15px;
+    }
+
+    .btn-group {
+        flex-direction: column;
+    }
+
+    .btn-group .btn {
+        margin-bottom: 5px;
+    }
 }
 </style>
