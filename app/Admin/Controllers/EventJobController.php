@@ -175,8 +175,7 @@ class EventJobController extends AdminController
         $promoters = Promoter::all();
 
         return $content
-            ->title('Referrals for ')
-            ->description('Detailed view of all referrals for this user')
+            ->title('Salary Sheet for '. $eventJob->job_name)
             ->body(view('admin.salary-sheet',compact(
                 'eventJob', 'promoters')));
     }
