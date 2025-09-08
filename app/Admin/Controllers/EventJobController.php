@@ -3,6 +3,9 @@
 namespace App\Admin\Controllers;
 
 use App\Models\Promoter;
+use App\Models\PromoterEventJob;
+use App\Models\Coordinator;
+use Illuminate\Http\Request;
 use Qulint\Admin\Layout\Content;
 use Qulint\Admin\Controllers\AdminController;
 use Qulint\Admin\Form;
@@ -172,13 +175,86 @@ class EventJobController extends AdminController
     {
 
         $eventJob = EventJob::findOrFail($id);
-        $promoters = Promoter::all();
+        $assignedPromoters = $eventJob->assignedPromoters()->with(['promoter', 'coordinator'])->get();
 
         return $content
             ->title('Salary Sheet for '. $eventJob->job_name)
             ->body(view('admin.salary-sheet',compact(
-                'eventJob', 'promoters')));
+                'eventJob', 'assignedPromoters')));
     }
 
+    /**
+     * Show promoter assignment form
+     */
+    public function assignPromoters($id, Content $content)
+    {
+        $eventJob = EventJob::findOrFail($id);
+        $availablePromoters = Promoter::whereNotIn('id', function($query) use ($id) {
+            $query->select('promoter_id')
+                  ->from('promoters_for_event_job')
+                  ->where('event_id', $id);
+        })->get();
 
+        $supervisors = Coordinator::where('event_job_id', $id)->get();
+        $assignedPromoters = $eventJob->assignedPromoters()->with(['promoter', 'coordinator'])->get();
+
+        return $content
+            ->title('Assign Promoters to ' . $eventJob->job_name)
+            ->body(view('admin.assign-promoters', compact('eventJob', 'availablePromoters', 'supervisors', 'assignedPromoters')));
+    }
+
+    /**
+     * Store promoter assignment
+     */
+    public function storePromoterAssignment(Request $request)
+    {
+        $request->validate([
+            'event_id' => 'required|exists:event_jobs,id',
+            'promoter_id' => 'required|exists:promoters,id',
+            'supervisor_id' => 'required|exists:coordinators,id',
+            'supervisor_commission' => 'required|numeric|min:0',
+            'promoter_salary_per_day' => 'required|numeric|min:0',
+        ]);
+
+        // Check if promoter is already assigned to this event
+        $existingAssignment = PromoterEventJob::where('promoter_id', $request->promoter_id)
+            ->where('event_id', $request->event_id)
+            ->first();
+
+        if ($existingAssignment) {
+            return response()->json(['error' => 'This promoter is already assigned to this event job.'], 400);
+        }
+
+        PromoterEventJob::create($request->all());
+
+        return response()->json(['success' => 'Promoter assigned successfully!']);
+    }
+
+    /**
+     * Remove promoter assignment
+     */
+    public function removePromoterAssignment(Request $request)
+    {
+        $request->validate([
+            'assignment_id' => 'required|exists:promoters_for_event_job,id',
+        ]);
+
+        PromoterEventJob::findOrFail($request->assignment_id)->delete();
+
+        return response()->json(['success' => 'Promoter assignment removed successfully!']);
+    }
+
+    /**
+     * Get available promoters for assignment
+     */
+    public function getAvailablePromoters($eventId)
+    {
+        $availablePromoters = Promoter::whereNotIn('id', function($query) use ($eventId) {
+            $query->select('promoter_id')
+                  ->from('promoters_for_event_job')
+                  ->where('event_id', $eventId);
+        })->get();
+
+        return response()->json($availablePromoters);
+    }
 }

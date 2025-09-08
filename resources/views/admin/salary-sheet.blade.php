@@ -51,7 +51,7 @@
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="promoters-tab" data-bs-toggle="tab" data-bs-target="#promoters" type="button" role="tab">
                             <i class="icon-user me-2"></i>
-                            Promoters ({{ $promoters->count() }})
+                            Promoters ({{ $assignedPromoters->count() }})
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -97,7 +97,7 @@
                                         <i class="icon-user"></i>
                                     </div>
                                     <div class="metric-content">
-                                        <h3 class="metric-value">{{ $promoters->count() }}</h3>
+                                        <h3 class="metric-value">{{ $assignedPromoters->count() }}</h3>
                                         <p class="metric-label">Promoters</p>
                                     </div>
                                 </div>
@@ -184,7 +184,7 @@
 
                     <!-- Promoters Tab -->
                     <div class="tab-pane fade" id="promoters" role="tabpanel">
-                        @if($promoters->count() > 0)
+                        @if($assignedPromoters->count() > 0)
                             <div class="table-responsive">
                                 <table class="table table-hover">
                                     <thead class="table-dark">
@@ -194,28 +194,40 @@
                                             <th>Name</th>
                                             <th>ID Number</th>
                                             <th>Phone</th>
+                                            <th>Coordinator</th>
+                                            <th>Daily Salary</th>
+                                            <th>Coordinator Commission</th>
                                             <th>Bank Details</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($promoters as $index => $promoter)
+                                        @foreach($assignedPromoters as $index => $assignment)
                                             <tr>
                                                 <td class="fw-bold">{{ $index + 1 }}</td>
-                                                <td><span class="badge bg-primary">{{ $promoter->promoter_id }}</span></td>
-                                                <td class="fw-medium">{{ $promoter->promoter_name }}</td>
-                                                <td>{{ $promoter->id_no }}</td>
-                                                <td>{{ $promoter->phone_no }}</td>
+                                                <td><span class="badge bg-primary">{{ $assignment->promoter->promoter_id }}</span></td>
+                                                <td class="fw-medium">{{ $assignment->promoter->promoter_name }}</td>
+                                                <td>{{ $assignment->promoter->id_no }}</td>
+                                                <td>{{ $assignment->promoter->phone_no }}</td>
                                                 <td>
-                                                    <small class="text-muted">{{ $promoter->bank_name }}</small><br>
-                                                    <small>{{ $promoter->account_number }}</small>
+                                                    <span class="badge bg-info">{{ $assignment->coordinator->coordinator_name }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="text-success fw-bold">${{ number_format($assignment->promoter_salary_per_day, 2) }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="text-warning fw-bold">${{ number_format($assignment->supervisor_commission, 2) }}</span>
+                                                </td>
+                                                <td>
+                                                    <small class="text-muted">{{ $assignment->promoter->bank_name }}</small><br>
+                                                    <small>{{ $assignment->promoter->account_number }}</small>
                                                 </td>
                                                 <td>
                                                     <div class="btn-group btn-group-sm" role="group">
-                                                        <button class="btn btn-outline-primary" onclick="editPromoter({{ $promoter->id }})">
+                                                        <button class="btn btn-outline-primary" onclick="editPromoter({{ $assignment->promoter->id }})">
                                                             <i class="icon-edit"></i>
                                                         </button>
-                                                        <button class="btn btn-outline-success" onclick="calculateSalary({{ $promoter->id }})">
+                                                        <button class="btn btn-outline-success" onclick="calculateSalary({{ $assignment->promoter->id }})">
                                                             <i class="icon-calculator"></i>
                                                         </button>
                                                     </div>
@@ -232,9 +244,9 @@
                                 </div>
                                 <h4 class="empty-state-title">No Promoters Assigned</h4>
                                 <p class="empty-state-text">This event job doesn't have any promoters assigned yet.</p>
-                                <button class="btn btn-primary">
-                                    <i class="icon-plus me-1"></i> Add Promoters
-                                </button>
+                                <a href="{{ admin_url('event-jobs/' . $eventJob->id . '/assign-promoters') }}" class="btn btn-primary">
+                                    <i class="icon-plus me-1"></i> Assign Promoters
+                                </a>
                             </div>
                         @endif
                     </div>
@@ -321,7 +333,7 @@ function calculateAllSalaries() {
         return;
     }
 
-    var totalPromoters = {{ $promoters->count() }};
+    var totalPromoters = {{ $assignedPromoters->count() }};
     var totalDays = {{ $eventJob->activation_start_date && $eventJob->activation_end_date ? $eventJob->activation_start_date->diffInDays($eventJob->activation_end_date) + 1 : 0 }};
 
     if (totalDays === 0) {

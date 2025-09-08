@@ -34,6 +34,14 @@ class EventJob extends Model
     }
 
     /**
+     * Get the assigned promoters for this event job with their details
+     */
+    public function assignedPromoters()
+    {
+        return $this->hasMany(PromoterEventJob::class, 'event_id');
+    }
+
+    /**
      * Get the coordinators for the event job.
      */
     public function coordinators(): HasMany

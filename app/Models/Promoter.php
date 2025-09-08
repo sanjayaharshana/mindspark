@@ -25,4 +25,44 @@ class Promoter extends Model
     {
         return $this->belongsTo(EventJob::class);
     }
+
+    /**
+     * Get the event job assignments for this promoter
+     */
+    public function eventJobAssignments()
+    {
+        return $this->hasMany(PromoterEventJob::class, 'promoter_id');
+    }
+
+    /**
+     * Get the promoters supervised by this promoter (as coordinator)
+     */
+    public function coordinatedPromoters()
+    {
+        return $this->hasMany(PromoterEventJob::class, 'supervisor_id');
+    }
+
+    /**
+     * Alias for coordinatedPromoters (for backward compatibility)
+     */
+    public function supervisedPromoters()
+    {
+        return $this->coordinatedPromoters();
+    }
+
+    /**
+     * Check if this promoter is a coordinator
+     */
+    public function isCoordinator()
+    {
+        return $this->coordinatedPromoters()->exists();
+    }
+
+    /**
+     * Alias for isCoordinator (for backward compatibility)
+     */
+    public function isSupervisor()
+    {
+        return $this->isCoordinator();
+    }
 }

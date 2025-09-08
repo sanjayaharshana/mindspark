@@ -20,5 +20,9 @@ Route::group([
     $router->resource('coordinators', CoordinatorController::class);
     $router->resource('event-jobs', EventJobController::class);
     $router->get('event-jobs/{id}/salary-sheet', 'EventJobController@salarySheet')->name('event-jobs.salary-sheet');
+    $router->get('event-jobs/{id}/assign-promoters', 'EventJobController@assignPromoters')->name('event-jobs.assign-promoters');
+    $router->post('event-jobs/assign-promoter', 'EventJobController@storePromoterAssignment')->name('event-jobs.store-promoter-assignment');
+    $router->delete('event-jobs/remove-promoter-assignment', 'EventJobController@removePromoterAssignment')->name('event-jobs.remove-promoter-assignment');
+    $router->get('event-jobs/{eventId}/available-promoters', 'EventJobController@getAvailablePromoters')->name('event-jobs.available-promoters');
     $router->resource('promoters', PromoterController::class);
 });
