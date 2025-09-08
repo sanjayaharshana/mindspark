@@ -60,6 +60,12 @@
                             Salary Calculation
                         </button>
                     </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="attendance-tab" data-bs-toggle="tab" data-bs-target="#attendance" type="button" role="tab">
+                            <i class="icon-calendar me-2"></i>
+                            Attendance
+                        </button>
+                    </li>
                 </ul>
             </div>
 
@@ -316,6 +322,133 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Attendance Tab -->
+                    <div class="tab-pane fade" id="attendance" role="tabpanel">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="attendance-card">
+                                    <div class="attendance-header">
+                                        <h5 class="mb-0"><i class="icon-calendar me-2 text-primary"></i>Attendance Management</h5>
+                                        <small class="text-muted">Event Duration: {{ $eventJob->activation_start_date ? $eventJob->activation_start_date->format('M d, Y') : 'Not set' }} - {{ $eventJob->activation_end_date ? $eventJob->activation_end_date->format('M d, Y') : 'Not set' }}</small>
+                                    </div>
+                                    <div class="attendance-body">
+                                        @if($eventJob->activation_start_date && $eventJob->activation_end_date)
+                                            @php
+                                                $startDate = $eventJob->activation_start_date;
+                                                $endDate = $eventJob->activation_end_date;
+                                                $days = [];
+                                                $currentDate = $startDate->copy();
+                                                
+                                                while ($currentDate->lte($endDate)) {
+                                                    $days[] = $currentDate->copy();
+                                                    $currentDate->addDay();
+                                                }
+                                            @endphp
+                                            
+                                            <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <div class="attendance-summary">
+                                                        <h6 class="text-primary">Event Summary</h6>
+                                                        <p class="mb-1"><strong>Total Days:</strong> {{ count($days) }} days</p>
+                                                        <p class="mb-1"><strong>Start Date:</strong> {{ $startDate->format('M d, Y (l)') }}</p>
+                                                        <p class="mb-0"><strong>End Date:</strong> {{ $endDate->format('M d, Y (l)') }}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="attendance-actions">
+                                                        <h6 class="text-success">Quick Actions</h6>
+                                                        <button class="btn btn-outline-primary btn-sm me-2" onclick="markAllPresent()">
+                                                            <i class="icon-check me-1"></i> Mark All Present
+                                                        </button>
+                                                        <button class="btn btn-outline-success btn-sm me-2" onclick="exportAttendance()">
+                                                            <i class="icon-download me-1"></i> Export
+                                                        </button>
+                                                        <button class="btn btn-outline-info btn-sm" onclick="printAttendance()">
+                                                            <i class="icon-printer me-1"></i> Print
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            @if($assignedPromoters->count() > 0)
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered attendance-table">
+                                                        <thead class="table-primary">
+                                                            <tr>
+                                                                <th class="text-white">Promoter</th>
+                                                                @foreach($days as $day)
+                                                                    <th class="text-white text-center" style="min-width: 80px;">
+                                                                        {{ $day->format('M d') }}<br>
+                                                                        <small>{{ $day->format('D') }}</small>
+                                                                    </th>
+                                                                @endforeach
+                                                                <th class="text-white text-center">Total Days</th>
+                                                                <th class="text-white text-center">Present Days</th>
+                                                                <th class="text-white text-center">Absent Days</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach($assignedPromoters as $assignment)
+                                                                <tr>
+                                                                    <td class="fw-medium">
+                                                                        <div>
+                                                                            <strong>{{ $assignment->promoter->promoter_name }}</strong><br>
+                                                                            <small class="text-muted">{{ $assignment->promoter->promoter_id }}</small>
+                                                                        </div>
+                                                                    </td>
+                                                                    @foreach($days as $day)
+                                                                        <td class="text-center">
+                                                                            <div class="attendance-checkbox">
+                                                                                <input type="checkbox" 
+                                                                                       class="form-check-input attendance-check" 
+                                                                                       data-promoter="{{ $assignment->promoter->id }}" 
+                                                                                       data-date="{{ $day->format('Y-m-d') }}"
+                                                                                       onchange="updateAttendance(this)">
+                                                                                <label class="form-check-label">
+                                                                                    <i class="icon-check text-success"></i>
+                                                                                </label>
+                                                                            </div>
+                                                                        </td>
+                                                                    @endforeach
+                                                                    <td class="text-center fw-bold">{{ count($days) }}</td>
+                                                                    <td class="text-center">
+                                                                        <span class="badge bg-success" id="present-{{ $assignment->promoter->id }}">0</span>
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        <span class="badge bg-danger" id="absent-{{ $assignment->promoter->id }}">{{ count($days) }}</span>
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            @else
+                                                <div class="empty-state">
+                                                    <div class="empty-state-icon">
+                                                        <i class="icon-user fa-3x text-muted"></i>
+                                                    </div>
+                                                    <h4 class="empty-state-title">No Promoters Assigned</h4>
+                                                    <p class="empty-state-text">Please assign promoters first to manage attendance.</p>
+                                                    <a href="{{ admin_url('event-jobs/' . $eventJob->id . '/assign-promoters') }}" class="btn btn-primary">
+                                                        <i class="icon-plus me-1"></i> Assign Promoters
+                                                    </a>
+                                                </div>
+                                            @endif
+                                        @else
+                                            <div class="empty-state">
+                                                <div class="empty-state-icon">
+                                                    <i class="icon-calendar fa-3x text-muted"></i>
+                                                </div>
+                                                <h4 class="empty-state-title">Event Dates Not Set</h4>
+                                                <p class="empty-state-text">Please set the event start and end dates to manage attendance.</p>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -396,6 +529,78 @@ function printSalarySheet() {
     window.print();
 }
 
+function markAllPresent() {
+    const checkboxes = document.querySelectorAll('.attendance-check');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = true;
+        updateAttendance(checkbox);
+    });
+}
+
+function exportAttendance() {
+    alert('Export attendance functionality will be implemented here');
+}
+
+function printAttendance() {
+    const attendanceTable = document.querySelector('.attendance-table');
+    if (attendanceTable) {
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Attendance Report - {{ $eventJob->job_name }}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; }
+                        table { border-collapse: collapse; width: 100%; }
+                        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+                        th { background-color: #007bff; color: white; }
+                    </style>
+                </head>
+                <body>
+                    <h2>Attendance Report - {{ $eventJob->job_name }}</h2>
+                    <p><strong>Event Duration:</strong> {{ $eventJob->activation_start_date ? $eventJob->activation_start_date->format('M d, Y') : 'Not set' }} - {{ $eventJob->activation_end_date ? $eventJob->activation_end_date->format('M d, Y') : 'Not set' }}</p>
+                    ${attendanceTable.outerHTML}
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+    }
+}
+
+function updateAttendance(checkbox) {
+    const promoterId = checkbox.dataset.promoter;
+    const isChecked = checkbox.checked;
+    
+    // Update visual feedback
+    const label = checkbox.nextElementSibling;
+    if (isChecked) {
+        label.innerHTML = '<i class="icon-check text-success"></i>';
+    } else {
+        label.innerHTML = '<i class="icon-times text-danger"></i>';
+    }
+    
+    // Count present/absent days for this promoter
+    const promoterCheckboxes = document.querySelectorAll(`[data-promoter="${promoterId}"]`);
+    let presentCount = 0;
+    let absentCount = 0;
+    
+    promoterCheckboxes.forEach(cb => {
+        if (cb.checked) {
+            presentCount++;
+        } else {
+            absentCount++;
+        }
+    });
+    
+    // Update badges
+    const presentBadge = document.getElementById(`present-${promoterId}`);
+    const absentBadge = document.getElementById(`absent-${promoterId}`);
+    
+    if (presentBadge) presentBadge.textContent = presentCount;
+    if (absentBadge) absentBadge.textContent = absentCount;
+}
+
 $(document).ready(function() {
     // Initialize tooltips
     $('[data-toggle="tooltip"]').tooltip();
@@ -428,6 +633,73 @@ $(document).ready(function() {
 
 .table-primary th.text-white {
     color: white !important;
+}
+
+/* Attendance Tab Styling */
+.attendance-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.attendance-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 20px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.attendance-body {
+    padding: 20px;
+}
+
+.attendance-summary {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #007bff;
+}
+
+.attendance-actions {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #28a745;
+}
+
+.attendance-table {
+    font-size: 0.9rem;
+}
+
+.attendance-table th {
+    font-size: 0.8rem;
+    padding: 8px 4px;
+    vertical-align: middle;
+}
+
+.attendance-table td {
+    padding: 8px 4px;
+    vertical-align: middle;
+}
+
+.attendance-checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.attendance-checkbox input[type="checkbox"] {
+    margin: 0;
+    transform: scale(1.2);
+}
+
+.attendance-checkbox label {
+    margin: 0;
+    cursor: pointer;
+}
+
+.attendance-checkbox i {
+    font-size: 1.2rem;
 }
 
 .metric-card {
