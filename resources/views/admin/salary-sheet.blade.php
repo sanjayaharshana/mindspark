@@ -186,7 +186,7 @@
                                         <i class="fas fa-plus"></i> Assign More Promoters
                                 </a>
                             </div>
-                            
+
                                 @if($assignedPromoters->count() > 0)
                             <div class="table-responsive">
                                 <table class="table table-hover">
@@ -328,13 +328,13 @@
                                                 $endDate = $eventJob->activation_end_date;
                                                 $days = [];
                                                 $currentDate = $startDate->copy();
-                                                
+
                                                 while ($currentDate->lte($endDate)) {
                                                     $days[] = $currentDate->copy();
                                                     $currentDate->addDay();
                                                 }
                                             @endphp
-                                            
+
                                     <!-- Event Summary -->
                                     <div class="row mb-4">
                                         <div class="col-md-6">
@@ -393,8 +393,8 @@
                                                         <div class="form-group">
                                                             <label class="form-label">Search by Name or ID</label>
                                                             <div class="input-group">
-                                                                <input type="text" class="form-control" id="promoterSearch" 
-                                                                       placeholder="Enter promoter name or ID..." 
+                                                                <input type="text" class="form-control" id="promoterSearch"
+                                                                       placeholder="Enter promoter name or ID..."
                                                                        onkeyup="filterPromoters()"
                                                                        onfocus="showSearchSuggestions()"
                                                                        onblur="hideSearchSuggestions()">
@@ -479,20 +479,20 @@
                                                             <tr>
                                                                 <th class="text-white sticky-column" style="background: #0d6efd !important;">Promoter</th>
                                                                 @foreach($days as $day)
-                                                                    <th class="text-white text-center" style="min-width: 60px;background: #0d6efd !important;">
+                                                                    <th class="text-white text-center" style="min-width: 60px;background: #01429f !important;">
                                                                         {{ $day->format('M d') }}<br>
                                                                         <small>{{ $day->format('D') }}</small>
                                                                     </th>
                                                                 @endforeach
-                                                                <th class="text-white text-center" style="background: #0d6efd !important;">Total</th>
-                                                                <th class="text-white text-center" style="background: #0d6efd !important;">Present</th>
-                                                                <th class="text-white text-center" style="background: #0d6efd !important;">Absent</th>
+                                                                <th class="text-white text-center sticky-column-right" style="background: #0d6efd !important;">Total</th>
+                                                                <th class="text-white text-center sticky-column-right" style="background: #0d6efd !important;">Present</th>
+                                                                <th class="text-white text-center sticky-column-right" style="background: #0d6efd !important;">Absent</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             @foreach($assignedPromoters as $assignment)
                                                                 <tr>
-                                                                    <td class="font-weight-medium sticky-column">
+                                                                    <td class="font-weight-medium sticky-column" style="background: #dcdcdc">
                                                                             <strong>{{ $assignment->promoter->promoter_name }}</strong><br>
                                                                             <small class="text-muted">{{ $assignment->promoter->promoter_id }}</small>
                                                                     </td>
@@ -512,9 +512,9 @@
                                                                         @endphp
                                                                         <td class="text-center">
                                                                             <div class="form-check d-inline-block">
-                                                                                <input type="checkbox" 
-                                                                                       class="form-check-input attendance-check" 
-                                                                                       data-promoter="{{ $assignment->promoter->id }}" 
+                                                                                <input type="checkbox"
+                                                                                       class="form-check-input attendance-check"
+                                                                                       data-promoter="{{ $assignment->promoter->id }}"
                                                                                        data-date="{{ $dayKey }}"
                                                                                        {{ $isPresent ? 'checked' : '' }}
                                                                                        onchange="updateAttendance(this)">
@@ -528,7 +528,7 @@
                                                                             </div>
                                                                         </td>
                                                                     @endforeach
-                                                                    <td class="text-center font-weight-bold">{{ count($days) }}</td>
+                                                                    <td class="text-center font-weight-bold sticky-column-right">{{ count($days) }}</td>
                                                                     @php
                                                                         $presentCount = 0;
                                                                         $absentCount = 0;
@@ -545,10 +545,10 @@
                                                                             $absentCount = count($days);
                                                                         }
                                                                     @endphp
-                                                                    <td class="text-center">
+                                                                    <td class="text-center sticky-column-right">
                                                                         <span class="badge badge-success" id="present-{{ $assignment->promoter->id }}">{{ $presentCount }}</span>
                                                                     </td>
-                                                                    <td class="text-center">
+                                                                    <td class="text-center sticky-column-right">
                                                                         <span class="badge badge-danger" id="absent-{{ $assignment->promoter->id }}">{{ $absentCount }}</span>
                                                                     </td>
                                                                 </tr>
@@ -617,17 +617,17 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             const targetId = this.getAttribute('data-bs-target');
             const targetTab = document.querySelector(targetId);
-            
+
             // Hide all tab panes
             document.querySelectorAll('.tab-pane').forEach(pane => {
                 pane.classList.remove('show', 'active');
             });
-            
+
             // Remove active class from all buttons
             tabButtons.forEach(btn => {
                 btn.classList.remove('active');
             });
-            
+
             // Show target tab and activate button
             if (targetTab) {
                 targetTab.classList.add('show', 'active');
@@ -757,13 +757,13 @@ function markAllPresent() {
                     const label = checkbox.nextElementSibling;
             label.innerHTML = '<i class="fas fa-check text-success"></i>';
                 });
-                
+
                 // Update all attendance counts
                 const promoterIds = [...new Set(Array.from(checkboxes).map(cb => cb.dataset.promoter))];
                 promoterIds.forEach(promoterId => {
                     updateAttendanceCounts(promoterId);
                 });
-                
+
         updateSaveStatus('All promoters marked as present', 'success');
     }
 }
@@ -797,7 +797,7 @@ function updateSaveStatus(message, type = 'info') {
 function filterPromoters() {
     // Clear previous timeout to prevent multiple rapid calls
     clearTimeout(filterTimeout);
-    
+
     // Debounce the filtering for better performance
     filterTimeout = setTimeout(() => {
         performFiltering();
@@ -807,13 +807,13 @@ function filterPromoters() {
 function performFiltering() {
     const searchInput = document.getElementById('promoterSearch');
     const statusFilter = document.getElementById('statusFilter');
-    
+
     // Check if elements exist
     if (!searchInput || !statusFilter) {
         console.warn('Search or filter elements not found');
         return;
     }
-    
+
     const searchTerm = searchInput.value.toLowerCase();
     const statusValue = statusFilter.value;
     const rows = Array.from(document.querySelectorAll('tbody tr'));
@@ -832,21 +832,21 @@ function performFiltering() {
         const promoterCell = row.querySelector('td:first-child'); // First column contains both name and ID
         const presentBadge = row.querySelector('.badge-success');
         const absentBadge = row.querySelector('.badge-danger');
-        
+
         // Check if required elements exist
         if (!promoterCell) {
             console.warn('Required promoter cell not found in row', index);
             return;
         }
-        
+
         const cellText = promoterCell.textContent ? promoterCell.textContent.toLowerCase() : '';
         console.log('Row', index, 'cell text:', cellText);
-        
+
         // Check search term with fuzzy matching
-        const matchesSearch = searchTerm === '' || 
+        const matchesSearch = searchTerm === '' ||
                              cellText.includes(searchTerm) ||
                              fuzzyMatch(cellText, searchTerm);
-        
+
         // Check status filter
         let matchesStatus = true;
         if (statusValue === 'present') {
@@ -854,22 +854,22 @@ function performFiltering() {
         } else if (statusValue === 'absent') {
             matchesStatus = absentBadge && absentBadge.textContent && parseInt(absentBadge.textContent) > 0;
         }
-        
+
         console.log('Row', index, 'matches search:', matchesSearch, 'matches status:', matchesStatus);
-        
+
         // Show/hide row with animation
         if (matchesSearch && matchesStatus) {
             row.style.display = '';
             row.style.opacity = '0';
             row.style.transform = 'translateY(-10px)';
-            
+
             // Animate in
             setTimeout(() => {
                 row.style.transition = 'all 0.3s ease';
                 row.style.opacity = '1';
                 row.style.transform = 'translateY(0)';
             }, 50);
-            
+
             visibleRows.push(row);
             visibleCount++;
         } else {
@@ -877,38 +877,38 @@ function performFiltering() {
             row.style.transition = 'all 0.3s ease';
             row.style.opacity = '0';
             row.style.transform = 'translateY(-10px)';
-            
+
             setTimeout(() => {
                 row.style.display = 'none';
             }, 300);
         }
     });
-    
+
     console.log('Visible count:', visibleCount);
-    
+
     // Update filter results with animation
     updateFilterResults(visibleCount);
-    
+
     // Update quick action buttons state
     updateQuickActionButtons(visibleCount > 0);
-    
+
     // Highlight search terms
     highlightSearchTerms(searchTerm);
 }
 
 function fuzzyMatch(text, pattern) {
     if (!pattern) return true;
-    
+
     const textLower = text.toLowerCase();
     const patternLower = pattern.toLowerCase();
-    
+
     let patternIndex = 0;
     for (let i = 0; i < textLower.length && patternIndex < patternLower.length; i++) {
         if (textLower[i] === patternLower[patternIndex]) {
             patternIndex++;
         }
     }
-    
+
     return patternIndex === patternLower.length;
 }
 
@@ -920,11 +920,11 @@ function highlightSearchTerms(searchTerm) {
         });
         return;
     }
-    
+
     const rows = document.querySelectorAll('tbody tr:not([style*="display: none"])');
     rows.forEach(row => {
         const promoterCell = row.querySelector('td:first-child'); // First column contains both name and ID
-        
+
         // Highlight in promoter cell (contains both name and ID)
         if (promoterCell && promoterCell.textContent && promoterCell.textContent.toLowerCase().includes(searchTerm)) {
             const regex = new RegExp(`(${searchTerm})`, 'gi');
@@ -935,22 +935,22 @@ function highlightSearchTerms(searchTerm) {
 
 function updateFilterResults(count) {
     const resultsElement = document.getElementById('filterResults');
-    
+
     if (!resultsElement) {
         console.warn('Filter results element not found');
         return;
     }
-    
+
     const totalPromoters = {{ $assignedPromoters->count() }};
-    
+
     // Animate the counter
     resultsElement.style.transition = 'all 0.3s ease';
     resultsElement.style.transform = 'scale(1.1)';
-    
+
     setTimeout(() => {
         resultsElement.textContent = `Showing ${count} of ${totalPromoters} promoters`;
         resultsElement.style.transform = 'scale(1)';
-        
+
         // Add color coding based on results
         if (count === 0) {
             resultsElement.className = 'text-danger';
@@ -993,7 +993,7 @@ function sortPromoters() {
     const sortBy = document.getElementById('sortBy').value;
     const tbody = document.querySelector('tbody');
     const rows = Array.from(tbody.querySelectorAll('tr'));
-    
+
     // Toggle sort order if clicking same column
     if (currentFilters.sortBy === sortBy) {
         currentFilters.sortOrder = currentFilters.sortOrder === 'asc' ? 'desc' : 'asc';
@@ -1001,10 +1001,10 @@ function sortPromoters() {
         currentFilters.sortBy = sortBy;
         currentFilters.sortOrder = 'asc';
     }
-    
+
     rows.sort((a, b) => {
         let aValue, bValue;
-        
+
         switch (sortBy) {
             case 'name':
                 aValue = a.querySelector('td:nth-child(3)').textContent.toLowerCase();
@@ -1025,21 +1025,21 @@ function sortPromoters() {
             default:
                 return 0;
         }
-        
+
         if (currentFilters.sortOrder === 'asc') {
             return aValue > bValue ? 1 : -1;
         } else {
             return aValue < bValue ? 1 : -1;
         }
     });
-    
+
     // Re-append sorted rows with animation
     rows.forEach((row, index) => {
         row.style.transition = 'all 0.3s ease';
         row.style.transform = `translateY(${index * 2}px)`;
         tbody.appendChild(row);
     });
-    
+
     // Update sort indicator
     updateSortIndicator();
 }
@@ -1047,16 +1047,16 @@ function sortPromoters() {
 function updateSortIndicator() {
     const sortBy = document.getElementById('sortBy');
     const sortIcon = sortBy.parentElement.querySelector('.sort-icon');
-    
+
     if (sortIcon) {
         sortIcon.remove();
     }
-    
+
     const icon = document.createElement('i');
     icon.className = `fas fa-sort-${currentFilters.sortOrder === 'asc' ? 'up' : 'down'} sort-icon`;
     icon.style.marginLeft = '5px';
     icon.style.color = 'var(--primary-color)';
-    
+
     sortBy.parentElement.appendChild(icon);
 }
 
@@ -1064,25 +1064,25 @@ function showSearchSuggestions() {
     const searchInput = document.getElementById('promoterSearch');
     const suggestionsDiv = document.getElementById('searchSuggestions');
     const searchTerm = searchInput.value.toLowerCase();
-    
+
     if (searchTerm.length < 2) {
         hideSearchSuggestions();
         return;
     }
-    
+
     const rows = document.querySelectorAll('tbody tr');
     const suggestions = new Set();
-    
+
     rows.forEach(row => {
         const promoterCell = row.querySelector('td:first-child');
         if (promoterCell && promoterCell.textContent) {
             const cellText = promoterCell.textContent.toLowerCase();
-            
+
             // Extract name and ID from the cell text
             const lines = cellText.split('\n');
             const name = lines[0] ? lines[0].trim() : '';
             const id = lines[1] ? lines[1].trim() : '';
-            
+
             if (name.includes(searchTerm)) {
                 suggestions.add(name);
             }
@@ -1091,13 +1091,13 @@ function showSearchSuggestions() {
             }
         }
     });
-    
+
     if (suggestions.size > 0) {
         suggestionsDiv.innerHTML = Array.from(suggestions)
             .slice(0, 5)
             .map(suggestion => `<div class="suggestion-item" onclick="selectSuggestion('${suggestion}')">${suggestion}</div>`)
             .join('');
-        
+
         suggestionsDiv.style.display = 'block';
     } else {
         hideSearchSuggestions();
@@ -1119,7 +1119,7 @@ function selectSuggestion(suggestion) {
 function selectAllVisible() {
     const visibleRows = document.querySelectorAll('tbody tr:not([style*="display: none"])');
     const checkboxes = [];
-    
+
     visibleRows.forEach(row => {
         const rowCheckboxes = row.querySelectorAll('.attendance-check');
         rowCheckboxes.forEach(checkbox => {
@@ -1129,20 +1129,20 @@ function selectAllVisible() {
             checkboxes.push(checkbox);
         });
     });
-    
+
     // Update counts for all promoters
     const promoterIds = [...new Set(checkboxes.map(cb => cb.dataset.promoter))];
     promoterIds.forEach(promoterId => {
         updateAttendanceCounts(promoterId);
     });
-    
+
     updateSaveStatus(`${checkboxes.length} attendance records selected`, 'success');
 }
 
 function markSelectedPresent() {
     const visibleRows = document.querySelectorAll('tbody tr:not([style*="display: none"])');
     let markedCount = 0;
-    
+
     visibleRows.forEach(row => {
         const checkboxes = row.querySelectorAll('.attendance-check');
         checkboxes.forEach(checkbox => {
@@ -1154,20 +1154,20 @@ function markSelectedPresent() {
             }
         });
     });
-    
+
     // Update counts for all promoters
     const promoterIds = [...new Set(Array.from(document.querySelectorAll('.attendance-check')).map(cb => cb.dataset.promoter))];
     promoterIds.forEach(promoterId => {
         updateAttendanceCounts(promoterId);
     });
-    
+
     updateSaveStatus(`${markedCount} attendance records marked as present`, 'success');
 }
 
 function exportFiltered() {
     const visibleRows = document.querySelectorAll('tbody tr:not([style*="display: none"])');
     let csvContent = "Promoter Name,Promoter ID,Total Days,Present Days,Absent Days\n";
-    
+
     visibleRows.forEach(row => {
         const promoterCell = row.querySelector('td:first-child');
         if (promoterCell && promoterCell.textContent) {
@@ -1175,15 +1175,15 @@ function exportFiltered() {
             const lines = cellText.split('\n');
             const promoterName = lines[0] ? lines[0].trim() : '';
             const promoterId = lines[1] ? lines[1].trim() : '';
-            
+
             const totalDays = row.querySelector('td:nth-last-child(3)') ? row.querySelector('td:nth-last-child(3)').textContent.trim() : '0';
             const presentDays = row.querySelector('.badge-success') ? row.querySelector('.badge-success').textContent.trim() : '0';
             const absentDays = row.querySelector('.badge-danger') ? row.querySelector('.badge-danger').textContent.trim() : '0';
-            
+
             csvContent += `"${promoterName}","${promoterId}","${totalDays}","${presentDays}","${absentDays}"\n`;
         }
     });
-    
+
     // Create and download CSV file
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
@@ -1194,43 +1194,43 @@ function exportFiltered() {
     a.click();
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
-    
+
     updateSaveStatus('Attendance report exported successfully', 'success');
 }
 
 // Test function to debug search
 function testSearch() {
     console.log('=== TESTING SEARCH FUNCTIONALITY ===');
-    
+
     // Check if we're on the attendance tab
     const attendanceTab = document.getElementById('attendance');
     if (!attendanceTab || !attendanceTab.classList.contains('active')) {
         alert('Please switch to the Attendance tab first to test search functionality.');
         return;
     }
-    
+
     // Check table structure
     const rows = document.querySelectorAll('tbody tr');
     console.log('Total rows found:', rows.length);
-    
+
     if (rows.length === 0) {
         alert('No attendance table rows found. Make sure you are on the Attendance tab.');
         return;
     }
-    
+
     // Test first row
     const firstRow = rows[0];
     const promoterCell = firstRow.querySelector('td:first-child');
-    
+
     if (promoterCell) {
         console.log('First row promoter cell text:', promoterCell.textContent);
         console.log('First row promoter cell HTML:', promoterCell.innerHTML);
-        
+
         // Test search with first promoter name
         const cellText = promoterCell.textContent.toLowerCase();
         const lines = cellText.split('\n');
         const promoterName = lines[0] ? lines[0].trim() : '';
-        
+
         if (promoterName) {
             console.log('Testing search with:', promoterName);
             document.getElementById('promoterSearch').value = promoterName;
@@ -1403,6 +1403,53 @@ function testSearch() {
     z-index: 10;
     border-right: 2px solid var(--gray-200);
     box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Sticky right columns for attendance table */
+.sticky-column-right {
+    position: sticky;
+    right: 0;
+    background-color: white;
+    z-index: 10;
+    border-left: 2px solid var(--gray-200);
+    box-shadow: -2px 0 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Multiple sticky right columns - Fixed positioning */
+.sticky-column-right:nth-last-child(3) {
+    right: 160px; /* Total column - furthest right */
+    min-width: 60px;
+}
+
+.sticky-column-right:nth-last-child(2) {
+    right: 80px; /* Present column - middle */
+    min-width: 80px;
+}
+
+.sticky-column-right:nth-last-child(1) {
+    right: 0; /* Absent column - closest to edge */
+    min-width: 80px;
+}
+
+/* Ensure sticky columns have proper background */
+.sticky-column-right {
+    background-color: white !important;
+}
+
+/* Header sticky columns */
+thead .sticky-column-right:nth-last-child(3) {
+    right: 160px;
+    background-color: #0d6efd !important;
+}
+
+thead .sticky-column-right:nth-last-child(2) {
+    right: 80px;
+    background-color: #0d6efd !important;
+}
+
+thead .sticky-column-right:nth-last-child(1) {
+    right: 0;
+    background-color: #0d6efd !important;
 }
 
 /* Enhanced progress bars */
@@ -1701,11 +1748,11 @@ tbody tr:hover {
         right: 15px;
         z-index: 1050;
     }
-    
+
     .input-group {
         flex-wrap: nowrap;
     }
-    
+
     .btn-group-sm {
         flex-direction: column;
     }
