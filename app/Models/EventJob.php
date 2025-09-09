@@ -18,6 +18,10 @@ class EventJob extends Model
         'activation_end_date',
         'officer_name',
         'reporter_officer_name',
+        'default_commission_coordinator',
+        'default_salary_promoter',
+        'salary_rules',
+        'special_note',
     ];
 
     protected $casts = [

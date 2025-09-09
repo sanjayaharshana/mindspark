@@ -38,6 +38,11 @@
                             Attendance
                         </button>
                     </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button" role="tab">
+                            <i class="fas fa-cog"></i> Salary Settings
+                        </button>
+                    </li>
                 </ul>
 
                 <div class="tab-content" id="salaryTabsContent">
@@ -643,6 +648,120 @@
                                                 </div>
                                             </div>
                                         @endif
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Salary Settings Tab -->
+                    <div class="tab-pane fade" id="settings" role="tabpanel">
+                        <div class="mt-3">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6 class="m-0 font-weight-bold text-primary">
+                                                <i class="fas fa-cog"></i> Event Salary Settings
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <form id="salary-settings-form">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Default Commission for Coordinator (%)</label>
+                                                            <input type="number" class="form-control" 
+                                                                   id="default_commission_coordinator" 
+                                                                   name="default_commission_coordinator"
+                                                                   value="{{ $eventJob->default_commission_coordinator ?? '' }}"
+                                                                   step="0.01" min="0" max="100"
+                                                                   placeholder="Enter default commission percentage">
+                                                            <small class="form-text text-muted">Default commission percentage for coordinators in this event</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Default Salary for Promoter (Rs.)</label>
+                                                            <input type="number" class="form-control" 
+                                                                   id="default_salary_promoter" 
+                                                                   name="default_salary_promoter"
+                                                                   value="{{ $eventJob->default_salary_promoter ?? '' }}"
+                                                                   step="0.01" min="0"
+                                                                   placeholder="Enter default daily salary">
+                                                            <small class="form-text text-muted">Default daily salary for promoters in this event</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Salary Rules</label>
+                                                            <textarea class="form-control" 
+                                                                      id="salary_rules" 
+                                                                      name="salary_rules"
+                                                                      rows="6"
+                                                                      placeholder="Enter salary calculation rules and policies...">{{ $eventJob->salary_rules ?? '' }}</textarea>
+                                                            <small class="form-text text-muted">Define specific salary calculation rules, overtime policies, bonus structures, etc.</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Special Note</label>
+                                                            <textarea class="form-control" 
+                                                                      id="special_note" 
+                                                                      name="special_note"
+                                                                      rows="4"
+                                                                      placeholder="Enter any special notes for this event...">{{ $eventJob->special_note ?? '' }}</textarea>
+                                                            <small class="form-text text-muted">Any special instructions, notes, or important information for this event</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="row mt-4">
+                                                    <div class="col-md-12">
+                                                        <div class="d-flex justify-content-between">
+                                                            <button type="button" class="btn btn-outline-secondary" onclick="resetSalarySettings()">
+                                                                <i class="fas fa-undo"></i> Reset
+                                                            </button>
+                                                            <button type="submit" class="btn btn-primary">
+                                                                <i class="fas fa-save"></i> Save Settings
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6 class="m-0 font-weight-bold text-info">
+                                                <i class="fas fa-info-circle"></i> Settings Info
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="alert alert-info">
+                                                <h6><i class="fas fa-lightbulb"></i> How to Use</h6>
+                                                <ul class="mb-0">
+                                                    <li><strong>Default Commission:</strong> Sets the standard commission rate for coordinators</li>
+                                                    <li><strong>Default Salary:</strong> Sets the standard daily rate for promoters</li>
+                                                    <li><strong>Salary Rules:</strong> Define calculation methods, overtime, bonuses</li>
+                                                    <li><strong>Special Note:</strong> Add event-specific instructions</li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <div class="alert alert-warning">
+                                                <h6><i class="fas fa-exclamation-triangle"></i> Important</h6>
+                                                <p class="mb-0">These settings will be used as defaults when assigning new promoters or coordinators to this event.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1499,6 +1618,75 @@ function testSearch() {
     } else {
         alert('Could not find promoter cell in first row.');
     }
+}
+
+// Salary Settings Functions
+function resetSalarySettings() {
+    if (confirm('Are you sure you want to reset all salary settings to their original values?')) {
+        // Reset form to original values
+        document.getElementById('salary-settings-form').reset();
+        
+        // Reload the page to get original values
+        location.reload();
+    }
+}
+
+// Handle salary settings form submission
+document.addEventListener('DOMContentLoaded', function() {
+    const salarySettingsForm = document.getElementById('salary-settings-form');
+    if (salarySettingsForm) {
+        salarySettingsForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveSalarySettings();
+        });
+    }
+});
+
+function saveSalarySettings() {
+    const form = document.getElementById('salary-settings-form');
+    const formData = new FormData(form);
+    
+    // Convert FormData to JSON
+    const data = {
+        event_id: {{ $eventJob->id }},
+        default_commission_coordinator: formData.get('default_commission_coordinator'),
+        default_salary_promoter: formData.get('default_salary_promoter'),
+        salary_rules: formData.get('salary_rules'),
+        special_note: formData.get('special_note')
+    };
+    
+    // Show loading state
+    const saveButton = form.querySelector('button[type="submit"]');
+    const originalText = saveButton.innerHTML;
+    saveButton.disabled = true;
+    saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+    
+    // Send data to server
+    fetch('{{ admin_url("event-jobs/update-salary-settings") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Salary settings saved successfully!', 'success');
+        } else {
+            showNotification('Error saving settings: ' + (data.message || 'Unknown error'), 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error saving salary settings:', error);
+        showNotification('Error saving settings: ' + error.message, 'error');
+    })
+    .finally(() => {
+        // Reset button state
+        saveButton.disabled = false;
+        saveButton.innerHTML = originalText;
+    });
 }
 </script>
 

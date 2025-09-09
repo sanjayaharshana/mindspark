@@ -434,4 +434,40 @@ class EventJobController extends AdminController
             ], 500);
         }
     }
+
+    /**
+     * Update salary settings for an event job
+     */
+    public function updateSalarySettings(Request $request)
+    {
+        $request->validate([
+            'event_id' => 'required|exists:event_jobs,id',
+            'default_commission_coordinator' => 'nullable|numeric|min:0|max:100',
+            'default_salary_promoter' => 'nullable|numeric|min:0',
+            'salary_rules' => 'nullable|string|max:5000',
+            'special_note' => 'nullable|string|max:2000',
+        ]);
+
+        try {
+            $eventJob = EventJob::findOrFail($request->event_id);
+            
+            $eventJob->update([
+                'default_commission_coordinator' => $request->default_commission_coordinator,
+                'default_salary_promoter' => $request->default_salary_promoter,
+                'salary_rules' => $request->salary_rules,
+                'special_note' => $request->special_note,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Salary settings updated successfully',
+                'event_job' => $eventJob->fresh()
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating salary settings: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

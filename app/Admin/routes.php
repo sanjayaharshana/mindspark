@@ -34,6 +34,9 @@ Route::group([
     $router->get('event-jobs/{eventId}/attendance-data', 'EventJobController@getAttendanceData')->name('event-jobs.attendance-data');
     $router->post('event-jobs/mark-all-present', 'EventJobController@markAllPresent')->name('event-jobs.mark-all-present');
     
+    // Salary settings routes
+    $router->post('event-jobs/update-salary-settings', 'EventJobController@updateSalarySettings')->name('event-jobs.update-salary-settings');
+    
     // Test route for debugging
     $router->get('test-attendance', function() {
         try {
