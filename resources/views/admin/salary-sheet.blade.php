@@ -186,7 +186,7 @@
                                         <i class="fas fa-plus"></i> Assign More Promoters
                                 </a>
                             </div>
-
+                            
                                 @if($assignedPromoters->count() > 0)
                             <div class="table-responsive">
                                 <table class="table table-hover">
@@ -328,13 +328,13 @@
                                                 $endDate = $eventJob->activation_end_date;
                                                 $days = [];
                                                 $currentDate = $startDate->copy();
-
+                                                
                                                 while ($currentDate->lte($endDate)) {
                                                     $days[] = $currentDate->copy();
                                                     $currentDate->addDay();
                                                 }
                                             @endphp
-
+                                            
                                     <!-- Event Summary -->
                                     <div class="row mb-4">
                                         <div class="col-md-6">
@@ -376,6 +376,39 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Debug Information -->
+                                    <div class="card mb-3">
+                                        <div class="card-header bg-warning">
+                                            <h6 class="m-0 font-weight-bold text-dark">
+                                                <i class="fas fa-bug"></i> Debug Information
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <strong>Assigned Promoters:</strong> {{ $assignedPromoters->count() }}
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <strong>Attendance Records:</strong> {{ count($attendanceData) }}
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <strong>Event Dates:</strong> {{ count($eventDates ?? []) }}
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <strong>Days Array:</strong> {{ count($days ?? []) }}
+                                                </div>
+                                            </div>
+                                            @if($assignedPromoters->count() > 0)
+                                                <div class="mt-2">
+                                                    <strong>Promoter IDs:</strong> 
+                                                    @foreach($assignedPromoters as $assignment)
+                                                        {{ $assignment->promoter->id }}{{ !$loop->last ? ', ' : '' }}
+                                                    @endforeach
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
 
@@ -443,25 +476,33 @@
                                                     </div>
                                                 </div>
                                                 <div class="row mt-2">
-                                                    <div class="col-12">
-                                                        <div class="d-flex justify-content-between align-items-center">
+                                                <div class="col-md-6">
+                                                        <div class="d-flex align-items-center">
                                                             <small class="text-muted" id="filterResults">
                                                                 Showing {{ $assignedPromoters->count() }} promoters
                                                             </small>
-                                                            <div class="btn-group btn-group-sm">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                        <div class="d-flex justify-content-end">
+                                                            <div class="btn-group btn-group-sm mr-3">
                                                                 <button class="btn btn-outline-primary" onclick="selectAllVisible()">
                                                                     <i class="fas fa-check-square"></i> Select All Visible
-                                                                </button>
+                                                        </button>
                                                                 <button class="btn btn-outline-success" onclick="markSelectedPresent()">
                                                                     <i class="fas fa-check"></i> Mark Selected Present
-                                                                </button>
+                                                        </button>
                                                                 <button class="btn btn-outline-info" onclick="testSearch()">
                                                                     <i class="fas fa-bug"></i> Test Search
                                                                 </button>
+                                                                <button class="btn btn-outline-secondary" onclick="clearSavedTab()">
+                                                                    <i class="fas fa-trash"></i> Clear Saved Tab
+                                                        </button>
                                                             </div>
-                                                        </div>
                                                     </div>
-                                                    </div>
+                                                </div>
+                                            </div>
+
                                                 </div>
                                             </div>
 
@@ -490,9 +531,10 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
+                                                            @if($assignedPromoters->count() > 0)
                                                             @foreach($assignedPromoters as $assignment)
                                                                 <tr>
-                                                                    <td class="font-weight-medium sticky-column" style="background: #dcdcdc">
+                                                                        <td class="font-weight-medium sticky-column" style="background: #dcdcdc">
                                                                             <strong>{{ $assignment->promoter->promoter_name }}</strong><br>
                                                                             <small class="text-muted">{{ $assignment->promoter->promoter_id }}</small>
                                                                     </td>
@@ -512,9 +554,9 @@
                                                                         @endphp
                                                                         <td class="text-center">
                                                                             <div class="form-check d-inline-block">
-                                                                                <input type="checkbox"
-                                                                                       class="form-check-input attendance-check"
-                                                                                       data-promoter="{{ $assignment->promoter->id }}"
+                                                                                <input type="checkbox" 
+                                                                                       class="form-check-input attendance-check" 
+                                                                                       data-promoter="{{ $assignment->promoter->id }}" 
                                                                                        data-date="{{ $dayKey }}"
                                                                                        {{ $isPresent ? 'checked' : '' }}
                                                                                        onchange="updateAttendance(this)">
@@ -553,6 +595,18 @@
                                                                     </td>
                                                                 </tr>
                                                             @endforeach
+                                                            @else
+                                                                <tr>
+                                                                    <td colspan="{{ count($days) + 4 }}" class="text-center py-4">
+                                                                        <div class="alert alert-info">
+                                                                            <i class="fas fa-info-circle"></i>
+                                                                            <strong>No promoters assigned to this event.</strong>
+                                                                            <br>
+                                                                            <small>Please assign promoters first to view attendance data.</small>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            @endif
                                                         </tbody>
                                                     </table>
                                                 </div>
@@ -610,7 +664,43 @@ let currentFilters = {
 
 // Essential JavaScript functions for salary sheet functionality
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Bootstrap tabs with vanilla JS
+    // Tab persistence functionality
+    const TAB_STORAGE_KEY = 'salarySheetActiveTab';
+    
+    // Function to save active tab
+    function saveActiveTab(tabId) {
+        localStorage.setItem(TAB_STORAGE_KEY, tabId);
+    }
+    
+    // Function to restore active tab
+    function restoreActiveTab() {
+        const savedTab = localStorage.getItem(TAB_STORAGE_KEY);
+        if (savedTab) {
+            const tabButton = document.querySelector(`[data-bs-target="#${savedTab}"]`);
+            if (tabButton) {
+                // Remove active class from all tabs
+                document.querySelectorAll('#salaryTabs button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelectorAll('.tab-pane').forEach(pane => {
+                    pane.classList.remove('active', 'show');
+                });
+                
+                // Activate saved tab
+                tabButton.classList.add('active');
+                const targetPane = document.getElementById(savedTab);
+                if (targetPane) {
+                    targetPane.classList.add('active', 'show');
+                }
+                
+                
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    // Initialize Bootstrap tabs with persistence
     const tabButtons = document.querySelectorAll('#salaryTabs button');
     tabButtons.forEach(button => {
         button.addEventListener('click', function(e) {
@@ -632,9 +722,27 @@ document.addEventListener('DOMContentLoaded', function() {
             if (targetTab) {
                 targetTab.classList.add('show', 'active');
                 this.classList.add('active');
+                
+                // Save active tab (remove # from targetId)
+                const tabId = targetId.replace('#', '');
+                saveActiveTab(tabId);
+                
             }
         });
     });
+    
+    // Add event listeners to attendance checkboxes
+    const attendanceCheckboxes = document.querySelectorAll('input[type="checkbox"][data-promoter][data-date]');
+    attendanceCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            updateAttendanceCounters();
+            updateSaveStatus('Changes detected. Click Save All Changes to save.', 'warning');
+        });
+    });
+    
+    // Initialize attendance counters
+    updateAttendanceCounters();
+    
 });
 
 // Promoter management functions
@@ -757,13 +865,13 @@ function markAllPresent() {
                     const label = checkbox.nextElementSibling;
             label.innerHTML = '<i class="fas fa-check text-success"></i>';
                 });
-
+                
                 // Update all attendance counts
                 const promoterIds = [...new Set(Array.from(checkboxes).map(cb => cb.dataset.promoter))];
                 promoterIds.forEach(promoterId => {
                     updateAttendanceCounts(promoterId);
                 });
-
+                
         updateSaveStatus('All promoters marked as present', 'success');
     }
 }
@@ -773,7 +881,150 @@ function exportAttendance() {
 }
 
 function saveAllAttendance() {
-    alert('Save attendance functionality will be implemented here');
+    console.log('=== SAVING ALL ATTENDANCE CHANGES ===');
+    
+    // Check if we're on the attendance tab
+    const attendanceTab = document.getElementById('attendance');
+    if (!attendanceTab || !attendanceTab.classList.contains('active')) {
+        alert('Please switch to the Attendance tab first to save attendance data.');
+        return;
+    }
+    
+    // Get all attendance checkboxes
+    const checkboxes = document.querySelectorAll('input[type="checkbox"][data-promoter][data-date]');
+    console.log('Found', checkboxes.length, 'attendance checkboxes');
+    
+    if (checkboxes.length === 0) {
+        alert('No attendance data found to save.');
+        return;
+    }
+    
+    // Collect attendance data
+    const attendanceData = [];
+    const eventId = {{ $eventJob->id }};
+    
+    checkboxes.forEach(checkbox => {
+        const promoterId = checkbox.getAttribute('data-promoter');
+        const date = checkbox.getAttribute('data-date');
+        const status = checkbox.checked ? 'attend' : 'absent';
+        
+        attendanceData.push({
+            promoter_id: parseInt(promoterId),
+            date: date,
+            status: status
+        });
+    });
+    
+    console.log('Collected attendance data:', attendanceData);
+    
+    // Show loading state
+    updateSaveStatus('Saving attendance data...', 'info');
+    const saveButton = document.querySelector('button[onclick="saveAllAttendance()"]');
+    if (saveButton) {
+        saveButton.disabled = true;
+        saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+    }
+    
+    // Send data to server
+    fetch('{{ admin_url("event-jobs/bulk-update-attendance") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({
+            event_id: eventId,
+            attendance_data: attendanceData
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Save response:', data);
+        
+        if (data.success) {
+            updateSaveStatus(`Successfully saved ${data.updated_count || attendanceData.length} attendance records!`, 'success');
+            
+            // Update attendance counters
+            updateAttendanceCounters();
+            
+            // Show success message
+            showNotification('Attendance saved successfully!', 'success');
+        } else {
+            updateSaveStatus('Error saving attendance: ' + (data.message || 'Unknown error'), 'danger');
+            showNotification('Error saving attendance: ' + (data.message || 'Unknown error'), 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error saving attendance:', error);
+        updateSaveStatus('Error saving attendance: ' + error.message, 'danger');
+        showNotification('Error saving attendance: ' + error.message, 'error');
+    })
+    .finally(() => {
+        // Reset button state
+        if (saveButton) {
+            saveButton.disabled = false;
+            saveButton.innerHTML = '<i class="fas fa-save"></i> Save All Changes';
+        }
+    });
+}
+
+function updateAttendanceCounters() {
+    // Update present/absent counters for each promoter
+    const rows = document.querySelectorAll('tbody tr');
+    
+    rows.forEach(row => {
+        const promoterId = row.querySelector('input[data-promoter]')?.getAttribute('data-promoter');
+        if (!promoterId) return;
+        
+        const checkboxes = row.querySelectorAll(`input[data-promoter="${promoterId}"]`);
+        let presentCount = 0;
+        let absentCount = 0;
+        
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                presentCount++;
+            } else {
+                absentCount++;
+            }
+        });
+        
+        // Update the counters in the row
+        const presentBadge = row.querySelector(`#present-${promoterId}`);
+        const absentBadge = row.querySelector(`#absent-${promoterId}`);
+        
+        if (presentBadge) {
+            presentBadge.textContent = presentCount;
+        }
+        if (absentBadge) {
+            absentBadge.textContent = absentCount;
+        }
+    });
+}
+
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} alert-dismissible fade show`;
+    notification.style.position = 'fixed';
+    notification.style.top = '20px';
+    notification.style.right = '20px';
+    notification.style.zIndex = '9999';
+    notification.style.minWidth = '300px';
+    
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+    
+    // Add to page
+    document.body.appendChild(notification);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 5000);
 }
 
 function updateSaveStatus(message, type = 'info') {
@@ -816,31 +1067,27 @@ function performFiltering() {
 
     const searchTerm = searchInput.value.toLowerCase();
     const statusValue = statusFilter.value;
-    const rows = Array.from(document.querySelectorAll('tbody tr'));
-    let visibleRows = [];
-    let visibleCount = 0;
-
+    const allRows = Array.from(document.querySelectorAll('tbody tr'));
+    
     console.log('Filtering with search term:', searchTerm, 'status:', statusValue);
-    console.log('Found rows:', rows.length);
+    console.log('Found rows:', allRows.length);
 
     // Update current filters
     currentFilters.search = searchTerm;
     currentFilters.status = statusValue;
 
-    rows.forEach((row, index) => {
-        // Safely get elements with null checks
-        const promoterCell = row.querySelector('td:first-child'); // First column contains both name and ID
+    // Filter rows based on search and status
+    filteredRows = allRows.filter((row, index) => {
+        const promoterCell = row.querySelector('td:first-child');
         const presentBadge = row.querySelector('.badge-success');
         const absentBadge = row.querySelector('.badge-danger');
 
-        // Check if required elements exist
         if (!promoterCell) {
             console.warn('Required promoter cell not found in row', index);
-            return;
+            return false;
         }
 
         const cellText = promoterCell.textContent ? promoterCell.textContent.toLowerCase() : '';
-        console.log('Row', index, 'cell text:', cellText);
 
         // Check search term with fuzzy matching
         const matchesSearch = searchTerm === '' ||
@@ -855,43 +1102,21 @@ function performFiltering() {
             matchesStatus = absentBadge && absentBadge.textContent && parseInt(absentBadge.textContent) > 0;
         }
 
-        console.log('Row', index, 'matches search:', matchesSearch, 'matches status:', matchesStatus);
-
-        // Show/hide row with animation
-        if (matchesSearch && matchesStatus) {
-            row.style.display = '';
-            row.style.opacity = '0';
-            row.style.transform = 'translateY(-10px)';
-
-            // Animate in
-            setTimeout(() => {
-                row.style.transition = 'all 0.3s ease';
-                row.style.opacity = '1';
-                row.style.transform = 'translateY(0)';
-            }, 50);
-
-            visibleRows.push(row);
-            visibleCount++;
-        } else {
-            // Animate out
-            row.style.transition = 'all 0.3s ease';
-            row.style.opacity = '0';
-            row.style.transform = 'translateY(-10px)';
-
-            setTimeout(() => {
-                row.style.display = 'none';
-            }, 300);
-        }
+        return matchesSearch && matchesStatus;
     });
 
-    console.log('Visible count:', visibleCount);
-
-    // Update filter results with animation
-    updateFilterResults(visibleCount);
-
+    // Reset to first page when filtering
+    currentPage = 1;
+    
+    // Apply pagination
+    applyPagination();
+    
+    // Update filter results
+    updateFilterResults(filteredRows.length);
+    
     // Update quick action buttons state
-    updateQuickActionButtons(visibleCount > 0);
-
+    updateQuickActionButtons(filteredRows.length > 0);
+    
     // Highlight search terms
     highlightSearchTerms(searchTerm);
 }
@@ -1069,7 +1294,7 @@ function showSearchSuggestions() {
         hideSearchSuggestions();
         return;
     }
-
+    
     const rows = document.querySelectorAll('tbody tr');
     const suggestions = new Set();
 
@@ -1196,6 +1421,16 @@ function exportFiltered() {
     window.URL.revokeObjectURL(url);
 
     updateSaveStatus('Attendance report exported successfully', 'success');
+}
+
+
+
+
+// Function to clear saved tab
+function clearSavedTab() {
+    localStorage.removeItem('salarySheetActiveTab');
+    console.log('Saved tab cleared. Page will default to first tab on next refresh.');
+    alert('Saved tab cleared! Page will default to first tab on next refresh.');
 }
 
 // Test function to debug search

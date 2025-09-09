@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
             CoordinatorSeeder::class,
             PromoterSeeder::class,
             PromoterEventJobSeeder::class,
+            AttendanceSeeder::class,
         ]);
     }
 }

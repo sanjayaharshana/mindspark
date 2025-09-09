@@ -194,12 +194,24 @@ class EventJobController extends AdminController
 
         // Load attendance data if event has dates set
         $attendanceData = [];
+        $eventDates = [];
+        
         if ($eventJob->activation_start_date && $eventJob->activation_end_date) {
             $attendanceData = Attendance::getAttendanceForEvent(
                 $eventJob->id,
                 $eventJob->activation_start_date,
                 $eventJob->activation_end_date
             );
+            
+            // Generate array of all event dates for the table headers
+            $startDate = \Carbon\Carbon::parse($eventJob->activation_start_date);
+            $endDate = \Carbon\Carbon::parse($eventJob->activation_end_date);
+            
+            $currentDate = $startDate->copy();
+            while ($currentDate->lte($endDate)) {
+                $eventDates[] = $currentDate->format('Y-m-d');
+                $currentDate->addDay();
+            }
         }
 
         return $content
@@ -207,7 +219,8 @@ class EventJobController extends AdminController
             ->body(view('admin.salary-sheet',[
                 'eventJob' => $eventJob,
                 'assignedPromoters' => $assignedPromoters,
-                'attendanceData' => $attendanceData
+                'attendanceData' => $attendanceData,
+                'eventDates' => $eventDates
             ]));
     }
 
