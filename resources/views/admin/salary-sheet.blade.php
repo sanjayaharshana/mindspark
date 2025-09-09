@@ -760,36 +760,7 @@ function updateAttendanceCounts(promoterId) {
     if (absentBadge) absentBadge.textContent = absentCount;
 }
 
-function loadAttendanceData() {
-    const eventId = {{ $eventJob->id }};
-    
-    fetch(`{{ admin_url("event-jobs") }}/${eventId}/attendance-data`)
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Load existing attendance data
-            Object.keys(data.attendance_data).forEach(promoterId => {
-                const promoterAttendance = data.attendance_data[promoterId];
-                promoterAttendance.forEach(attendance => {
-                    const checkbox = document.querySelector(`[data-promoter="${promoterId}"][data-date="${attendance.promoter_attend_date}"]`);
-                    if (checkbox) {
-                        checkbox.checked = attendance.status === 'attend';
-                        const label = checkbox.nextElementSibling;
-                        if (checkbox.checked) {
-                            label.innerHTML = '<i class="icon-check text-success"></i>';
-                        } else {
-                            label.innerHTML = '<i class="icon-times text-danger"></i>';
-                        }
-                    }
-                });
-                updateAttendanceCounts(promoterId);
-            });
-        }
-    })
-    .catch(error => {
-        console.error('Error loading attendance data:', error);
-    });
-}
+// Attendance data is now loaded server-side, no need for AJAX loading
 
 function filterPromoters() {
     const filterValue = document.getElementById('promoterFilter').value.toLowerCase();
