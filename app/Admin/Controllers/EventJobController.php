@@ -5,6 +5,7 @@ namespace App\Admin\Controllers;
 use App\Models\Promoter;
 use App\Models\PromoterEventJob;
 use App\Models\Coordinator;
+use App\Models\Attendance;
 use Illuminate\Http\Request;
 use Qulint\Admin\Layout\Content;
 use Qulint\Admin\Controllers\AdminController;
@@ -173,14 +174,23 @@ class EventJobController extends AdminController
 
     public function salarySheet($id,Content $content)
     {
-
         $eventJob = EventJob::findOrFail($id);
         $assignedPromoters = $eventJob->assignedPromoters()->with(['promoter', 'coordinator'])->get();
+        
+        // Load attendance data if event has dates set
+        $attendanceData = [];
+        if ($eventJob->activation_start_date && $eventJob->activation_end_date) {
+            $attendanceData = Attendance::getAttendanceForEvent(
+                $eventJob->id,
+                $eventJob->activation_start_date,
+                $eventJob->activation_end_date
+            );
+        }
 
         return $content
             ->title('Salary Sheet for '. $eventJob->job_name)
             ->body(view('admin.salary-sheet',compact(
-                'eventJob', 'assignedPromoters')));
+                'eventJob', 'assignedPromoters', 'attendanceData')));
     }
 
     /**
@@ -256,5 +266,95 @@ class EventJobController extends AdminController
         })->get();
 
         return response()->json($availablePromoters);
+    }
+
+    /**
+     * Update attendance for a promoter
+     */
+    public function updateAttendance(Request $request)
+    {
+        try {
+            $request->validate([
+                'promoter_id' => 'required|exists:promoters,id',
+                'event_id' => 'required|exists:event_jobs,id',
+                'date' => 'required|date',
+                'status' => 'required|in:attend,absent',
+            ]);
+
+            $attendance = Attendance::markAttendance(
+                $request->promoter_id,
+                $request->event_id,
+                $request->date,
+                $request->status
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Attendance updated successfully',
+                'attendance' => $attendance
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating attendance: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get attendance data for an event
+     */
+    public function getAttendanceData($eventId)
+    {
+        $eventJob = EventJob::findOrFail($eventId);
+        
+        if (!$eventJob->activation_start_date || !$eventJob->activation_end_date) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Event dates not set'
+            ]);
+        }
+
+        $attendanceData = Attendance::getAttendanceForEvent(
+            $eventId,
+            $eventJob->activation_start_date,
+            $eventJob->activation_end_date
+        );
+
+        return response()->json([
+            'success' => true,
+            'attendance_data' => $attendanceData,
+            'event_dates' => [
+                'start_date' => $eventJob->activation_start_date->format('Y-m-d'),
+                'end_date' => $eventJob->activation_end_date->format('Y-m-d'),
+            ]
+        ]);
+    }
+
+    /**
+     * Mark all promoters present for a specific date
+     */
+    public function markAllPresent(Request $request)
+    {
+        $request->validate([
+            'event_id' => 'required|exists:event_jobs,id',
+            'date' => 'required|date',
+        ]);
+
+        $assignedPromoters = PromoterEventJob::where('event_id', $request->event_id)->get();
+
+        foreach ($assignedPromoters as $assignment) {
+            Attendance::markAttendance(
+                $assignment->promoter_id,
+                $request->event_id,
+                $request->date,
+                'attend'
+            );
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'All promoters marked as present for ' . $request->date
+        ]);
     }
 }

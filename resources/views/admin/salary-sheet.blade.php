@@ -1,4 +1,6 @@
 
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <!-- Professional Header Section -->
 <div class="row mb-4">
     <div class="col-12">
@@ -331,6 +333,9 @@
                                     <div class="attendance-header">
                                         <h5 class="mb-0"><i class="icon-calendar me-2 text-primary"></i>Attendance Management</h5>
                                         <small class="text-muted">Event Duration: {{ $eventJob->activation_start_date ? $eventJob->activation_start_date->format('M d, Y') : 'Not set' }} - {{ $eventJob->activation_end_date ? $eventJob->activation_end_date->format('M d, Y') : 'Not set' }}</small>
+                                        <div class="mt-2">
+                                            <small class="text-info">Debug: Event ID: {{ $eventJob->id }}, Assigned Promoters: {{ $assignedPromoters->count() }}</small>
+                                        </div>
                                     </div>
                                     <div class="attendance-body">
                                         @if($eventJob->activation_start_date && $eventJob->activation_end_date)
@@ -346,6 +351,39 @@
                                                 }
                                             @endphp
                                             
+                                            <!-- Filter and Search Bar -->
+                                            <div class="row mb-3">
+                                                <div class="col-md-8">
+                                                    <div class="attendance-filter">
+                                                        <h6 class="text-primary mb-2">Filter Promoters</h6>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">
+                                                                <i class="icon-search"></i>
+                                                            </span>
+                                                            <input type="text" 
+                                                                   class="form-control" 
+                                                                   id="promoterFilter" 
+                                                                   placeholder="Search by promoter name or ID..."
+                                                                   onkeyup="filterPromoters()">
+                                                            <button class="btn btn-outline-secondary" onclick="clearFilter()">
+                                                                <i class="icon-times"></i> Clear
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="attendance-save">
+                                                        <h6 class="text-success mb-2">Save Changes</h6>
+                                                        <button class="btn btn-success btn-sm" onclick="saveAllAttendance()">
+                                                            <i class="icon-save me-1"></i> Save All Changes
+                                                        </button>
+                                                        <div class="mt-1">
+                                                            <small class="text-muted" id="saveStatus">All changes auto-saved</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             <div class="row mb-3">
                                                 <div class="col-md-6">
                                                     <div class="attendance-summary">
@@ -376,47 +414,81 @@
                                                     <table class="table table-bordered attendance-table">
                                                         <thead class="table-primary">
                                                             <tr>
-                                                                <th class="text-white">Promoter</th>
+                                                                <th class="text-white sticky-column-left">Promoter</th>
                                                                 @foreach($days as $day)
                                                                     <th class="text-white text-center" style="min-width: 80px;">
                                                                         {{ $day->format('M d') }}<br>
                                                                         <small>{{ $day->format('D') }}</small>
                                                                     </th>
                                                                 @endforeach
-                                                                <th class="text-white text-center">Total Days</th>
-                                                                <th class="text-white text-center">Present Days</th>
-                                                                <th class="text-white text-center">Absent Days</th>
+                                                                <th class="text-white text-center sticky-column-right-3">Total Days</th>
+                                                                <th class="text-white text-center sticky-column-right-1">Present Days</th>
+                                                                <th class="text-white text-center sticky-column-right-2">Absent Days</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             @foreach($assignedPromoters as $assignment)
                                                                 <tr>
-                                                                    <td class="fw-medium">
+                                                                    <td class="fw-medium sticky-column-left">
                                                                         <div>
                                                                             <strong>{{ $assignment->promoter->promoter_name }}</strong><br>
                                                                             <small class="text-muted">{{ $assignment->promoter->promoter_id }}</small>
                                                                         </div>
                                                                     </td>
                                                                     @foreach($days as $day)
+                                                                        @php
+                                                                            $dayKey = $day->format('Y-m-d');
+                                                                            $isPresent = false;
+                                                                            if (isset($attendanceData[$assignment->promoter->id])) {
+                                                                                $promoterAttendance = $attendanceData[$assignment->promoter->id];
+                                                                                foreach ($promoterAttendance as $attendance) {
+                                                                                    if ($attendance->promoter_attend_date->format('Y-m-d') === $dayKey) {
+                                                                                        $isPresent = ($attendance->status === 'attend');
+                                                                                        break;
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        @endphp
                                                                         <td class="text-center">
                                                                             <div class="attendance-checkbox">
                                                                                 <input type="checkbox" 
                                                                                        class="form-check-input attendance-check" 
                                                                                        data-promoter="{{ $assignment->promoter->id }}" 
-                                                                                       data-date="{{ $day->format('Y-m-d') }}"
+                                                                                       data-date="{{ $dayKey }}"
+                                                                                       {{ $isPresent ? 'checked' : '' }}
                                                                                        onchange="updateAttendance(this)">
                                                                                 <label class="form-check-label">
-                                                                                    <i class="icon-check text-success"></i>
+                                                                                    @if($isPresent)
+                                                                                        <i class="icon-check text-success"></i>
+                                                                                    @else
+                                                                                        <i class="icon-times text-danger"></i>
+                                                                                    @endif
                                                                                 </label>
                                                                             </div>
                                                                         </td>
                                                                     @endforeach
-                                                                    <td class="text-center fw-bold">{{ count($days) }}</td>
-                                                                    <td class="text-center">
-                                                                        <span class="badge bg-success" id="present-{{ $assignment->promoter->id }}">0</span>
+                                                                    <td class="text-center fw-bold sticky-column-right-3">{{ count($days) }}</td>
+                                                                    @php
+                                                                        $presentCount = 0;
+                                                                        $absentCount = 0;
+                                                                        if (isset($attendanceData[$assignment->promoter->id])) {
+                                                                            $promoterAttendance = $attendanceData[$assignment->promoter->id];
+                                                                            foreach ($promoterAttendance as $attendance) {
+                                                                                if ($attendance->status === 'attend') {
+                                                                                    $presentCount++;
+                                                                                } else {
+                                                                                    $absentCount++;
+                                                                                }
+                                                                            }
+                                                                        } else {
+                                                                            $absentCount = count($days);
+                                                                        }
+                                                                    @endphp
+                                                                    <td class="text-center sticky-column-right-1">
+                                                                        <span class="badge bg-success" id="present-{{ $assignment->promoter->id }}">{{ $presentCount }}</span>
                                                                     </td>
-                                                                    <td class="text-center">
-                                                                        <span class="badge bg-danger" id="absent-{{ $assignment->promoter->id }}">{{ count($days) }}</span>
+                                                                    <td class="text-center sticky-column-right-2">
+                                                                        <span class="badge bg-danger" id="absent-{{ $assignment->promoter->id }}">{{ $absentCount }}</span>
                                                                     </td>
                                                                 </tr>
                                                             @endforeach
@@ -530,11 +602,46 @@ function printSalarySheet() {
 }
 
 function markAllPresent() {
-    const checkboxes = document.querySelectorAll('.attendance-check');
-    checkboxes.forEach(checkbox => {
-        checkbox.checked = true;
-        updateAttendance(checkbox);
-    });
+    if (confirm('Are you sure you want to mark all promoters as present for all days?')) {
+        const eventId = {{ $eventJob->id }};
+        
+        fetch('{{ admin_url("event-jobs/mark-all-present") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                event_id: eventId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update all checkboxes visually
+                const checkboxes = document.querySelectorAll('.attendance-check');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = true;
+                    const label = checkbox.nextElementSibling;
+                    label.innerHTML = '<i class="icon-check text-success"></i>';
+                });
+                
+                // Update all attendance counts
+                const promoterIds = [...new Set(Array.from(checkboxes).map(cb => cb.dataset.promoter))];
+                promoterIds.forEach(promoterId => {
+                    updateAttendanceCounts(promoterId);
+                });
+                
+                alert('All promoters marked as present successfully!');
+            } else {
+                alert('Failed to mark all present: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to mark all present. Please try again.');
+        });
+    }
 }
 
 function exportAttendance() {
@@ -570,16 +677,68 @@ function printAttendance() {
 
 function updateAttendance(checkbox) {
     const promoterId = checkbox.dataset.promoter;
-    const isChecked = checkbox.checked;
+    const eventId = {{ $eventJob->id }};
+    const date = checkbox.dataset.date;
+    const status = checkbox.checked ? 'attend' : 'absent';
     
-    // Update visual feedback
+    console.log('Updating attendance:', { promoterId, eventId, date, status });
+    
+    // Update visual feedback immediately
     const label = checkbox.nextElementSibling;
-    if (isChecked) {
+    if (checkbox.checked) {
         label.innerHTML = '<i class="icon-check text-success"></i>';
     } else {
         label.innerHTML = '<i class="icon-times text-danger"></i>';
     }
     
+    // Send AJAX request to save attendance
+    fetch('{{ admin_url("event-jobs/update-attendance") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            promoter_id: promoterId,
+            event_id: eventId,
+            date: date,
+            status: status
+        })
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        return response.json();
+    })
+    .then(data => {
+        console.log('Response data:', data);
+        if (data.success) {
+            updateAttendanceCounts(promoterId);
+            console.log('Attendance updated successfully');
+        } else {
+            // Revert checkbox if save failed
+            checkbox.checked = !checkbox.checked;
+            if (checkbox.checked) {
+                label.innerHTML = '<i class="icon-check text-success"></i>';
+            } else {
+                label.innerHTML = '<i class="icon-times text-danger"></i>';
+            }
+            alert('Failed to update attendance: ' + (data.message || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // Revert checkbox if save failed
+        checkbox.checked = !checkbox.checked;
+        if (checkbox.checked) {
+            label.innerHTML = '<i class="icon-check text-success"></i>';
+        } else {
+            label.innerHTML = '<i class="icon-times text-danger"></i>';
+        }
+        alert('Failed to update attendance. Please try again.');
+    });
+}
+
+function updateAttendanceCounts(promoterId) {
     // Count present/absent days for this promoter
     const promoterCheckboxes = document.querySelectorAll(`[data-promoter="${promoterId}"]`);
     let presentCount = 0;
@@ -601,9 +760,156 @@ function updateAttendance(checkbox) {
     if (absentBadge) absentBadge.textContent = absentCount;
 }
 
+function loadAttendanceData() {
+    const eventId = {{ $eventJob->id }};
+    
+    fetch(`{{ admin_url("event-jobs") }}/${eventId}/attendance-data`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Load existing attendance data
+            Object.keys(data.attendance_data).forEach(promoterId => {
+                const promoterAttendance = data.attendance_data[promoterId];
+                promoterAttendance.forEach(attendance => {
+                    const checkbox = document.querySelector(`[data-promoter="${promoterId}"][data-date="${attendance.promoter_attend_date}"]`);
+                    if (checkbox) {
+                        checkbox.checked = attendance.status === 'attend';
+                        const label = checkbox.nextElementSibling;
+                        if (checkbox.checked) {
+                            label.innerHTML = '<i class="icon-check text-success"></i>';
+                        } else {
+                            label.innerHTML = '<i class="icon-times text-danger"></i>';
+                        }
+                    }
+                });
+                updateAttendanceCounts(promoterId);
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error loading attendance data:', error);
+    });
+}
+
+function filterPromoters() {
+    const filterValue = document.getElementById('promoterFilter').value.toLowerCase();
+    const tableRows = document.querySelectorAll('.attendance-table tbody tr');
+    
+    tableRows.forEach(row => {
+        const promoterName = row.querySelector('td:first-child strong').textContent.toLowerCase();
+        const promoterId = row.querySelector('td:first-child small').textContent.toLowerCase();
+        
+        if (promoterName.includes(filterValue) || promoterId.includes(filterValue)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+    
+    // Update save status
+    updateSaveStatus('Filtered promoters');
+}
+
+function clearFilter() {
+    document.getElementById('promoterFilter').value = '';
+    const tableRows = document.querySelectorAll('.attendance-table tbody tr');
+    
+    tableRows.forEach(row => {
+        row.style.display = '';
+    });
+    
+    updateSaveStatus('Filter cleared');
+}
+
+function saveAllAttendance() {
+    const saveButton = document.querySelector('button[onclick="saveAllAttendance()"]');
+    const originalText = saveButton.innerHTML;
+    
+    // Show loading state
+    saveButton.innerHTML = '<i class="icon-spinner fa-spin me-1"></i> Saving...';
+    saveButton.disabled = true;
+    
+    // Get all checkboxes
+    const checkboxes = document.querySelectorAll('.attendance-check');
+    const eventId = {{ $eventJob->id }};
+    let savePromises = [];
+    
+    checkboxes.forEach(checkbox => {
+        const promoterId = checkbox.dataset.promoter;
+        const date = checkbox.dataset.date;
+        const status = checkbox.checked ? 'attend' : 'absent';
+        
+        const savePromise = fetch('{{ admin_url("event-jobs/update-attendance") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                promoter_id: promoterId,
+                event_id: eventId,
+                date: date,
+                status: status
+            })
+        });
+        
+        savePromises.push(savePromise);
+    });
+    
+    // Wait for all saves to complete
+    Promise.all(savePromises)
+    .then(responses => {
+        const allSuccessful = responses.every(response => response.ok);
+        
+        if (allSuccessful) {
+            updateSaveStatus('All changes saved successfully!', 'success');
+        } else {
+            updateSaveStatus('Some changes failed to save', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error saving attendance:', error);
+        updateSaveStatus('Error saving changes', 'error');
+    })
+    .finally(() => {
+        // Reset button state
+        saveButton.innerHTML = originalText;
+        saveButton.disabled = false;
+    });
+}
+
+function updateSaveStatus(message, type = 'info') {
+    const statusElement = document.getElementById('saveStatus');
+    statusElement.textContent = message;
+    
+    // Remove existing classes
+    statusElement.classList.remove('text-success', 'text-danger', 'text-info', 'text-muted');
+    
+    // Add appropriate class
+    if (type === 'success') {
+        statusElement.classList.add('text-success');
+    } else if (type === 'error') {
+        statusElement.classList.add('text-danger');
+    } else if (type === 'info') {
+        statusElement.classList.add('text-info');
+    } else {
+        statusElement.classList.add('text-muted');
+    }
+}
+
 $(document).ready(function() {
     // Initialize tooltips
     $('[data-toggle="tooltip"]').tooltip();
+    
+    // Load attendance data when attendance tab is shown
+    $('#attendance-tab').on('shown.bs.tab', function() {
+        loadAttendanceData();
+    });
+    
+    // Load attendance data if attendance tab is already active
+    if ($('#attendance-tab').hasClass('active')) {
+        loadAttendanceData();
+    }
 });
 </script>
 
@@ -700,6 +1006,95 @@ $(document).ready(function() {
 
 .attendance-checkbox i {
     font-size: 1.2rem;
+}
+
+/* Filter and Save Styling */
+.attendance-filter {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #007bff;
+}
+
+.attendance-save {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #28a745;
+}
+
+.attendance-filter .input-group-text {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+}
+
+.attendance-filter .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+#saveStatus {
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Sticky columns for attendance table */
+.sticky-column-left {
+    position: sticky;
+    left: 0;
+    background-color: #007bff !important;
+    z-index: 10;
+    border-right: 2px solid #0056b3 !important;
+    min-width: 150px;
+}
+
+.sticky-column-right-3 {
+    position: sticky;
+    right: 160px;
+    background-color: #007bff !important;
+    z-index: 10;
+    border-left: 2px solid #0056b3 !important;
+}
+
+.sticky-column-right-1 {
+    position: sticky;
+    right: 80px;
+    background-color: #007bff !important;
+    z-index: 10;
+    border-left: 2px solid #0056b3 !important;
+}
+
+.sticky-column-right-2 {
+    position: sticky;
+    right: 0;
+    background-color: #007bff !important;
+    z-index: 10;
+    border-left: 2px solid #0056b3 !important;
+}
+
+/* Ensure sticky columns work in table */
+.attendance-table {
+    position: relative;
+}
+
+.attendance-table thead th.sticky-column-left,
+.attendance-table thead th.sticky-column-right-3,
+.attendance-table thead th.sticky-column-right-1,
+.attendance-table thead th.sticky-column-right-2 {
+    background-color: #007bff !important;
+    color: white !important;
+}
+
+.attendance-table tbody td.sticky-column-left {
+    background-color: white !important;
+    border-right: 2px solid #0056b3 !important;
+}
+
+.attendance-table tbody td.sticky-column-right-3,
+.attendance-table tbody td.sticky-column-right-1,
+.attendance-table tbody td.sticky-column-right-2 {
+    background-color: white !important;
+    border-left: 2px solid #0056b3 !important;
 }
 
 .metric-card {

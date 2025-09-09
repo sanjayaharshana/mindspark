@@ -24,5 +24,21 @@ Route::group([
     $router->post('event-jobs/assign-promoter', 'EventJobController@storePromoterAssignment')->name('event-jobs.store-promoter-assignment');
     $router->delete('event-jobs/remove-promoter-assignment', 'EventJobController@removePromoterAssignment')->name('event-jobs.remove-promoter-assignment');
     $router->get('event-jobs/{eventId}/available-promoters', 'EventJobController@getAvailablePromoters')->name('event-jobs.available-promoters');
+    
+    // Attendance routes
+    $router->post('event-jobs/update-attendance', 'EventJobController@updateAttendance')->name('event-jobs.update-attendance');
+    $router->get('event-jobs/{eventId}/attendance-data', 'EventJobController@getAttendanceData')->name('event-jobs.attendance-data');
+    $router->post('event-jobs/mark-all-present', 'EventJobController@markAllPresent')->name('event-jobs.mark-all-present');
+    
+    // Test route for debugging
+    $router->get('test-attendance', function() {
+        try {
+            $count = \App\Models\Attendance::count();
+            return response()->json(['success' => true, 'count' => $count, 'message' => 'Attendance table is accessible']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    });
+    
     $router->resource('promoters', PromoterController::class);
 });
