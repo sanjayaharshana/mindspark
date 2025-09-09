@@ -4,6 +4,7 @@ use Illuminate\Routing\Router;
 use App\Admin\Controllers\CoordinatorController;
 use App\Admin\Controllers\EventJobController;
 use App\Admin\Controllers\PromoterController;
+use App\Admin\Controllers\TestController;
 
 
 Admin::routes();
@@ -20,6 +21,8 @@ Route::group([
     $router->resource('coordinators', CoordinatorController::class);
     $router->resource('event-jobs', EventJobController::class);
     $router->get('event-jobs/{id}/salary-sheet', 'EventJobController@salarySheet')->name('event-jobs.salary-sheet');
+    $router->get('event-jobs/{id}/salary-sheet-simple', 'EventJobController@salarySheetSimple')->name('event-jobs.salary-sheet-simple');
+    $router->get('event-jobs/{id}/test', 'TestController@test')->name('event-jobs.test');
     $router->get('event-jobs/{id}/assign-promoters', 'EventJobController@assignPromoters')->name('event-jobs.assign-promoters');
     $router->post('event-jobs/assign-promoter', 'EventJobController@storePromoterAssignment')->name('event-jobs.store-promoter-assignment');
     $router->delete('event-jobs/remove-promoter-assignment', 'EventJobController@removePromoterAssignment')->name('event-jobs.remove-promoter-assignment');
@@ -27,6 +30,7 @@ Route::group([
     
     // Attendance routes
     $router->post('event-jobs/update-attendance', 'EventJobController@updateAttendance')->name('event-jobs.update-attendance');
+    $router->post('event-jobs/bulk-update-attendance', 'EventJobController@bulkUpdateAttendance')->name('event-jobs.bulk-update-attendance');
     $router->get('event-jobs/{eventId}/attendance-data', 'EventJobController@getAttendanceData')->name('event-jobs.attendance-data');
     $router->post('event-jobs/mark-all-present', 'EventJobController@markAllPresent')->name('event-jobs.mark-all-present');
     

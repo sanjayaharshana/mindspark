@@ -12,7 +12,6 @@ use Qulint\Admin\Controllers\AdminController;
 use Qulint\Admin\Form;
 use Qulint\Admin\Grid;
 use Qulint\Admin\Show;
-use App\Admin\Actions\SalarySheetAction;
 use App\Models\EventJob;
 use App\Models\Client;
 
@@ -58,9 +57,25 @@ class EventJobController extends AdminController
             return $this->created_at ? $this->created_at->diffForHumans() : '';
         })->sortable();
 
-        // Add salary sheet action
-        $grid->actions(function ($actions) {
-            $actions->add(new SalarySheetAction());
+        // Add salary sheet button column
+        $grid->column('salary_sheet', 'Salary Sheet')->display(function () {
+            return '<a href="' . admin_url("event-jobs/{$this->id}/salary-sheet") . '" class="btn btn-sm btn-primary">
+                        <i class="fa fa-money"></i> Salary Sheet
+                    </a>';
+        });
+
+        // Add test button column
+        $grid->column('test', 'Test')->display(function () {
+            return '<a href="' . admin_url("event-jobs/{$this->id}/test") . '" class="btn btn-sm btn-warning">
+                        <i class="fa fa-test"></i> Test
+                    </a>';
+        });
+
+        // Add simple salary sheet button column
+        $grid->column('simple_salary', 'Simple Salary')->display(function () {
+            return '<a href="' . admin_url("event-jobs/{$this->id}/salary-sheet-simple") . '" class="btn btn-sm btn-success">
+                        <i class="fa fa-file"></i> Simple
+                    </a>';
         });
 
         // Add filters
@@ -176,7 +191,7 @@ class EventJobController extends AdminController
     {
         $eventJob = EventJob::findOrFail($id);
         $assignedPromoters = $eventJob->assignedPromoters()->with(['promoter', 'coordinator'])->get();
-        
+
         // Load attendance data if event has dates set
         $attendanceData = [];
         if ($eventJob->activation_start_date && $eventJob->activation_end_date) {
@@ -189,8 +204,21 @@ class EventJobController extends AdminController
 
         return $content
             ->title('Salary Sheet for '. $eventJob->job_name)
-            ->body(view('admin.salary-sheet',compact(
-                'eventJob', 'assignedPromoters', 'attendanceData')));
+            ->body(view('admin.salary-sheet',[
+                'eventJob' => $eventJob,
+                'assignedPromoters' => $assignedPromoters,
+                'attendanceData' => $attendanceData
+            ]));
+    }
+
+    public function salarySheetSimple($id, Content $content)
+    {
+        $eventJob = EventJob::findOrFail($id);
+        $assignedPromoters = $eventJob->assignedPromoters()->with(['promoter', 'coordinator'])->get();
+
+        return $content
+            ->title('Salary Sheet - ' . $eventJob->job_name)
+            ->body(view('admin.salary-sheet-simple', compact('eventJob', 'assignedPromoters')));
     }
 
     /**
@@ -199,13 +227,9 @@ class EventJobController extends AdminController
     public function assignPromoters($id, Content $content)
     {
         $eventJob = EventJob::findOrFail($id);
-        $availablePromoters = Promoter::whereNotIn('id', function($query) use ($id) {
-            $query->select('promoter_id')
-                  ->from('promoters_for_event_job')
-                  ->where('event_id', $id);
-        })->get();
+        $availablePromoters = Promoter::all();
 
-        $supervisors = Coordinator::where('event_job_id', $id)->get();
+        $supervisors = Coordinator::all();
         $assignedPromoters = $eventJob->assignedPromoters()->with(['promoter', 'coordinator'])->get();
 
         return $content
@@ -307,7 +331,7 @@ class EventJobController extends AdminController
     public function getAttendanceData($eventId)
     {
         $eventJob = EventJob::findOrFail($eventId);
-        
+
         if (!$eventJob->activation_start_date || !$eventJob->activation_end_date) {
             return response()->json([
                 'success' => false,
@@ -356,5 +380,45 @@ class EventJobController extends AdminController
             'success' => true,
             'message' => 'All promoters marked as present for ' . $request->date
         ]);
+    }
+
+    /**
+     * Bulk update attendance for multiple promoters and dates
+     */
+    public function bulkUpdateAttendance(Request $request)
+    {
+        $request->validate([
+            'event_id' => 'required|exists:event_jobs,id',
+            'attendance_data' => 'required|array',
+            'attendance_data.*.promoter_id' => 'required|exists:promoters,id',
+            'attendance_data.*.date' => 'required|date',
+            'attendance_data.*.status' => 'required|in:attend,absent',
+        ]);
+
+        try {
+            $updatedCount = 0;
+            $attendanceData = $request->attendance_data;
+
+            foreach ($attendanceData as $attendance) {
+                Attendance::markAttendance(
+                    $attendance['promoter_id'],
+                    $request->event_id,
+                    $attendance['date'],
+                    $attendance['status']
+                );
+                $updatedCount++;
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => "Successfully updated {$updatedCount} attendance records",
+                'updated_count' => $updatedCount
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating attendance: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

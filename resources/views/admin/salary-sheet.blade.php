@@ -1,189 +1,175 @@
-
-<meta name="csrf-token" content="{{ csrf_token() }}">
-
-<!-- Professional Header Section -->
+<div class="container-fluid">
 <div class="row mb-4">
     <div class="col-12">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body py-4">
+            <div class="card">
+                <div class="card-header">
                 <div class="row align-items-center">
                     <div class="col-md-8">
-                        <div class="d-flex align-items-center">
-                            <div class="salary-icon me-3">
-                                <i class="icon-book fa-2x text-primary"></i>
-                            </div>
-                            <div>
-                                <h2 class="mb-1 text-dark fw-bold">{{ $eventJob->job_name }}</h2>
-                                <p class="mb-0 text-muted">Salary Sheet Management System</p>
+                            <h3 class="mb-0">{{ $eventJob->job_name }}</h3>
                                 <small class="text-muted">Job #{{ $eventJob->job_number }} | {{ $eventJob->client_name }}</small>
-                            </div>
-                        </div>
                     </div>
                     <div class="col-md-4 text-end">
-                        <div class="btn-group" role="group">
-                            <a href="{{ admin_url('event-jobs') }}" class="btn btn-outline-secondary">
-                                <i class="icon-arrow-left me-1"></i> Back
+                            <a href="{{ admin_url('event-jobs') }}" class="btn btn-secondary">
+                                <i class="fa fa-arrow-left"></i> Back
                             </a>
-                            <button class="btn btn-outline-primary" onclick="printSalarySheet()">
-                                <i class="icon-printer me-1"></i> Print
-                            </button>
-                            <button class="btn btn-success" onclick="exportSalarySheet()">
-                                <i class="icon-download me-1"></i> Export
-                            </button>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Professional Tabs Section -->
-<div class="row">
-    <div class="col-12">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white border-0 py-3">
+                <div class="card-body">
+                    <!-- Tabs -->
                 <ul class="nav nav-tabs" id="salaryTabs" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
-                            <i class="icon-chart me-2"></i>
                             Overview
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="promoters-tab" data-bs-toggle="tab" data-bs-target="#promoters" type="button" role="tab">
-                            <i class="icon-user me-2"></i>
                             Promoters ({{ $assignedPromoters->count() }})
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="calculation-tab" data-bs-toggle="tab" data-bs-target="#calculation" type="button" role="tab">
-                            <i class="icon-calculator me-2"></i>
                             Salary Calculation
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="attendance-tab" data-bs-toggle="tab" data-bs-target="#attendance" type="button" role="tab">
-                            <i class="icon-calendar me-2"></i>
                             Attendance
                         </button>
                     </li>
                 </ul>
-            </div>
 
-            <div class="card-body p-4">
                 <div class="tab-content" id="salaryTabsContent">
                     <!-- Overview Tab -->
                     <div class="tab-pane fade show active" id="overview" role="tabpanel">
                         <!-- Key Metrics Cards -->
-                        <div class="row mb-4">
+                            <div class="row mt-3 mb-4">
                             <div class="col-lg-3 col-md-6 mb-3">
-                                <div class="metric-card">
-                                    <div class="metric-icon">
-                                        <i class="icon-box"></i>
+                                    <div class="card border-left-primary">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Job Number</div>
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $eventJob->job_number }}</div>
                                     </div>
-                                    <div class="metric-content">
-                                        <h3 class="metric-value">{{ $eventJob->job_number }}</h3>
-                                        <p class="metric-label">Job Number</p>
+                                                <div class="col-auto">
+                                                    <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                                    </div>
+                                    </div>
+                                <div class="col-lg-3 col-md-6 mb-3">
+                                    <div class="card border-left-success">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Promoters</div>
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $assignedPromoters->count() }}</div>
+                                </div>
+                                                <div class="col-auto">
+                                                    <i class="fas fa-users fa-2x text-gray-300"></i>
+                            </div>
+                                    </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-6 mb-3">
-                                <div class="metric-card">
-                                    <div class="metric-icon">
-                                        <i class="icon-building"></i>
-                                    </div>
-                                    <div class="metric-content">
-                                        <h3 class="metric-value">{{ Str::limit($eventJob->client_name, 15) }}</h3>
-                                        <p class="metric-label">Client</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-3 col-md-6 mb-3">
-                                <div class="metric-card">
-                                    <div class="metric-icon">
-                                        <i class="icon-user"></i>
-                                    </div>
-                                    <div class="metric-content">
-                                        <h3 class="metric-value">{{ $assignedPromoters->count() }}</h3>
-                                        <p class="metric-label">Promoters</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-3 col-md-6 mb-3">
-                                <div class="metric-card">
-                                    <div class="metric-icon">
-                                        <i class="icon-calendar"></i>
-                                    </div>
-                                    <div class="metric-content">
-                                        <h3 class="metric-value">
+                                    <div class="card border-left-info">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Duration</div>
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
                                             @if($eventJob->activation_start_date && $eventJob->activation_end_date)
-                                                {{ $eventJob->activation_start_date->diffInDays($eventJob->activation_end_date) + 1 }}
+                                                            {{ $eventJob->activation_start_date->diffInDays($eventJob->activation_end_date) + 1 }} days
                                             @else
                                                 N/A
                                             @endif
-                                        </h3>
-                                        <p class="metric-label">Duration (Days)</p>
                                     </div>
                                 </div>
+                                                <div class="col-auto">
+                                                    <i class="fas fa-clock fa-2x text-gray-300"></i>
                             </div>
                         </div>
-
-                        <!-- Detailed Information -->
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="info-card">
-                                    <div class="info-card-header">
-                                        <h5 class="mb-0"><i class="icon-book me-2 text-primary"></i>Job Details</h5>
                                     </div>
-                                    <div class="info-card-body">
-                                        <div class="info-item">
-                                            <span class="info-label">Job Name:</span>
-                                            <span class="info-value">{{ $eventJob->job_name }}</span>
                                         </div>
-                                        <div class="info-item">
-                                            <span class="info-label">Start Date:</span>
-                                            <span class="info-value">
-                                                {{ $eventJob->activation_start_date ? $eventJob->activation_start_date->format('M d, Y') : 'Not Set' }}
-                                            </span>
                                         </div>
-                                        <div class="info-item">
-                                            <span class="info-label">End Date:</span>
-                                            <span class="info-value">
-                                                {{ $eventJob->activation_end_date ? $eventJob->activation_end_date->format('M d, Y') : 'Ongoing' }}
-                                            </span>
+                                <div class="col-lg-3 col-md-6 mb-3">
+                                    <div class="card border-left-warning">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Client</div>
+                                                    <div class="h6 mb-0 font-weight-bold text-gray-800">{{ Str::limit($eventJob->client_name, 15) }}</div>
                                         </div>
-                                        <div class="info-item">
-                                            <span class="info-label">Created:</span>
-                                            <span class="info-value">{{ $eventJob->created_at->format('M d, Y') }}</span>
+                                                <div class="col-auto">
+                                                    <i class="fas fa-building fa-2x text-gray-300"></i>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                                </div>
+                            </div>
+
+                            <!-- Detailed Information -->
+                            <div class="row">
                             <div class="col-md-6">
-                                <div class="info-card">
-                                    <div class="info-card-header">
-                                        <h5 class="mb-0"><i class="icon-user me-2 text-success"></i>Personnel</h5>
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6 class="m-0 font-weight-bold text-primary">
+                                                <i class="fas fa-info-circle"></i> Job Details
+                                            </h6>
                                     </div>
-                                    <div class="info-card-body">
-                                        <div class="info-item">
-                                            <span class="info-label">Officer:</span>
-                                            <span class="info-value">{{ $eventJob->officer_name }}</span>
+                                        <div class="card-body">
+                                            <table class="table table-borderless">
+                                                <tr>
+                                                    <td><strong>Job Name:</strong></td>
+                                                    <td>{{ $eventJob->job_name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Start Date:</strong></td>
+                                                    <td>{{ $eventJob->activation_start_date ? $eventJob->activation_start_date->format('M d, Y') : 'Not Set' }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>End Date:</strong></td>
+                                                    <td>{{ $eventJob->activation_end_date ? $eventJob->activation_end_date->format('M d, Y') : 'Ongoing' }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Created:</strong></td>
+                                                    <td>{{ $eventJob->created_at->format('M d, Y') }}</td>
+                                                </tr>
+                                            </table>
                                         </div>
-                                        <div class="info-item">
-                                            <span class="info-label">Reporter:</span>
-                                            <span class="info-value">{{ $eventJob->reporter_officer_name }}</span>
                                         </div>
-                                        <div class="info-item">
-                                            <span class="info-label">Status:</span>
-                                            <span class="info-value">
-                                                <span class="badge bg-success">Active</span>
-                                            </span>
                                         </div>
-                                        <div class="info-item">
-                                            <span class="info-label">Last Updated:</span>
-                                            <span class="info-value">{{ $eventJob->updated_at->diffForHumans() }}</span>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6 class="m-0 font-weight-bold text-success">
+                                                <i class="fas fa-user-tie"></i> Personnel
+                                            </h6>
                                         </div>
+                                        <div class="card-body">
+                                            <table class="table table-borderless">
+                                                <tr>
+                                                    <td><strong>Officer:</strong></td>
+                                                    <td>{{ $eventJob->officer_name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Reporter:</strong></td>
+                                                    <td>{{ $eventJob->reporter_officer_name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Status:</strong></td>
+                                                    <td><span class="badge badge-success">Active</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Last Updated:</strong></td>
+                                                    <td>{{ $eventJob->updated_at->diffForHumans() }}</td>
+                                                </tr>
+                                            </table>
                                     </div>
                                 </div>
                             </div>
@@ -192,15 +178,16 @@
 
                     <!-- Promoters Tab -->
                     <div class="tab-pane fade" id="promoters" role="tabpanel">
-                        @if($assignedPromoters->count() > 0)
+                            <div class="mt-3">
                             <!-- Header with Assign Button -->
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h5 class="mb-0 text-muted">Assigned Promoters ({{ $assignedPromoters->count() }})</h5>
                                 <a href="{{ admin_url('event-jobs/' . $eventJob->id . '/assign-promoters') }}" class="btn btn-primary">
-                                    <i class="icon-plus me-1"></i> Assign More Promoters
+                                        <i class="fas fa-plus"></i> Assign More Promoters
                                 </a>
                             </div>
                             
+                                @if($assignedPromoters->count() > 0)
                             <div class="table-responsive">
                                 <table class="table table-hover">
                                     <thead class="table-primary">
@@ -212,7 +199,7 @@
                                             <th class="text-white">Phone</th>
                                             <th class="text-white">Coordinator</th>
                                             <th class="text-white">Daily Salary</th>
-                                            <th class="text-white">Coordinator Commission</th>
+                                                    <th class="text-white">Commission</th>
                                             <th class="text-white">Bank Details</th>
                                             <th class="text-white">Actions</th>
                                         </tr>
@@ -220,19 +207,19 @@
                                     <tbody>
                                         @foreach($assignedPromoters as $index => $assignment)
                                             <tr>
-                                                <td class="fw-bold">{{ $index + 1 }}</td>
-                                                <td><span class="badge bg-primary">{{ $assignment->promoter->promoter_id }}</span></td>
-                                                <td class="fw-medium">{{ $assignment->promoter->promoter_name }}</td>
+                                                        <td class="font-weight-bold">{{ $index + 1 }}</td>
+                                                        <td><span class="badge badge-primary">{{ $assignment->promoter->promoter_id }}</span></td>
+                                                        <td class="font-weight-medium">{{ $assignment->promoter->promoter_name }}</td>
                                                 <td>{{ $assignment->promoter->id_no }}</td>
                                                 <td>{{ $assignment->promoter->phone_no }}</td>
                                                 <td>
-                                                    <span class="badge bg-info">{{ $assignment->coordinator->coordinator_name }}</span>
+                                                            <span class="badge badge-info">{{ $assignment->coordinator->coordinator_name }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="text-success fw-bold">${{ number_format($assignment->promoter_salary_per_day, 2) }}</span>
+                                                            <span class="text-success font-weight-bold">Rs. {{ number_format($assignment->promoter_salary_per_day, 2) }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="text-warning fw-bold">${{ number_format($assignment->supervisor_commission, 2) }}</span>
+                                                            <span class="text-warning font-weight-bold">Rs. {{ number_format($assignment->supervisor_commission, 2) }}</span>
                                                 </td>
                                                 <td>
                                                     <small class="text-muted">{{ $assignment->promoter->bank_name }}</small><br>
@@ -241,10 +228,10 @@
                                                 <td>
                                                     <div class="btn-group btn-group-sm" role="group">
                                                         <button class="btn btn-outline-primary" onclick="editPromoter({{ $assignment->promoter->id }})">
-                                                            <i class="icon-edit"></i>
+                                                                    <i class="fas fa-edit"></i>
                                                         </button>
                                                         <button class="btn btn-outline-success" onclick="calculateSalary({{ $assignment->promoter->id }})">
-                                                            <i class="icon-calculator"></i>
+                                                                    <i class="fas fa-calculator"></i>
                                                         </button>
                                                     </div>
                                                 </td>
@@ -254,28 +241,32 @@
                                 </table>
                             </div>
                         @else
-                            <div class="empty-state">
-                                <div class="empty-state-icon">
-                                    <i class="icon-user fa-3x text-muted"></i>
-                                </div>
-                                <h4 class="empty-state-title">No Promoters Assigned</h4>
-                                <p class="empty-state-text">This event job doesn't have any promoters assigned yet.</p>
+                                    <div class="alert alert-info text-center">
+                                        <div class="py-4">
+                                            <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                                            <h4 class="alert-heading">No Promoters Assigned</h4>
+                                            <p>This event job doesn't have any promoters assigned yet.</p>
                                 <a href="{{ admin_url('event-jobs/' . $eventJob->id . '/assign-promoters') }}" class="btn btn-primary">
-                                    <i class="icon-plus me-1"></i> Assign Promoters
+                                                <i class="fas fa-plus"></i> Assign Promoters
                                 </a>
+                                        </div>
                             </div>
                         @endif
+                            </div>
                     </div>
 
                     <!-- Salary Calculation Tab -->
                     <div class="tab-pane fade" id="calculation" role="tabpanel">
+                            <div class="mt-3">
                         <div class="row">
                             <div class="col-md-8">
-                                <div class="calculation-card">
-                                    <div class="calculation-header">
-                                        <h5 class="mb-0"><i class="icon-calculator me-2 text-primary"></i>Salary Calculation</h5>
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h6 class="m-0 font-weight-bold text-primary">
+                                                    <i class="fas fa-calculator"></i> Salary Calculation
+                                                </h6>
                                     </div>
-                                    <div class="calculation-body">
+                                            <div class="card-body">
                                         <form id="salary-form">
                                             <div class="row">
                                                 <div class="col-md-4">
@@ -297,12 +288,12 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="calculation-actions">
+                                                    <div class="mt-3">
                                                 <button type="button" class="btn btn-primary" onclick="calculateAllSalaries()">
-                                                    <i class="icon-calculator me-1"></i> Calculate All Salaries
+                                                            <i class="fas fa-calculator"></i> Calculate All Salaries
                                                 </button>
                                                 <button type="button" class="btn btn-success" onclick="generateSalarySheet()">
-                                                    <i class="icon-file me-1"></i> Generate Report
+                                                            <i class="fas fa-file"></i> Generate Report
                                                 </button>
                                             </div>
                                         </form>
@@ -310,14 +301,17 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="summary-card">
-                                    <div class="summary-header">
-                                        <h5 class="mb-0"><i class="icon-chart me-2 text-success"></i>Summary</h5>
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h6 class="m-0 font-weight-bold text-success">
+                                                    <i class="fas fa-chart-pie"></i> Summary
+                                                </h6>
                                     </div>
-                                    <div class="summary-body" id="salary-summary">
-                                        <div class="summary-placeholder">
-                                            <i class="icon-info text-muted"></i>
-                                            <p class="text-muted">Set parameters and calculate to see summary</p>
+                                            <div class="card-body" id="salary-summary">
+                                                <div class="text-center text-muted">
+                                                    <i class="fas fa-info-circle fa-2x mb-2"></i>
+                                                    <p>Set parameters and calculate to see summary</p>
+                                                </div>
                                         </div>
                                     </div>
                                 </div>
@@ -327,17 +321,7 @@
 
                     <!-- Attendance Tab -->
                     <div class="tab-pane fade" id="attendance" role="tabpanel">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="attendance-card">
-                                    <div class="attendance-header">
-                                        <h5 class="mb-0"><i class="icon-calendar me-2 text-primary"></i>Attendance Management</h5>
-                                        <small class="text-muted">Event Duration: {{ $eventJob->activation_start_date ? $eventJob->activation_start_date->format('M d, Y') : 'Not set' }} - {{ $eventJob->activation_end_date ? $eventJob->activation_end_date->format('M d, Y') : 'Not set' }}</small>
-                                        <div class="mt-2">
-                                            <small class="text-info">Debug: Event ID: {{ $eventJob->id }}, Assigned Promoters: {{ $assignedPromoters->count() }}</small>
-                                        </div>
-                                    </div>
-                                    <div class="attendance-body">
+                            <div class="mt-3">
                                         @if($eventJob->activation_start_date && $eventJob->activation_end_date)
                                             @php
                                                 $startDate = $eventJob->activation_start_date;
@@ -351,89 +335,166 @@
                                                 }
                                             @endphp
                                             
-                                            <!-- Filter and Search Bar -->
-                                            <div class="row mb-3">
-                                                <div class="col-md-8">
-                                                    <div class="attendance-filter">
-                                                        <h6 class="text-primary mb-2">Filter Promoters</h6>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text">
-                                                                <i class="icon-search"></i>
-                                                            </span>
-                                                            <input type="text" 
-                                                                   class="form-control" 
-                                                                   id="promoterFilter" 
-                                                                   placeholder="Search by promoter name or ID..."
-                                                                   onkeyup="filterPromoters()">
-                                                            <button class="btn btn-outline-secondary" onclick="clearFilter()">
-                                                                <i class="icon-times"></i> Clear
+                                    <!-- Event Summary -->
+                                    <div class="row mb-4">
+                                        <div class="col-md-6">
+                                            <div class="card border-left-info">
+                                                <div class="card-body">
+                                                    <div class="row no-gutters align-items-center">
+                                                        <div class="col mr-2">
+                                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Event Summary</div>
+                                                            <div class="h6 mb-0 font-weight-bold text-gray-800">
+                                                                {{ $startDate->format('M d, Y') }} - {{ $endDate->format('M d, Y') }}
+                                                            </div>
+                                                            <div class="text-xs text-muted">Total Days: {{ count($days) }}</div>
+                                                        </div>
+                                                        <div class="col-auto">
+                                                            <i class="fas fa-calendar-alt fa-2x text-gray-300"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="card border-left-success">
+                                                <div class="card-body">
+                                                    <div class="row no-gutters align-items-center">
+                                                        <div class="col mr-2">
+                                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Quick Actions</div>
+                                                            <div class="btn-group btn-group-sm">
+                                                                <button class="btn btn-outline-primary" onclick="markAllPresent()">
+                                                                    <i class="fas fa-check"></i> Mark All Present
+                                                                </button>
+                                                                <button class="btn btn-outline-success" onclick="exportAttendance()">
+                                                                    <i class="fas fa-download"></i> Export
                                                             </button>
                                                         </div>
                                                     </div>
+                                                        <div class="col-auto">
+                                                            <i class="fas fa-tools fa-2x text-gray-300"></i>
                                                 </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    @if($assignedPromoters->count() > 0)
+                                        <!-- Search and Filter Section -->
+                                        <div class="card mb-4">
+                                            <div class="card-header">
+                                                <h6 class="m-0 font-weight-bold text-primary">
+                                                    <i class="fas fa-search"></i> Search & Filter Promoters
+                                                </h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
                                                 <div class="col-md-4">
-                                                    <div class="attendance-save">
-                                                        <h6 class="text-success mb-2">Save Changes</h6>
-                                                        <button class="btn btn-success btn-sm" onclick="saveAllAttendance()">
-                                                            <i class="icon-save me-1"></i> Save All Changes
+                                                        <div class="form-group">
+                                                            <label class="form-label">Search by Name or ID</label>
+                                                            <div class="input-group">
+                                                                <input type="text" class="form-control" id="promoterSearch" 
+                                                                       placeholder="Enter promoter name or ID..." 
+                                                                       onkeyup="filterPromoters()"
+                                                                       onfocus="showSearchSuggestions()"
+                                                                       onblur="hideSearchSuggestions()">
+                                                                <div class="input-group-append">
+                                                                    <button class="btn btn-outline-secondary" type="button" onclick="clearSearch()">
+                                                                        <i class="fas fa-times"></i>
                                                         </button>
-                                                        <div class="mt-1">
-                                                            <small class="text-muted" id="saveStatus">All changes auto-saved</small>
+                                                        </div>
+                                                    </div>
+                                                            <div id="searchSuggestions" class="search-suggestions" style="display: none;"></div>
+                                                </div>
+                                            </div>
+                                                    <div class="col-md-2">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Sort By</label>
+                                                            <select class="form-control" id="sortBy" onchange="sortPromoters()">
+                                                                <option value="name">Name</option>
+                                                                <option value="id">ID</option>
+                                                                <option value="present">Present Days</option>
+                                                                <option value="absent">Absent Days</option>
+                                                            </select>
+                                                    </div>
+                                                </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Filter by Status</label>
+                                                            <select class="form-control" id="statusFilter" onchange="filterPromoters()">
+                                                                <option value="">All Promoters</option>
+                                                                <option value="present">Present Only</option>
+                                                                <option value="absent">Absent Only</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Quick Actions</label>
+                                                            <div class="btn-group w-100" role="group">
+                                                                <button class="btn btn-outline-primary btn-sm" onclick="clearFilters()">
+                                                                    <i class="fas fa-times"></i> Clear
+                                                        </button>
+                                                                <button class="btn btn-outline-success btn-sm" onclick="exportFiltered()">
+                                                                    <i class="fas fa-download"></i> Export
+                                                        </button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-
-                                            <div class="row mb-3">
-                                                <div class="col-md-6">
-                                                    <div class="attendance-summary">
-                                                        <h6 class="text-primary">Event Summary</h6>
-                                                        <p class="mb-1"><strong>Total Days:</strong> {{ count($days) }} days</p>
-                                                        <p class="mb-1"><strong>Start Date:</strong> {{ $startDate->format('M d, Y (l)') }}</p>
-                                                        <p class="mb-0"><strong>End Date:</strong> {{ $endDate->format('M d, Y (l)') }}</p>
+                                                <div class="row mt-2">
+                                                    <div class="col-12">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <small class="text-muted" id="filterResults">
+                                                                Showing {{ $assignedPromoters->count() }} promoters
+                                                            </small>
+                                                            <div class="btn-group btn-group-sm">
+                                                                <button class="btn btn-outline-primary" onclick="selectAllVisible()">
+                                                                    <i class="fas fa-check-square"></i> Select All Visible
+                                                                </button>
+                                                                <button class="btn btn-outline-success" onclick="markSelectedPresent()">
+                                                                    <i class="fas fa-check"></i> Mark Selected Present
+                                                                </button>
+                                                                <button class="btn btn-outline-info" onclick="testSearch()">
+                                                                    <i class="fas fa-bug"></i> Test Search
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="attendance-actions">
-                                                        <h6 class="text-success">Quick Actions</h6>
-                                                        <button class="btn btn-outline-primary btn-sm me-2" onclick="markAllPresent()">
-                                                            <i class="icon-check me-1"></i> Mark All Present
-                                                        </button>
-                                                        <button class="btn btn-outline-success btn-sm me-2" onclick="exportAttendance()">
-                                                            <i class="icon-download me-1"></i> Export
-                                                        </button>
-                                                        <button class="btn btn-outline-info btn-sm" onclick="printAttendance()">
-                                                            <i class="icon-printer me-1"></i> Print
-                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            @if($assignedPromoters->count() > 0)
+                                        <!-- Detailed Attendance Table -->
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h6 class="m-0 font-weight-bold text-primary">
+                                                    <i class="fas fa-table"></i> Detailed Attendance
+                                                </h6>
+                                            </div>
+                                            <div class="card-body">
                                                 <div class="table-responsive">
-                                                    <table class="table table-bordered attendance-table">
-                                                        <thead class="table-primary">
+                                                    <table class="table table-bordered table-sm">
+                                                        <thead class="table-primary" style="background: blue">
                                                             <tr>
-                                                                <th class="text-white sticky-column-left">Promoter</th>
+                                                                <th class="text-white sticky-column" style="background: #0d6efd !important;">Promoter</th>
                                                                 @foreach($days as $day)
-                                                                    <th class="text-white text-center" style="min-width: 80px;">
+                                                                    <th class="text-white text-center" style="min-width: 60px;background: #0d6efd !important;">
                                                                         {{ $day->format('M d') }}<br>
                                                                         <small>{{ $day->format('D') }}</small>
                                                                     </th>
                                                                 @endforeach
-                                                                <th class="text-white text-center sticky-column-right-3">Total Days</th>
-                                                                <th class="text-white text-center sticky-column-right-1">Present Days</th>
-                                                                <th class="text-white text-center sticky-column-right-2">Absent Days</th>
+                                                                <th class="text-white text-center" style="background: #0d6efd !important;">Total</th>
+                                                                <th class="text-white text-center" style="background: #0d6efd !important;">Present</th>
+                                                                <th class="text-white text-center" style="background: #0d6efd !important;">Absent</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             @foreach($assignedPromoters as $assignment)
                                                                 <tr>
-                                                                    <td class="fw-medium sticky-column-left">
-                                                                        <div>
+                                                                    <td class="font-weight-medium sticky-column">
                                                                             <strong>{{ $assignment->promoter->promoter_name }}</strong><br>
                                                                             <small class="text-muted">{{ $assignment->promoter->promoter_id }}</small>
-                                                                        </div>
                                                                     </td>
                                                                     @foreach($days as $day)
                                                                         @php
@@ -450,7 +511,7 @@
                                                                             }
                                                                         @endphp
                                                                         <td class="text-center">
-                                                                            <div class="attendance-checkbox">
+                                                                            <div class="form-check d-inline-block">
                                                                                 <input type="checkbox" 
                                                                                        class="form-check-input attendance-check" 
                                                                                        data-promoter="{{ $assignment->promoter->id }}" 
@@ -459,15 +520,15 @@
                                                                                        onchange="updateAttendance(this)">
                                                                                 <label class="form-check-label">
                                                                                     @if($isPresent)
-                                                                                        <i class="icon-check text-success"></i>
+                                                                                        <i class="fas fa-check text-success"></i>
                                                                                     @else
-                                                                                        <i class="icon-times text-danger"></i>
+                                                                                        <i class="fas fa-times text-danger"></i>
                                                                                     @endif
                                                                                 </label>
                                                                             </div>
                                                                         </td>
                                                                     @endforeach
-                                                                    <td class="text-center fw-bold sticky-column-right-3">{{ count($days) }}</td>
+                                                                    <td class="text-center font-weight-bold">{{ count($days) }}</td>
                                                                     @php
                                                                         $presentCount = 0;
                                                                         $absentCount = 0;
@@ -484,40 +545,50 @@
                                                                             $absentCount = count($days);
                                                                         }
                                                                     @endphp
-                                                                    <td class="text-center sticky-column-right-1">
-                                                                        <span class="badge bg-success" id="present-{{ $assignment->promoter->id }}">{{ $presentCount }}</span>
+                                                                    <td class="text-center">
+                                                                        <span class="badge badge-success" id="present-{{ $assignment->promoter->id }}">{{ $presentCount }}</span>
                                                                     </td>
-                                                                    <td class="text-center sticky-column-right-2">
-                                                                        <span class="badge bg-danger" id="absent-{{ $assignment->promoter->id }}">{{ $absentCount }}</span>
+                                                                    <td class="text-center">
+                                                                        <span class="badge badge-danger" id="absent-{{ $assignment->promoter->id }}">{{ $absentCount }}</span>
                                                                     </td>
                                                                 </tr>
                                                             @endforeach
                                                         </tbody>
                                                     </table>
                                                 </div>
-                                            @else
-                                                <div class="empty-state">
-                                                    <div class="empty-state-icon">
-                                                        <i class="icon-user fa-3x text-muted"></i>
+
+                                                <!-- Save Button -->
+                                                <div class="mt-3 text-center">
+                                                    <button class="btn btn-success" onclick="saveAllAttendance()">
+                                                        <i class="fas fa-save"></i> Save All Changes
+                                                    </button>
+                                                    <div class="mt-2">
+                                                        <small class="text-muted" id="saveStatus">Click Save All Changes to save</small>
                                                     </div>
-                                                    <h4 class="empty-state-title">No Promoters Assigned</h4>
-                                                    <p class="empty-state-text">Please assign promoters first to manage attendance.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="alert alert-warning text-center">
+                                            <div class="py-4">
+                                                <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                                                <h4 class="alert-heading">No Promoters Assigned</h4>
+                                                <p>Please assign promoters first to manage attendance.</p>
                                                     <a href="{{ admin_url('event-jobs/' . $eventJob->id . '/assign-promoters') }}" class="btn btn-primary">
-                                                        <i class="icon-plus me-1"></i> Assign Promoters
+                                                    <i class="fas fa-plus"></i> Assign Promoters
                                                     </a>
+                                            </div>
                                                 </div>
                                             @endif
                                         @else
-                                            <div class="empty-state">
-                                                <div class="empty-state-icon">
-                                                    <i class="icon-calendar fa-3x text-muted"></i>
+                                    <div class="alert alert-warning text-center">
+                                        <div class="py-4">
+                                            <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                                            <h4 class="alert-heading">Event Dates Not Set</h4>
+                                            <p>Please set the event start and end dates to manage attendance.</p>
                                                 </div>
-                                                <h4 class="empty-state-title">Event Dates Not Set</h4>
-                                                <p class="empty-state-text">Please set the event start and end dates to manage attendance.</p>
                                             </div>
                                         @endif
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -528,6 +599,45 @@
 </div>
 
 <script>
+// Initialize variables first
+let filterTimeout;
+let currentFilters = {
+    search: '',
+    status: '',
+    sortBy: 'name',
+    sortOrder: 'asc'
+};
+
+// Essential JavaScript functions for salary sheet functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Bootstrap tabs with vanilla JS
+    const tabButtons = document.querySelectorAll('#salaryTabs button');
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('data-bs-target');
+            const targetTab = document.querySelector(targetId);
+            
+            // Hide all tab panes
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('show', 'active');
+            });
+            
+            // Remove active class from all buttons
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show target tab and activate button
+            if (targetTab) {
+                targetTab.classList.add('show', 'active');
+                this.classList.add('active');
+            }
+        });
+    });
+});
+
+// Promoter management functions
 function editPromoter(promoterId) {
     alert('Edit promoter functionality will be implemented here. Promoter ID: ' + promoterId);
 }
@@ -536,6 +646,7 @@ function calculateSalary(promoterId) {
     alert('Calculate salary for promoter ID: ' + promoterId);
 }
 
+// Salary calculation functions
 function calculateAllSalaries() {
     var dailyRate = document.getElementById('daily_rate').value;
     var overtimeRate = document.getElementById('overtime_rate').value;
@@ -560,29 +671,30 @@ function calculateAllSalaries() {
     var grandTotal = totalSalary + totalOvertime + totalBonus;
 
     var summaryHtml = `
-        <div class="summary-item">
-            <div class="summary-label">Total Promoters</div>
-            <div class="summary-value">${totalPromoters}</div>
+        <div class="row">
+            <div class="col-6"><strong>Total Promoters:</strong></div>
+            <div class="col-6">${totalPromoters}</div>
         </div>
-        <div class="summary-item">
-            <div class="summary-label">Total Days</div>
-            <div class="summary-value">${totalDays}</div>
+        <div class="row">
+            <div class="col-6"><strong>Total Days:</strong></div>
+            <div class="col-6">${totalDays}</div>
         </div>
-        <div class="summary-item">
-            <div class="summary-label">Base Salary</div>
-            <div class="summary-value">Rs. ${totalSalary.toLocaleString()}</div>
+        <div class="row">
+            <div class="col-6"><strong>Base Salary:</strong></div>
+            <div class="col-6">Rs. ${totalSalary.toLocaleString()}</div>
         </div>
-        <div class="summary-item">
-            <div class="summary-label">Overtime</div>
-            <div class="summary-value">Rs. ${totalOvertime.toLocaleString()}</div>
+        <div class="row">
+            <div class="col-6"><strong>Overtime:</strong></div>
+            <div class="col-6">Rs. ${totalOvertime.toLocaleString()}</div>
         </div>
-        <div class="summary-item">
-            <div class="summary-label">Bonus</div>
-            <div class="summary-value">Rs. ${totalBonus.toLocaleString()}</div>
+        <div class="row">
+            <div class="col-6"><strong>Bonus:</strong></div>
+            <div class="col-6">Rs. ${totalBonus.toLocaleString()}</div>
         </div>
-        <div class="summary-item total">
-            <div class="summary-label">Grand Total</div>
-            <div class="summary-value">Rs. ${grandTotal.toLocaleString()}</div>
+        <hr>
+        <div class="row">
+            <div class="col-6"><strong>Grand Total:</strong></div>
+            <div class="col-6"><strong>Rs. ${grandTotal.toLocaleString()}</strong></div>
         </div>
     `;
 
@@ -593,37 +705,57 @@ function generateSalarySheet() {
     alert('Salary sheet generation functionality will be implemented here');
 }
 
-function exportSalarySheet() {
-    alert('Export functionality will be implemented here');
+// Attendance management functions
+function updateAttendance(checkbox) {
+    const promoterId = checkbox.dataset.promoter;
+    const date = checkbox.dataset.date;
+    const status = checkbox.checked ? 'attend' : 'absent';
+
+    // Update visual feedback immediately
+    const label = checkbox.nextElementSibling;
+    if (checkbox.checked) {
+        label.innerHTML = '<i class="fas fa-check text-success"></i>';
+    } else {
+        label.innerHTML = '<i class="fas fa-times text-danger"></i>';
+    }
+
+    // Update attendance counts
+    updateAttendanceCounts(promoterId);
+
+    // Update save status
+    updateSaveStatus('Changes pending - Click Save All Changes', 'warning');
 }
 
-function printSalarySheet() {
-    window.print();
+function updateAttendanceCounts(promoterId) {
+    // Count present/absent days for this promoter
+    const promoterCheckboxes = document.querySelectorAll(`[data-promoter="${promoterId}"]`);
+    let presentCount = 0;
+    let absentCount = 0;
+
+    promoterCheckboxes.forEach(cb => {
+        if (cb.checked) {
+            presentCount++;
+        } else {
+            absentCount++;
+        }
+    });
+
+    // Update badges
+    const presentBadge = document.getElementById(`present-${promoterId}`);
+    const absentBadge = document.getElementById(`absent-${promoterId}`);
+
+    if (presentBadge) presentBadge.textContent = presentCount;
+    if (absentBadge) absentBadge.textContent = absentCount;
 }
 
 function markAllPresent() {
     if (confirm('Are you sure you want to mark all promoters as present for all days?')) {
-        const eventId = {{ $eventJob->id }};
-        
-        fetch('{{ admin_url("event-jobs/mark-all-present") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({
-                event_id: eventId
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
                 // Update all checkboxes visually
                 const checkboxes = document.querySelectorAll('.attendance-check');
                 checkboxes.forEach(checkbox => {
                     checkbox.checked = true;
                     const label = checkbox.nextElementSibling;
-                    label.innerHTML = '<i class="icon-check text-success"></i>';
+            label.innerHTML = '<i class="fas fa-check text-success"></i>';
                 });
                 
                 // Update all attendance counts
@@ -632,15 +764,7 @@ function markAllPresent() {
                     updateAttendanceCounts(promoterId);
                 });
                 
-                alert('All promoters marked as present successfully!');
-            } else {
-                alert('Failed to mark all present: ' + (data.message || 'Unknown error'));
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Failed to mark all present. Please try again.');
-        });
+        updateSaveStatus('All promoters marked as present', 'success');
     }
 }
 
@@ -648,698 +772,945 @@ function exportAttendance() {
     alert('Export attendance functionality will be implemented here');
 }
 
-function printAttendance() {
-    const attendanceTable = document.querySelector('.attendance-table');
-    if (attendanceTable) {
-        const printWindow = window.open('', '_blank');
-        printWindow.document.write(`
-            <html>
-                <head>
-                    <title>Attendance Report - {{ $eventJob->job_name }}</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; }
-                        table { border-collapse: collapse; width: 100%; }
-                        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-                        th { background-color: #007bff; color: white; }
-                    </style>
-                </head>
-                <body>
-                    <h2>Attendance Report - {{ $eventJob->job_name }}</h2>
-                    <p><strong>Event Duration:</strong> {{ $eventJob->activation_start_date ? $eventJob->activation_start_date->format('M d, Y') : 'Not set' }} - {{ $eventJob->activation_end_date ? $eventJob->activation_end_date->format('M d, Y') : 'Not set' }}</p>
-                    ${attendanceTable.outerHTML}
-                </body>
-            </html>
-        `);
-        printWindow.document.close();
-        printWindow.print();
-    }
-}
-
-function updateAttendance(checkbox) {
-    const promoterId = checkbox.dataset.promoter;
-    const eventId = {{ $eventJob->id }};
-    const date = checkbox.dataset.date;
-    const status = checkbox.checked ? 'attend' : 'absent';
-    
-    console.log('Updating attendance:', { promoterId, eventId, date, status });
-    
-    // Update visual feedback immediately
-    const label = checkbox.nextElementSibling;
-    if (checkbox.checked) {
-        label.innerHTML = '<i class="icon-check text-success"></i>';
-    } else {
-        label.innerHTML = '<i class="icon-times text-danger"></i>';
-    }
-    
-    // Send AJAX request to save attendance
-    fetch('{{ admin_url("event-jobs/update-attendance") }}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: JSON.stringify({
-            promoter_id: promoterId,
-            event_id: eventId,
-            date: date,
-            status: status
-        })
-    })
-    .then(response => {
-        console.log('Response status:', response.status);
-        return response.json();
-    })
-    .then(data => {
-        console.log('Response data:', data);
-        if (data.success) {
-            updateAttendanceCounts(promoterId);
-            console.log('Attendance updated successfully');
-        } else {
-            // Revert checkbox if save failed
-            checkbox.checked = !checkbox.checked;
-            if (checkbox.checked) {
-                label.innerHTML = '<i class="icon-check text-success"></i>';
-            } else {
-                label.innerHTML = '<i class="icon-times text-danger"></i>';
-            }
-            alert('Failed to update attendance: ' + (data.message || 'Unknown error'));
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        // Revert checkbox if save failed
-        checkbox.checked = !checkbox.checked;
-        if (checkbox.checked) {
-            label.innerHTML = '<i class="icon-check text-success"></i>';
-        } else {
-            label.innerHTML = '<i class="icon-times text-danger"></i>';
-        }
-        alert('Failed to update attendance. Please try again.');
-    });
-}
-
-function updateAttendanceCounts(promoterId) {
-    // Count present/absent days for this promoter
-    const promoterCheckboxes = document.querySelectorAll(`[data-promoter="${promoterId}"]`);
-    let presentCount = 0;
-    let absentCount = 0;
-    
-    promoterCheckboxes.forEach(cb => {
-        if (cb.checked) {
-            presentCount++;
-        } else {
-            absentCount++;
-        }
-    });
-    
-    // Update badges
-    const presentBadge = document.getElementById(`present-${promoterId}`);
-    const absentBadge = document.getElementById(`absent-${promoterId}`);
-    
-    if (presentBadge) presentBadge.textContent = presentCount;
-    if (absentBadge) absentBadge.textContent = absentCount;
-}
-
-// Attendance data is now loaded server-side, no need for AJAX loading
-
-function filterPromoters() {
-    const filterValue = document.getElementById('promoterFilter').value.toLowerCase();
-    const tableRows = document.querySelectorAll('.attendance-table tbody tr');
-    
-    tableRows.forEach(row => {
-        const promoterName = row.querySelector('td:first-child strong').textContent.toLowerCase();
-        const promoterId = row.querySelector('td:first-child small').textContent.toLowerCase();
-        
-        if (promoterName.includes(filterValue) || promoterId.includes(filterValue)) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
-    });
-    
-    // Update save status
-    updateSaveStatus('Filtered promoters');
-}
-
-function clearFilter() {
-    document.getElementById('promoterFilter').value = '';
-    const tableRows = document.querySelectorAll('.attendance-table tbody tr');
-    
-    tableRows.forEach(row => {
-        row.style.display = '';
-    });
-    
-    updateSaveStatus('Filter cleared');
-}
-
 function saveAllAttendance() {
-    const saveButton = document.querySelector('button[onclick="saveAllAttendance()"]');
-    const originalText = saveButton.innerHTML;
-    
-    // Show loading state
-    saveButton.innerHTML = '<i class="icon-spinner fa-spin me-1"></i> Saving...';
-    saveButton.disabled = true;
-    
-    // Get all checkboxes
-    const checkboxes = document.querySelectorAll('.attendance-check');
-    const eventId = {{ $eventJob->id }};
-    let savePromises = [];
-    
-    checkboxes.forEach(checkbox => {
-        const promoterId = checkbox.dataset.promoter;
-        const date = checkbox.dataset.date;
-        const status = checkbox.checked ? 'attend' : 'absent';
-        
-        const savePromise = fetch('{{ admin_url("event-jobs/update-attendance") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({
-                promoter_id: promoterId,
-                event_id: eventId,
-                date: date,
-                status: status
-            })
-        });
-        
-        savePromises.push(savePromise);
-    });
-    
-    // Wait for all saves to complete
-    Promise.all(savePromises)
-    .then(responses => {
-        const allSuccessful = responses.every(response => response.ok);
-        
-        if (allSuccessful) {
-            updateSaveStatus('All changes saved successfully!', 'success');
-        } else {
-            updateSaveStatus('Some changes failed to save', 'error');
-        }
-    })
-    .catch(error => {
-        console.error('Error saving attendance:', error);
-        updateSaveStatus('Error saving changes', 'error');
-    })
-    .finally(() => {
-        // Reset button state
-        saveButton.innerHTML = originalText;
-        saveButton.disabled = false;
-    });
+    alert('Save attendance functionality will be implemented here');
 }
 
 function updateSaveStatus(message, type = 'info') {
     const statusElement = document.getElementById('saveStatus');
-    statusElement.textContent = message;
-    
-    // Remove existing classes
-    statusElement.classList.remove('text-success', 'text-danger', 'text-info', 'text-muted');
-    
-    // Add appropriate class
-    if (type === 'success') {
-        statusElement.classList.add('text-success');
-    } else if (type === 'error') {
-        statusElement.classList.add('text-danger');
-    } else if (type === 'info') {
-        statusElement.classList.add('text-info');
-    } else {
-        statusElement.classList.add('text-muted');
+    if (statusElement) {
+        statusElement.textContent = message;
+        statusElement.className = 'text-muted';
+
+        if (type === 'success') {
+            statusElement.className = 'text-success';
+        } else if (type === 'warning') {
+            statusElement.className = 'text-warning';
+        } else if (type === 'error') {
+            statusElement.className = 'text-danger';
+        }
     }
 }
 
-$(document).ready(function() {
-    // Initialize tooltips
-    $('[data-toggle="tooltip"]').tooltip();
-    
-    // Initialize attendance counts for all promoters
-    initializeAttendanceCounts();
-});
+// Dynamic search and filter functions
 
-function initializeAttendanceCounts() {
-    // Get all unique promoter IDs from checkboxes
-    const promoterIds = [...new Set(Array.from(document.querySelectorAll('.attendance-check')).map(cb => cb.dataset.promoter))];
+function filterPromoters() {
+    // Clear previous timeout to prevent multiple rapid calls
+    clearTimeout(filterTimeout);
     
-    // Update counts for each promoter
+    // Debounce the filtering for better performance
+    filterTimeout = setTimeout(() => {
+        performFiltering();
+    }, 150);
+}
+
+function performFiltering() {
+    const searchInput = document.getElementById('promoterSearch');
+    const statusFilter = document.getElementById('statusFilter');
+    
+    // Check if elements exist
+    if (!searchInput || !statusFilter) {
+        console.warn('Search or filter elements not found');
+        return;
+    }
+    
+    const searchTerm = searchInput.value.toLowerCase();
+    const statusValue = statusFilter.value;
+    const rows = Array.from(document.querySelectorAll('tbody tr'));
+    let visibleRows = [];
+    let visibleCount = 0;
+
+    console.log('Filtering with search term:', searchTerm, 'status:', statusValue);
+    console.log('Found rows:', rows.length);
+
+    // Update current filters
+    currentFilters.search = searchTerm;
+    currentFilters.status = statusValue;
+
+    rows.forEach((row, index) => {
+        // Safely get elements with null checks
+        const promoterCell = row.querySelector('td:first-child'); // First column contains both name and ID
+        const presentBadge = row.querySelector('.badge-success');
+        const absentBadge = row.querySelector('.badge-danger');
+        
+        // Check if required elements exist
+        if (!promoterCell) {
+            console.warn('Required promoter cell not found in row', index);
+            return;
+        }
+        
+        const cellText = promoterCell.textContent ? promoterCell.textContent.toLowerCase() : '';
+        console.log('Row', index, 'cell text:', cellText);
+        
+        // Check search term with fuzzy matching
+        const matchesSearch = searchTerm === '' || 
+                             cellText.includes(searchTerm) ||
+                             fuzzyMatch(cellText, searchTerm);
+        
+        // Check status filter
+        let matchesStatus = true;
+        if (statusValue === 'present') {
+            matchesStatus = presentBadge && presentBadge.textContent && parseInt(presentBadge.textContent) > 0;
+        } else if (statusValue === 'absent') {
+            matchesStatus = absentBadge && absentBadge.textContent && parseInt(absentBadge.textContent) > 0;
+        }
+        
+        console.log('Row', index, 'matches search:', matchesSearch, 'matches status:', matchesStatus);
+        
+        // Show/hide row with animation
+        if (matchesSearch && matchesStatus) {
+            row.style.display = '';
+            row.style.opacity = '0';
+            row.style.transform = 'translateY(-10px)';
+            
+            // Animate in
+            setTimeout(() => {
+                row.style.transition = 'all 0.3s ease';
+                row.style.opacity = '1';
+                row.style.transform = 'translateY(0)';
+            }, 50);
+            
+            visibleRows.push(row);
+            visibleCount++;
+        } else {
+            // Animate out
+            row.style.transition = 'all 0.3s ease';
+            row.style.opacity = '0';
+            row.style.transform = 'translateY(-10px)';
+            
+            setTimeout(() => {
+                row.style.display = 'none';
+            }, 300);
+        }
+    });
+    
+    console.log('Visible count:', visibleCount);
+    
+    // Update filter results with animation
+    updateFilterResults(visibleCount);
+    
+    // Update quick action buttons state
+    updateQuickActionButtons(visibleCount > 0);
+    
+    // Highlight search terms
+    highlightSearchTerms(searchTerm);
+}
+
+function fuzzyMatch(text, pattern) {
+    if (!pattern) return true;
+    
+    const textLower = text.toLowerCase();
+    const patternLower = pattern.toLowerCase();
+    
+    let patternIndex = 0;
+    for (let i = 0; i < textLower.length && patternIndex < patternLower.length; i++) {
+        if (textLower[i] === patternLower[patternIndex]) {
+            patternIndex++;
+        }
+    }
+    
+    return patternIndex === patternLower.length;
+}
+
+function highlightSearchTerms(searchTerm) {
+    if (!searchTerm) {
+        // Remove all highlights
+        document.querySelectorAll('.search-highlight').forEach(el => {
+            el.classList.remove('search-highlight');
+        });
+        return;
+    }
+    
+    const rows = document.querySelectorAll('tbody tr:not([style*="display: none"])');
+    rows.forEach(row => {
+        const promoterCell = row.querySelector('td:first-child'); // First column contains both name and ID
+        
+        // Highlight in promoter cell (contains both name and ID)
+        if (promoterCell && promoterCell.textContent && promoterCell.textContent.toLowerCase().includes(searchTerm)) {
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            promoterCell.innerHTML = promoterCell.textContent.replace(regex, '<span class="search-highlight">$1</span>');
+        }
+    });
+}
+
+function updateFilterResults(count) {
+    const resultsElement = document.getElementById('filterResults');
+    
+    if (!resultsElement) {
+        console.warn('Filter results element not found');
+        return;
+    }
+    
+    const totalPromoters = {{ $assignedPromoters->count() }};
+    
+    // Animate the counter
+    resultsElement.style.transition = 'all 0.3s ease';
+    resultsElement.style.transform = 'scale(1.1)';
+    
+    setTimeout(() => {
+        resultsElement.textContent = `Showing ${count} of ${totalPromoters} promoters`;
+        resultsElement.style.transform = 'scale(1)';
+        
+        // Add color coding based on results
+        if (count === 0) {
+            resultsElement.className = 'text-danger';
+        } else if (count < totalPromoters) {
+            resultsElement.className = 'text-warning';
+        } else {
+            resultsElement.className = 'text-success';
+        }
+    }, 150);
+}
+
+function updateQuickActionButtons(hasResults) {
+    const buttons = document.querySelectorAll('.btn-group-sm button');
+    buttons.forEach(button => {
+        if (hasResults) {
+            button.disabled = false;
+            button.style.opacity = '1';
+        } else {
+            button.disabled = true;
+            button.style.opacity = '0.5';
+        }
+    });
+}
+
+function clearFilters() {
+    document.getElementById('promoterSearch').value = '';
+    document.getElementById('statusFilter').value = '';
+    document.getElementById('sortBy').value = 'name';
+    currentFilters = { search: '', status: '', sortBy: 'name', sortOrder: 'asc' };
+    filterPromoters();
+}
+
+function clearSearch() {
+    document.getElementById('promoterSearch').value = '';
+    filterPromoters();
+    hideSearchSuggestions();
+}
+
+function sortPromoters() {
+    const sortBy = document.getElementById('sortBy').value;
+    const tbody = document.querySelector('tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    
+    // Toggle sort order if clicking same column
+    if (currentFilters.sortBy === sortBy) {
+        currentFilters.sortOrder = currentFilters.sortOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+        currentFilters.sortBy = sortBy;
+        currentFilters.sortOrder = 'asc';
+    }
+    
+    rows.sort((a, b) => {
+        let aValue, bValue;
+        
+        switch (sortBy) {
+            case 'name':
+                aValue = a.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                bValue = b.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                break;
+            case 'id':
+                aValue = a.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                bValue = b.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                break;
+            case 'present':
+                aValue = parseInt(a.querySelector('.badge-success').textContent) || 0;
+                bValue = parseInt(b.querySelector('.badge-success').textContent) || 0;
+                break;
+            case 'absent':
+                aValue = parseInt(a.querySelector('.badge-danger').textContent) || 0;
+                bValue = parseInt(b.querySelector('.badge-danger').textContent) || 0;
+                break;
+            default:
+                return 0;
+        }
+        
+        if (currentFilters.sortOrder === 'asc') {
+            return aValue > bValue ? 1 : -1;
+        } else {
+            return aValue < bValue ? 1 : -1;
+        }
+    });
+    
+    // Re-append sorted rows with animation
+    rows.forEach((row, index) => {
+        row.style.transition = 'all 0.3s ease';
+        row.style.transform = `translateY(${index * 2}px)`;
+        tbody.appendChild(row);
+    });
+    
+    // Update sort indicator
+    updateSortIndicator();
+}
+
+function updateSortIndicator() {
+    const sortBy = document.getElementById('sortBy');
+    const sortIcon = sortBy.parentElement.querySelector('.sort-icon');
+    
+    if (sortIcon) {
+        sortIcon.remove();
+    }
+    
+    const icon = document.createElement('i');
+    icon.className = `fas fa-sort-${currentFilters.sortOrder === 'asc' ? 'up' : 'down'} sort-icon`;
+    icon.style.marginLeft = '5px';
+    icon.style.color = 'var(--primary-color)';
+    
+    sortBy.parentElement.appendChild(icon);
+}
+
+function showSearchSuggestions() {
+    const searchInput = document.getElementById('promoterSearch');
+    const suggestionsDiv = document.getElementById('searchSuggestions');
+    const searchTerm = searchInput.value.toLowerCase();
+    
+    if (searchTerm.length < 2) {
+        hideSearchSuggestions();
+        return;
+    }
+    
+    const rows = document.querySelectorAll('tbody tr');
+    const suggestions = new Set();
+    
+    rows.forEach(row => {
+        const promoterCell = row.querySelector('td:first-child');
+        if (promoterCell && promoterCell.textContent) {
+            const cellText = promoterCell.textContent.toLowerCase();
+            
+            // Extract name and ID from the cell text
+            const lines = cellText.split('\n');
+            const name = lines[0] ? lines[0].trim() : '';
+            const id = lines[1] ? lines[1].trim() : '';
+            
+            if (name.includes(searchTerm)) {
+                suggestions.add(name);
+            }
+            if (id.includes(searchTerm)) {
+                suggestions.add(id);
+            }
+        }
+    });
+    
+    if (suggestions.size > 0) {
+        suggestionsDiv.innerHTML = Array.from(suggestions)
+            .slice(0, 5)
+            .map(suggestion => `<div class="suggestion-item" onclick="selectSuggestion('${suggestion}')">${suggestion}</div>`)
+            .join('');
+        
+        suggestionsDiv.style.display = 'block';
+    } else {
+        hideSearchSuggestions();
+    }
+}
+
+function hideSearchSuggestions() {
+    setTimeout(() => {
+        document.getElementById('searchSuggestions').style.display = 'none';
+    }, 200);
+}
+
+function selectSuggestion(suggestion) {
+    document.getElementById('promoterSearch').value = suggestion;
+    hideSearchSuggestions();
+    filterPromoters();
+}
+
+function selectAllVisible() {
+    const visibleRows = document.querySelectorAll('tbody tr:not([style*="display: none"])');
+    const checkboxes = [];
+    
+    visibleRows.forEach(row => {
+        const rowCheckboxes = row.querySelectorAll('.attendance-check');
+        rowCheckboxes.forEach(checkbox => {
+            checkbox.checked = true;
+            const label = checkbox.nextElementSibling;
+            label.innerHTML = '<i class="fas fa-check text-success"></i>';
+            checkboxes.push(checkbox);
+        });
+    });
+    
+    // Update counts for all promoters
+    const promoterIds = [...new Set(checkboxes.map(cb => cb.dataset.promoter))];
     promoterIds.forEach(promoterId => {
         updateAttendanceCounts(promoterId);
     });
+    
+    updateSaveStatus(`${checkboxes.length} attendance records selected`, 'success');
+}
+
+function markSelectedPresent() {
+    const visibleRows = document.querySelectorAll('tbody tr:not([style*="display: none"])');
+    let markedCount = 0;
+    
+    visibleRows.forEach(row => {
+        const checkboxes = row.querySelectorAll('.attendance-check');
+        checkboxes.forEach(checkbox => {
+            if (!checkbox.checked) {
+                checkbox.checked = true;
+                const label = checkbox.nextElementSibling;
+                label.innerHTML = '<i class="fas fa-check text-success"></i>';
+                markedCount++;
+            }
+        });
+    });
+    
+    // Update counts for all promoters
+    const promoterIds = [...new Set(Array.from(document.querySelectorAll('.attendance-check')).map(cb => cb.dataset.promoter))];
+    promoterIds.forEach(promoterId => {
+        updateAttendanceCounts(promoterId);
+    });
+    
+    updateSaveStatus(`${markedCount} attendance records marked as present`, 'success');
+}
+
+function exportFiltered() {
+    const visibleRows = document.querySelectorAll('tbody tr:not([style*="display: none"])');
+    let csvContent = "Promoter Name,Promoter ID,Total Days,Present Days,Absent Days\n";
+    
+    visibleRows.forEach(row => {
+        const promoterCell = row.querySelector('td:first-child');
+        if (promoterCell && promoterCell.textContent) {
+            const cellText = promoterCell.textContent.trim();
+            const lines = cellText.split('\n');
+            const promoterName = lines[0] ? lines[0].trim() : '';
+            const promoterId = lines[1] ? lines[1].trim() : '';
+            
+            const totalDays = row.querySelector('td:nth-last-child(3)') ? row.querySelector('td:nth-last-child(3)').textContent.trim() : '0';
+            const presentDays = row.querySelector('.badge-success') ? row.querySelector('.badge-success').textContent.trim() : '0';
+            const absentDays = row.querySelector('.badge-danger') ? row.querySelector('.badge-danger').textContent.trim() : '0';
+            
+            csvContent += `"${promoterName}","${promoterId}","${totalDays}","${presentDays}","${absentDays}"\n`;
+        }
+    });
+    
+    // Create and download CSV file
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'attendance_report.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+    
+    updateSaveStatus('Attendance report exported successfully', 'success');
+}
+
+// Test function to debug search
+function testSearch() {
+    console.log('=== TESTING SEARCH FUNCTIONALITY ===');
+    
+    // Check if we're on the attendance tab
+    const attendanceTab = document.getElementById('attendance');
+    if (!attendanceTab || !attendanceTab.classList.contains('active')) {
+        alert('Please switch to the Attendance tab first to test search functionality.');
+        return;
+    }
+    
+    // Check table structure
+    const rows = document.querySelectorAll('tbody tr');
+    console.log('Total rows found:', rows.length);
+    
+    if (rows.length === 0) {
+        alert('No attendance table rows found. Make sure you are on the Attendance tab.');
+        return;
+    }
+    
+    // Test first row
+    const firstRow = rows[0];
+    const promoterCell = firstRow.querySelector('td:first-child');
+    
+    if (promoterCell) {
+        console.log('First row promoter cell text:', promoterCell.textContent);
+        console.log('First row promoter cell HTML:', promoterCell.innerHTML);
+        
+        // Test search with first promoter name
+        const cellText = promoterCell.textContent.toLowerCase();
+        const lines = cellText.split('\n');
+        const promoterName = lines[0] ? lines[0].trim() : '';
+        
+        if (promoterName) {
+            console.log('Testing search with:', promoterName);
+            document.getElementById('promoterSearch').value = promoterName;
+            filterPromoters();
+        } else {
+            alert('Could not extract promoter name from first row.');
+        }
+    } else {
+        alert('Could not find promoter cell in first row.');
+    }
 }
 </script>
 
 <style>
-/* Professional UI Styles */
-.salary-icon {
-    width: 60px;
-    height: 60px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* Enhanced color scheme and modern styling */
+:root {
+    --primary-color: #4f46e5;
+    --primary-light: #6366f1;
+    --primary-dark: #3730a3;
+    --success-color: #059669;
+    --success-light: #10b981;
+    --info-color: #0891b2;
+    --info-light: #06b6d4;
+    --warning-color: #d97706;
+    --warning-light: #f59e0b;
+    --danger-color: #dc2626;
+    --danger-light: #ef4444;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
 }
 
-/* Promoter Table Header Styling */
-.table-primary {
-    background-color: #007bff !important;
+/* Card border colors with improved gradients */
+.border-left-primary {
+    border-left: 4px solid var(--primary-color) !important;
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, rgba(99, 102, 241, 0.02) 100%);
 }
 
-.table-primary th {
-    background-color: #007bff !important;
-    color: white !important;
-    font-weight: 600;
-    border-color: #0056b3 !important;
+.border-left-success {
+    border-left: 4px solid var(--success-color) !important;
+    background: linear-gradient(135deg, rgba(5, 150, 105, 0.05) 0%, rgba(16, 185, 129, 0.02) 100%);
 }
 
-.table-primary th.text-white {
-    color: white !important;
+.border-left-info {
+    border-left: 4px solid var(--info-color) !important;
+    background: linear-gradient(135deg, rgba(8, 145, 178, 0.05) 0%, rgba(6, 182, 212, 0.02) 100%);
 }
 
-/* Attendance Tab Styling */
-.attendance-card {
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+.border-left-warning {
+    border-left: 4px solid var(--warning-color) !important;
+    background: linear-gradient(135deg, rgba(217, 119, 6, 0.05) 0%, rgba(245, 158, 11, 0.02) 100%);
 }
 
-.attendance-header {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    padding: 20px;
-    border-bottom: 1px solid #dee2e6;
-}
-
-.attendance-body {
-    padding: 20px;
-}
-
-.attendance-summary {
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 8px;
-    border-left: 4px solid #007bff;
-}
-
-.attendance-actions {
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 8px;
-    border-left: 4px solid #28a745;
-}
-
-.attendance-table {
-    font-size: 0.9rem;
-}
-
-.attendance-table th {
-    font-size: 0.8rem;
-    padding: 8px 4px;
-    vertical-align: middle;
-}
-
-.attendance-table td {
-    padding: 8px 4px;
-    vertical-align: middle;
-}
-
-.attendance-checkbox {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.attendance-checkbox input[type="checkbox"] {
-    margin: 0;
-    transform: scale(1.2);
-}
-
-.attendance-checkbox label {
-    margin: 0;
-    cursor: pointer;
-}
-
-.attendance-checkbox i {
-    font-size: 1.2rem;
-}
-
-/* Filter and Save Styling */
-.attendance-filter {
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 8px;
-    border-left: 4px solid #007bff;
-}
-
-.attendance-save {
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 8px;
-    border-left: 4px solid #28a745;
-}
-
-.attendance-filter .input-group-text {
-    background-color: #e9ecef;
-    border-color: #ced4da;
-}
-
-.attendance-filter .form-control:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-}
-
-#saveStatus {
-    font-size: 0.8rem;
-    font-weight: 500;
-}
-
-/* Sticky columns for attendance table */
-.sticky-column-left {
-    position: sticky;
-    left: 0;
-    background-color: #007bff !important;
-    z-index: 10;
-    border-right: 2px solid #0056b3 !important;
-    min-width: 150px;
-}
-
-.sticky-column-right-3 {
-    position: sticky;
-    right: 160px;
-    background-color: #007bff !important;
-    z-index: 10;
-    border-left: 2px solid #0056b3 !important;
-}
-
-.sticky-column-right-1 {
-    position: sticky;
-    right: 80px;
-    background-color: #007bff !important;
-    z-index: 10;
-    border-left: 2px solid #0056b3 !important;
-}
-
-.sticky-column-right-2 {
-    position: sticky;
-    right: 0;
-    background-color: #007bff !important;
-    z-index: 10;
-    border-left: 2px solid #0056b3 !important;
-}
-
-/* Ensure sticky columns work in table */
-.attendance-table {
-    position: relative;
-}
-
-.attendance-table thead th.sticky-column-left,
-.attendance-table thead th.sticky-column-right-3,
-.attendance-table thead th.sticky-column-right-1,
-.attendance-table thead th.sticky-column-right-2 {
-    background-color: #007bff !important;
-    color: white !important;
-}
-
-.attendance-table tbody td.sticky-column-left {
-    background-color: white !important;
-    border-right: 2px solid #0056b3 !important;
-}
-
-.attendance-table tbody td.sticky-column-right-3,
-.attendance-table tbody td.sticky-column-right-1,
-.attendance-table tbody td.sticky-column-right-2 {
-    background-color: white !important;
-    border-left: 2px solid #0056b3 !important;
-}
-
-.metric-card {
-    background: #f5f5f5;
-    border: 1px solid #cfcfcf;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+/* Enhanced card styling */
+.card {
+    border: 1px solid var(--gray-200);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
     transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
 }
 
-.metric-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    border-color: #dee2e6;
+.card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transform: translateY(-1px);
 }
 
-.metric-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #924f89 0%, #3093f6 100%);
+.card-header {
+    background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+    border-bottom: 1px solid var(--gray-200);
 }
 
-.metric-icon {
-    font-size: 1.5rem;
-    color: #6c757d !important;
-    width: 40px;
-    height: 40px;
-    background: #f8f9fa;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 15px;
-    flex-shrink: 0;
+/* Improved badge colors */
+.badge-primary {
+    background-color: var(--primary-color) !important;
+    color: white !important;
 }
 
-.metric-content {
-    flex: 1;
+.badge-success {
+    background-color: var(--success-color) !important;
+    color: white !important;
 }
 
-.metric-value {
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 4px;
-    color: #212529 !important;
-    line-height: 1.2;
+.badge-info {
+    background-color: var(--info-color) !important;
+    color: white !important;
 }
 
-.metric-label {
-    font-size: 0.875rem;
-    color: #6c757d !important;
-    margin: 0;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+.badge-warning {
+    background-color: var(--warning-color) !important;
+    color: white !important;
 }
 
-.info-card {
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    overflow: hidden;
+.badge-danger {
+    background-color: var(--danger-color) !important;
+    color: white !important;
 }
 
-.info-card-header {
-    background: #f8f9fa;
-    padding: 15px 20px;
-    border-bottom: 1px solid #e9ecef;
+/* Enhanced button styling */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    transition: all 0.3s ease;
 }
 
-.info-card-body {
-    padding: 20px;
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
 }
 
-.info-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #f1f3f4;
+.btn-success {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+    transition: all 0.3s ease;
 }
 
-.info-item:last-child {
-    border-bottom: none;
+.btn-success:hover {
+    background-color: #047857;
+    border-color: #047857;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(5, 150, 105, 0.3);
 }
 
-.info-label {
-    font-weight: 600;
-    color: #6c757d !important;
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    transition: all 0.3s ease;
 }
 
-.info-value {
-    font-weight: 500;
-    color: #212529 !important;
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
 }
 
-.calculation-card {
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+.btn-outline-success {
+    color: var(--success-color);
+    border-color: var(--success-color);
+    transition: all 0.3s ease;
 }
 
-.summary-card {
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    height: fit-content;
+.btn-outline-success:hover {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+    transform: translateY(-1px);
 }
 
-.calculation-header, .summary-header {
-    background: #f8f9fa;
-    padding: 12px 15px;
-    border-bottom: 1px solid #e9ecef;
-}
-
-.calculation-body, .summary-body {
-    padding: 15px;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-label {
-    font-weight: 600;
-    color: #495057 !important;
-    margin-bottom: 8px;
-}
-
-.calculation-actions {
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid #e9ecef;
-}
-
-.empty-state {
-    text-align: center;
-    padding: 60px 20px;
-}
-
-.empty-state-icon {
-    margin-bottom: 20px;
-}
-
-.empty-state-title {
-    color: #6c757d;
-    margin-bottom: 10px;
-}
-
-.empty-state-text {
-    color: #adb5bd;
-    margin-bottom: 30px;
-}
-
-.summary-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid #f1f3f4;
-}
-
-.summary-item:last-child {
-    border-bottom: none;
-}
-
-.summary-item.total {
-    background: #f8f9fa;
-    margin: 10px -20px -20px -20px;
-    padding: 15px 20px;
-    border-radius: 0 0 15px 15px;
-    font-weight: bold;
-    color: #28a745;
-}
-
-.summary-label {
-    font-weight: 500;
-    color: #6c757d !important;
-}
-
-.summary-value {
-    font-weight: 600;
-    color: #212529 !important;
-}
-
-.summary-placeholder {
-    text-align: left;
-    padding: 15px 10px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 8px;
-}
-
-.summary-placeholder i {
-    font-size: 1.2rem;
-    margin: 0;
-    color: #6c757d !important;
-}
-
-.summary-placeholder p {
-    margin: 0;
-    font-size: 0.9rem;
-    color: #6c757d !important;
+/* Enhanced table styling */
+.table-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%) !important;
 }
 
 .table-hover tbody tr:hover {
-    background-color: #f8f9fa;
+    background-color: rgba(79, 70, 229, 0.05);
+    transition: background-color 0.3s ease;
 }
 
-/* Print styles */
-@media print {
-    .btn-group, .nav-pills, .btn {
-        display: none !important;
-    }
-
-    .card {
-        border: none !important;
-        box-shadow: none !important;
-    }
-
-    .tab-content .tab-pane {
-        display: block !important;
-    }
+/* Sticky column with better styling */
+.sticky-column {
+    position: sticky;
+    left: 0;
+    background-color: white;
+    z-index: 10;
+    border-right: 2px solid var(--gray-200);
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Additional color fixes */
-.card-body {
-    color: #212529 !important;
+/* Enhanced progress bars */
+.progress {
+    background-color: var(--gray-200);
+    border-radius: 10px;
+    overflow: hidden;
 }
 
-.card-body h1, .card-body h2, .card-body h3, .card-body h4, .card-body h5, .card-body h6 {
-    color: #212529 !important;
+.progress-bar {
+    background: linear-gradient(90deg, var(--success-color) 0%, var(--success-light) 100%);
+    transition: width 0.6s ease;
 }
 
-.card-body p, .card-body span, .card-body div {
-    color: inherit;
+.progress-sm {
+    height: 0.5rem;
 }
 
-.table td, .table th {
-    color: #212529 !important;
+/* Enhanced attendance checkboxes */
+.attendance-check {
+    transform: scale(1.3);
+    accent-color: var(--success-color);
+}
+
+.attendance-check:checked {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+/* Enhanced form styling */
+.form-control {
+    border: 1px solid var(--gray-300);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+/* Enhanced alert styling */
+.alert-info {
+    background: linear-gradient(135deg, rgba(8, 145, 178, 0.1) 0%, rgba(6, 182, 212, 0.05) 100%);
+    border: 1px solid rgba(8, 145, 178, 0.2);
+    color: var(--info-color);
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, rgba(217, 119, 6, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
+    border: 1px solid rgba(217, 119, 6, 0.2);
+    color: var(--warning-color);
+}
+
+.alert-success {
+    background: linear-gradient(135deg, rgba(5, 150, 105, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+    border: 1px solid rgba(5, 150, 105, 0.2);
+    color: var(--success-color);
+}
+
+/* Enhanced text colors */
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.text-success {
+    color: var(--success-color) !important;
+}
+
+.text-info {
+    color: var(--info-color) !important;
+}
+
+.text-warning {
+    color: var(--warning-color) !important;
+}
+
+.text-danger {
+    color: var(--danger-color) !important;
+}
+
+.text-gray-300 {
+    color: var(--gray-300) !important;
+}
+
+.text-gray-800 {
+    color: var(--gray-800) !important;
+}
+
+/* Enhanced tab styling */
+.nav-tabs .nav-link {
+    border: 1px solid transparent;
+    border-radius: 8px 8px 0 0;
+    transition: all 0.3s ease;
+    color: var(--gray-600);
+}
+
+.nav-tabs .nav-link:hover {
+    border-color: var(--gray-200);
+    color: var(--primary-color);
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--primary-color);
+    background-color: white;
+    border-color: var(--gray-200) var(--gray-200) white;
+    font-weight: 600;
+}
+
+/* Enhanced table responsive */
+.table-responsive {
+    max-height: 500px;
+    overflow-y: auto;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Enhanced icon colors */
+.fa-2x.text-gray-300 {
+    color: var(--gray-300) !important;
+}
+
+/* Enhanced spacing and typography */
+.font-weight-bold {
+    font-weight: 700 !important;
+}
+
+.font-weight-medium {
+    font-weight: 500 !important;
+}
+
+/* Enhanced border radius */
+.card, .btn, .form-control, .table {
+    border-radius: 8px;
+}
+
+/* Enhanced shadows */
+.card {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 
 .btn {
-    color: inherit !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Enhanced transitions */
+* {
+    transition: all 0.3s ease;
+}
+
+/* Custom scrollbar */
+.table-responsive::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: var(--gray-100);
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: var(--gray-400);
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: var(--gray-500);
+}
+
+/* Dynamic search suggestions */
+.search-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid var(--gray-300);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.suggestion-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.suggestion-item:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+/* Search highlight */
+.search-highlight {
+    background-color: #ffeb3b;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-weight: bold;
+    color: var(--gray-800);
+}
+
+/* Enhanced input group */
+.input-group .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.input-group-append .btn {
+    border-color: var(--gray-300);
+    transition: all 0.3s ease;
+}
+
+.input-group-append .btn:hover {
+    background-color: var(--gray-100);
+    border-color: var(--gray-400);
+}
+
+/* Sort indicator */
+.sort-icon {
+    transition: all 0.3s ease;
+}
+
+/* Enhanced table row animations */
+tbody tr {
+    transition: all 0.3s ease;
+}
+
+tbody tr:hover {
+    background-color: rgba(79, 70, 229, 0.05);
+    transform: translateX(5px);
+}
+
+/* Dynamic filter results animation */
+#filterResults {
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+/* Enhanced button states */
+.btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.btn:not(:disabled):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Loading states */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid var(--primary-color);
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Enhanced form positioning */
+.form-group {
+    position: relative;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .metric-card {
-        margin-bottom: 15px;
+    .search-suggestions {
+        position: fixed;
+        top: auto;
+        left: 15px;
+        right: 15px;
+        z-index: 1050;
     }
-
-    .btn-group {
+    
+    .input-group {
+        flex-wrap: nowrap;
+    }
+    
+    .btn-group-sm {
         flex-direction: column;
     }
 
-    .btn-group .btn {
+    .btn-group-sm .btn {
         margin-bottom: 5px;
     }
 }
