@@ -1046,22 +1046,29 @@ function updateSaveStatus(message, type = 'info') {
 // Dynamic search and filter functions
 
 function filterPromoters() {
+    console.log('=== FILTER PROMOTERS CALLED ===');
+    
     // Clear previous timeout to prevent multiple rapid calls
     clearTimeout(filterTimeout);
 
     // Debounce the filtering for better performance
     filterTimeout = setTimeout(() => {
+        console.log('Executing performFiltering...');
         performFiltering();
     }, 150);
 }
 
 function performFiltering() {
+    console.log('=== PERFORM FILTERING STARTED ===');
+    
     const searchInput = document.getElementById('promoterSearch');
     const statusFilter = document.getElementById('statusFilter');
 
     // Check if elements exist
     if (!searchInput || !statusFilter) {
         console.warn('Search or filter elements not found');
+        console.log('searchInput:', searchInput);
+        console.log('statusFilter:', statusFilter);
         return;
     }
 
@@ -1071,6 +1078,11 @@ function performFiltering() {
     
     console.log('Filtering with search term:', searchTerm, 'status:', statusValue);
     console.log('Found rows:', allRows.length);
+    
+    if (allRows.length === 0) {
+        console.warn('No table rows found!');
+        return;
+    }
 
     // Update current filters
     currentFilters.search = searchTerm;
@@ -1105,11 +1117,19 @@ function performFiltering() {
         return matchesSearch && matchesStatus;
     });
 
-    // Reset to first page when filtering
-    currentPage = 1;
-    
-    // Apply pagination
-    applyPagination();
+    // Show/hide rows based on filter results
+    allRows.forEach((row, index) => {
+        const isVisible = filteredRows.includes(row);
+        row.style.display = isVisible ? '' : 'none';
+        
+        // Add animation effect
+        if (isVisible) {
+            row.style.opacity = '0';
+            setTimeout(() => {
+                row.style.opacity = '1';
+            }, index * 10);
+        }
+    });
     
     // Update filter results
     updateFilterResults(filteredRows.length);
@@ -1119,6 +1139,9 @@ function performFiltering() {
     
     // Highlight search terms
     highlightSearchTerms(searchTerm);
+    
+    console.log('=== PERFORM FILTERING COMPLETED ===');
+    console.log('Filtered rows:', filteredRows.length);
 }
 
 function fuzzyMatch(text, pattern) {
