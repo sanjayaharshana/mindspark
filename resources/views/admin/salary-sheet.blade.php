@@ -901,16 +901,19 @@ $(document).ready(function() {
     // Initialize tooltips
     $('[data-toggle="tooltip"]').tooltip();
     
-    // Load attendance data when attendance tab is shown
-    $('#attendance-tab').on('shown.bs.tab', function() {
-        loadAttendanceData();
-    });
-    
-    // Load attendance data if attendance tab is already active
-    if ($('#attendance-tab').hasClass('active')) {
-        loadAttendanceData();
-    }
+    // Initialize attendance counts for all promoters
+    initializeAttendanceCounts();
 });
+
+function initializeAttendanceCounts() {
+    // Get all unique promoter IDs from checkboxes
+    const promoterIds = [...new Set(Array.from(document.querySelectorAll('.attendance-check')).map(cb => cb.dataset.promoter))];
+    
+    // Update counts for each promoter
+    promoterIds.forEach(promoterId => {
+        updateAttendanceCounts(promoterId);
+    });
+}
 </script>
 
 <style>
