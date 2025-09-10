@@ -708,4 +708,102 @@ class EventJobController extends AdminController
                 'totalCoordinators' => count($coordinatorCommissions)
             ]));
     }
+
+    /**
+     * Generate print view for commission sheet
+     */
+    public function commissionSheetPrint($id, Content $content)
+    {
+        $eventJob = EventJob::findOrFail($id);
+        $assignedPromoters = $eventJob->assignedPromoters()->with(['promoter', 'coordinator'])->get();
+
+        // Load attendance data if event has dates set
+        $attendanceData = [];
+        $eventDates = [];
+        $days = [];
+        
+        if ($eventJob->activation_start_date && $eventJob->activation_end_date) {
+            $attendanceData = Attendance::getAttendanceForEvent(
+                $eventJob->id,
+                $eventJob->activation_start_date,
+                $eventJob->activation_end_date
+            );
+            
+            // Generate array of all event dates for the table headers
+            $startDate = \Carbon\Carbon::parse($eventJob->activation_start_date);
+            $endDate = \Carbon\Carbon::parse($eventJob->activation_end_date);
+            
+            $currentDate = $startDate->copy();
+            while ($currentDate->lte($endDate)) {
+                $eventDates[] = $currentDate->format('Y-m-d');
+                $days[] = $currentDate->copy();
+                $currentDate->addDay();
+            }
+        }
+
+        // Group promoters by coordinator for commission calculation
+        $coordinatorCommissions = [];
+        $totalCommission = 0;
+        $totalPromoters = $assignedPromoters->count();
+        $totalDays = count($days);
+
+        foreach ($assignedPromoters as $assignment) {
+            $coordinatorId = $assignment->supervisor_id;
+            $coordinatorName = $assignment->coordinator->coordinator_name ?? 'Unknown';
+            
+            if (!isset($coordinatorCommissions[$coordinatorId])) {
+                $coordinatorCommissions[$coordinatorId] = [
+                    'coordinator_name' => $coordinatorName,
+                    'coordinator_id' => $assignment->coordinator->coordinator_id ?? 'N/A',
+                    'phone_no' => $assignment->coordinator->phone_no ?? 'N/A',
+                    'bank_name' => $assignment->coordinator->bank_name ?? 'N/A',
+                    'bank_branch' => $assignment->coordinator->bank_branch_name ?? 'N/A',
+                    'account_number' => $assignment->coordinator->account_number ?? 'N/A',
+                    'promoters' => [],
+                    'total_present_days' => 0,
+                    'total_absent_days' => 0,
+                    'total_commission' => 0,
+                ];
+            }
+
+            // Calculate attendance for this promoter
+            $presentDays = 0;
+            $absentDays = 0;
+            if (isset($attendanceData[$assignment->promoter_id])) {
+                $promoterAttendance = $attendanceData[$assignment->promoter_id];
+                $presentDays = $promoterAttendance->where('status', 'attend')->count();
+                $absentDays = $promoterAttendance->where('status', 'absent')->count();
+            }
+
+            $promoterCommission = $assignment->supervisor_commission * $presentDays;
+            
+            $coordinatorCommissions[$coordinatorId]['promoters'][] = [
+                'promoter_id' => $assignment->promoter->promoter_id,
+                'promoter_name' => $assignment->promoter->promoter_name,
+                'phone_no' => $assignment->promoter->phone_no ?? 'N/A',
+                'daily_commission' => $assignment->supervisor_commission,
+                'present_days' => $presentDays,
+                'absent_days' => $absentDays,
+                'total_days' => $totalDays,
+                'commission_amount' => $promoterCommission,
+            ];
+
+            $coordinatorCommissions[$coordinatorId]['total_present_days'] += $presentDays;
+            $coordinatorCommissions[$coordinatorId]['total_absent_days'] = ($coordinatorCommissions[$coordinatorId]['total_absent_days'] ?? 0) + $absentDays;
+            $coordinatorCommissions[$coordinatorId]['total_commission'] += $promoterCommission;
+            $totalCommission += $promoterCommission;
+        }
+
+        return view('admin.commission-sheet-print', [
+            'eventJob' => $eventJob,
+            'coordinatorCommissions' => $coordinatorCommissions,
+            'attendanceData' => $attendanceData,
+            'eventDates' => $eventDates,
+            'days' => $days,
+            'totalPromoters' => $totalPromoters,
+            'totalDays' => $totalDays,
+            'totalCommission' => $totalCommission,
+            'totalCoordinators' => count($coordinatorCommissions)
+        ]);
+    }
 }

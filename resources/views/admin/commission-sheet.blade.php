@@ -75,9 +75,9 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Coordinator Commission Breakdown</h5>
                 <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="window.print()">
+                    <a href="{{ route('admin.event-jobs.commission-sheet.print', $eventJob->id) }}" target="_blank" class="btn btn-outline-primary btn-sm">
                         <i class="fas fa-print"></i> Print Report
-                    </button>
+                    </a>
                     <button type="button" class="btn btn-outline-success btn-sm" onclick="exportToExcel()">
                         <i class="fas fa-file-excel"></i> Export Excel
                     </button>
