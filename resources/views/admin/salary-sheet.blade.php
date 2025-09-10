@@ -1,3 +1,4 @@
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="container-fluid">
 <div class="row mb-4">
     <div class="col-12">
@@ -191,7 +192,7 @@
                                         <i class="fas fa-plus"></i> Assign More Promoters
                                 </a>
                             </div>
-                            
+
                                 @if($assignedPromoters->count() > 0)
                             <div class="table-responsive">
                                 <table class="table table-hover">
@@ -263,65 +264,65 @@
                     <!-- Salary Calculation Tab -->
                     <div class="tab-pane fade" id="calculation" role="tabpanel">
                             <div class="mt-3">
-                        <div class="row">
-                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-md-8">
                                         <div class="card">
                                             <div class="card-header">
                                                 <h6 class="m-0 font-weight-bold text-primary">
                                                     <i class="fas fa-calculator"></i> Salary Calculation
                                                 </h6>
-                                    </div>
+                                            </div>
                                             <div class="card-body">
-                                        <form id="salary-form">
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label class="form-label">Daily Rate (Rs.)</label>
-                                                        <input type="number" class="form-control" id="daily_rate" placeholder="Enter daily rate">
+                                                <form id="salary-form">
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label class="form-label">Daily Rate (Rs.)</label>
+                                                                <input type="number" class="form-control" id="daily_rate" placeholder="Enter daily rate">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label class="form-label">Overtime Rate (Rs.)</label>
+                                                                <input type="number" class="form-control" id="overtime_rate" placeholder="Enter overtime rate">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label class="form-label">Bonus (Rs.)</label>
+                                                                <input type="number" class="form-control" id="bonus" placeholder="Enter bonus amount">
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label class="form-label">Overtime Rate (Rs.)</label>
-                                                        <input type="number" class="form-control" id="overtime_rate" placeholder="Enter overtime rate">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label class="form-label">Bonus (Rs.)</label>
-                                                        <input type="number" class="form-control" id="bonus" placeholder="Enter bonus amount">
-                                                    </div>
-                                                </div>
-                                            </div>
                                                     <div class="mt-3">
-                                                <button type="button" class="btn btn-primary" onclick="calculateAllSalaries()">
+                                                        <button type="button" class="btn btn-primary" onclick="calculateAllSalaries()">
                                                             <i class="fas fa-calculator"></i> Calculate All Salaries
-                                                </button>
-                                                <button type="button" class="btn btn-success" onclick="generateSalarySheet()">
+                                                        </button>
+                                                        <button type="button" class="btn btn-success" onclick="generateSalarySheet()">
                                                             <i class="fas fa-file"></i> Generate Report
-                                                </button>
+                                                        </button>
+                                                    </div>
+                                                </form>
                                             </div>
-                                        </form>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
+                                    <div class="col-md-4">
                                         <div class="card">
                                             <div class="card-header">
                                                 <h6 class="m-0 font-weight-bold text-success">
                                                     <i class="fas fa-chart-pie"></i> Summary
                                                 </h6>
-                                    </div>
+                                            </div>
                                             <div class="card-body" id="salary-summary">
                                                 <div class="text-center text-muted">
                                                     <i class="fas fa-info-circle fa-2x mb-2"></i>
                                                     <p>Set parameters and calculate to see summary</p>
                                                 </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
                     </div>
 
                     <!-- Attendance Tab -->
@@ -333,13 +334,13 @@
                                                 $endDate = $eventJob->activation_end_date;
                                                 $days = [];
                                                 $currentDate = $startDate->copy();
-                                                
+
                                                 while ($currentDate->lte($endDate)) {
                                                     $days[] = $currentDate->copy();
                                                     $currentDate->addDay();
                                                 }
                                             @endphp
-                                            
+
                                     <!-- Event Summary -->
                                     <div class="row mb-4">
                                         <div class="col-md-6">
@@ -372,12 +373,12 @@
                                                                 </button>
                                                                 <button class="btn btn-outline-success" onclick="exportAttendance()">
                                                                     <i class="fas fa-download"></i> Export
-                                                            </button>
+                                                                </button>
+                                                            </div>
                                                         </div>
-                                                    </div>
                                                         <div class="col-auto">
                                                             <i class="fas fa-tools fa-2x text-gray-300"></i>
-                                                </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -408,7 +409,7 @@
                                             </div>
                                             @if($assignedPromoters->count() > 0)
                                                 <div class="mt-2">
-                                                    <strong>Promoter IDs:</strong> 
+                                                    <strong>Promoter IDs:</strong>
                                                     @foreach($assignedPromoters as $assignment)
                                                         {{ $assignment->promoter->id }}{{ !$loop->last ? ', ' : '' }}
                                                     @endforeach
@@ -427,7 +428,7 @@
                                             </div>
                                             <div class="card-body">
                                                 <div class="row">
-                                                <div class="col-md-4">
+                                                    <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label class="form-label">Search by Name or ID</label>
                                                             <div class="input-group">
@@ -439,12 +440,12 @@
                                                                 <div class="input-group-append">
                                                                     <button class="btn btn-outline-secondary" type="button" onclick="clearSearch()">
                                                                         <i class="fas fa-times"></i>
-                                                        </button>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            <div id="searchSuggestions" class="search-suggestions" style="display: none;"></div>
                                                         </div>
                                                     </div>
-                                                            <div id="searchSuggestions" class="search-suggestions" style="display: none;"></div>
-                                                </div>
-                                            </div>
                                                     <div class="col-md-2">
                                                         <div class="form-group">
                                                             <label class="form-label">Sort By</label>
@@ -454,8 +455,8 @@
                                                                 <option value="present">Present Days</option>
                                                                 <option value="absent">Absent Days</option>
                                                             </select>
+                                                        </div>
                                                     </div>
-                                                </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">Filter by Status</label>
@@ -472,44 +473,43 @@
                                                             <div class="btn-group w-100" role="group">
                                                                 <button class="btn btn-outline-primary btn-sm" onclick="clearFilters()">
                                                                     <i class="fas fa-times"></i> Clear
-                                                        </button>
+                                                                </button>
                                                                 <button class="btn btn-outline-success btn-sm" onclick="exportFiltered()">
                                                                     <i class="fas fa-download"></i> Export
-                                                        </button>
+                                                                </button>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="row mt-2">
-                                                <div class="col-md-6">
+                                                    <div class="col-md-6">
                                                         <div class="d-flex align-items-center">
                                                             <small class="text-muted" id="filterResults">
                                                                 Showing {{ $assignedPromoters->count() }} promoters
                                                             </small>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-md-6">
+                                                    <div class="col-md-6">
                                                         <div class="d-flex justify-content-end">
                                                             <div class="btn-group btn-group-sm mr-3">
                                                                 <button class="btn btn-outline-primary" onclick="selectAllVisible()">
                                                                     <i class="fas fa-check-square"></i> Select All Visible
-                                                        </button>
+                                                                </button>
                                                                 <button class="btn btn-outline-success" onclick="markSelectedPresent()">
                                                                     <i class="fas fa-check"></i> Mark Selected Present
-                                                        </button>
+                                                                </button>
                                                                 <button class="btn btn-outline-info" onclick="testSearch()">
                                                                     <i class="fas fa-bug"></i> Test Search
                                                                 </button>
                                                                 <button class="btn btn-outline-secondary" onclick="clearSavedTab()">
                                                                     <i class="fas fa-trash"></i> Clear Saved Tab
-                                                        </button>
+                                                                </button>
                                                             </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-
-                                                </div>
-                                            </div>
+                                        </div>
 
                                         <!-- Detailed Attendance Table -->
                                         <div class="card">
@@ -539,7 +539,7 @@
                                                             @if($assignedPromoters->count() > 0)
                                                             @foreach($assignedPromoters as $assignment)
                                                                 <tr>
-                                                                        <td class="font-weight-medium sticky-column" style="background: #dcdcdc">
+                                                                    <td class="font-weight-medium sticky-column" style="background: #dcdcdc">
                                                                             <strong>{{ $assignment->promoter->promoter_name }}</strong><br>
                                                                             <small class="text-muted">{{ $assignment->promoter->promoter_id }}</small>
                                                                     </td>
@@ -559,9 +559,9 @@
                                                                         @endphp
                                                                         <td class="text-center">
                                                                             <div class="form-check d-inline-block">
-                                                                                <input type="checkbox" 
-                                                                                       class="form-check-input attendance-check" 
-                                                                                       data-promoter="{{ $assignment->promoter->id }}" 
+                                                                                <input type="checkbox"
+                                                                                       class="form-check-input attendance-check"
+                                                                                       data-promoter="{{ $assignment->promoter->id }}"
                                                                                        data-date="{{ $dayKey }}"
                                                                                        {{ $isPresent ? 'checked' : '' }}
                                                                                        onchange="updateAttendance(this)">
@@ -633,24 +633,24 @@
                                                 <i class="fas fa-users fa-3x text-muted mb-3"></i>
                                                 <h4 class="alert-heading">No Promoters Assigned</h4>
                                                 <p>Please assign promoters first to manage attendance.</p>
-                                                    <a href="{{ admin_url('event-jobs/' . $eventJob->id . '/assign-promoters') }}" class="btn btn-primary">
+                                                <a href="{{ admin_url('event-jobs/' . $eventJob->id . '/assign-promoters') }}" class="btn btn-primary">
                                                     <i class="fas fa-plus"></i> Assign Promoters
-                                                    </a>
+                                                </a>
                                             </div>
-                                                </div>
-                                            @endif
-                                        @else
+                                        </div>
+                                    @endif
+                                @else
                                     <div class="alert alert-warning text-center">
                                         <div class="py-4">
                                             <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
                                             <h4 class="alert-heading">Event Dates Not Set</h4>
                                             <p>Please set the event start and end dates to manage attendance.</p>
-                                                </div>
-                                            </div>
-                                        @endif
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                         </div>
-                    </div>
+
 
                     <!-- Salary Settings Tab -->
                     <div class="tab-pane fade" id="settings" role="tabpanel">
@@ -669,8 +669,8 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label class="form-label">Default Commission for Coordinator (%)</label>
-                                                            <input type="number" class="form-control" 
-                                                                   id="default_commission_coordinator" 
+                                                            <input type="number" class="form-control"
+                                                                   id="default_commission_coordinator"
                                                                    name="default_commission_coordinator"
                                                                    value="{{ $eventJob->default_commission_coordinator ?? '' }}"
                                                                    step="0.01" min="0" max="100"
@@ -681,8 +681,8 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label class="form-label">Default Salary for Promoter (Rs.)</label>
-                                                            <input type="number" class="form-control" 
-                                                                   id="default_salary_promoter" 
+                                                            <input type="number" class="form-control"
+                                                                   id="default_salary_promoter"
                                                                    name="default_salary_promoter"
                                                                    value="{{ $eventJob->default_salary_promoter ?? '' }}"
                                                                    step="0.01" min="0"
@@ -691,13 +691,13 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
                                                             <label class="form-label">Salary Rules</label>
-                                                            <textarea class="form-control" 
-                                                                      id="salary_rules" 
+                                                            <textarea class="form-control"
+                                                                      id="salary_rules"
                                                                       name="salary_rules"
                                                                       rows="6"
                                                                       placeholder="Enter salary calculation rules and policies...">{{ $eventJob->salary_rules ?? '' }}</textarea>
@@ -705,21 +705,17 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
                                                             <label class="form-label">Special Note</label>
-                                                            <textarea class="form-control" 
-                                                                      id="special_note" 
-                                                                      name="special_note"
-                                                                      rows="4"
-                                                                      placeholder="Enter any special notes for this event...">{{ $eventJob->special_note ?? '' }}</textarea>
+                                                            <textarea class="form-control" id="special_note" name="special_note" rows="4" placeholder="Enter any special notes for this event...">{{ $eventJob->special_note ?? '' }}</textarea>
                                                             <small class="form-text text-muted">Any special instructions, notes, or important information for this event</small>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="row mt-4">
                                                     <div class="col-md-12">
                                                         <div class="d-flex justify-content-between">
@@ -736,7 +732,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="col-md-4">
                                     <div class="card">
                                         <div class="card-header">
@@ -754,7 +750,7 @@
                                                     <li><strong>Special Note:</strong> Add event-specific instructions</li>
                                                 </ul>
                                             </div>
-                                            
+
                                             <div class="alert alert-warning">
                                                 <h6><i class="fas fa-exclamation-triangle"></i> Important</h6>
                                                 <p class="mb-0">These settings will be used as defaults when assigning new promoters or coordinators to this event.</p>
@@ -765,6 +761,11 @@
                             </div>
                         </div>
                     </div>
+
+
+                    </div>
+
+
                 </div>
             </div>
         </div>
@@ -785,12 +786,12 @@ let currentFilters = {
 document.addEventListener('DOMContentLoaded', function() {
     // Tab persistence functionality
     const TAB_STORAGE_KEY = 'salarySheetActiveTab';
-    
+
     // Function to save active tab
     function saveActiveTab(tabId) {
         localStorage.setItem(TAB_STORAGE_KEY, tabId);
     }
-    
+
     // Function to restore active tab
     function restoreActiveTab() {
         const savedTab = localStorage.getItem(TAB_STORAGE_KEY);
@@ -804,21 +805,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.querySelectorAll('.tab-pane').forEach(pane => {
                     pane.classList.remove('active', 'show');
                 });
-                
+
                 // Activate saved tab
                 tabButton.classList.add('active');
                 const targetPane = document.getElementById(savedTab);
                 if (targetPane) {
                     targetPane.classList.add('active', 'show');
                 }
-                
-                
+
+
                 return true;
             }
         }
         return false;
     }
-    
+
     // Initialize Bootstrap tabs with persistence
     const tabButtons = document.querySelectorAll('#salaryTabs button');
     tabButtons.forEach(button => {
@@ -826,6 +827,8 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             const targetId = this.getAttribute('data-bs-target');
             const targetTab = document.querySelector(targetId);
+
+            console.log('Tab clicked:', targetId, 'Target element:', targetTab);
 
             // Hide all tab panes
             document.querySelectorAll('.tab-pane').forEach(pane => {
@@ -841,15 +844,18 @@ document.addEventListener('DOMContentLoaded', function() {
             if (targetTab) {
                 targetTab.classList.add('show', 'active');
                 this.classList.add('active');
-                
+
                 // Save active tab (remove # from targetId)
                 const tabId = targetId.replace('#', '');
                 saveActiveTab(tabId);
-                
+
+                console.log('Tab activated:', tabId);
+            } else {
+                console.error('Target tab not found:', targetId);
             }
         });
     });
-    
+
     // Add event listeners to attendance checkboxes
     const attendanceCheckboxes = document.querySelectorAll('input[type="checkbox"][data-promoter][data-date]');
     attendanceCheckboxes.forEach(checkbox => {
@@ -858,10 +864,10 @@ document.addEventListener('DOMContentLoaded', function() {
             updateSaveStatus('Changes detected. Click Save All Changes to save.', 'warning');
         });
     });
-    
+
     // Initialize attendance counters
     updateAttendanceCounters();
-    
+
 });
 
 // Promoter management functions
@@ -984,13 +990,13 @@ function markAllPresent() {
                     const label = checkbox.nextElementSibling;
             label.innerHTML = '<i class="fas fa-check text-success"></i>';
                 });
-                
+
                 // Update all attendance counts
                 const promoterIds = [...new Set(Array.from(checkboxes).map(cb => cb.dataset.promoter))];
                 promoterIds.forEach(promoterId => {
                     updateAttendanceCounts(promoterId);
                 });
-                
+
         updateSaveStatus('All promoters marked as present', 'success');
     }
 }
@@ -1001,41 +1007,41 @@ function exportAttendance() {
 
 function saveAllAttendance() {
     console.log('=== SAVING ALL ATTENDANCE CHANGES ===');
-    
+
     // Check if we're on the attendance tab
     const attendanceTab = document.getElementById('attendance');
     if (!attendanceTab || !attendanceTab.classList.contains('active')) {
         alert('Please switch to the Attendance tab first to save attendance data.');
         return;
     }
-    
+
     // Get all attendance checkboxes
     const checkboxes = document.querySelectorAll('input[type="checkbox"][data-promoter][data-date]');
     console.log('Found', checkboxes.length, 'attendance checkboxes');
-    
+
     if (checkboxes.length === 0) {
         alert('No attendance data found to save.');
         return;
     }
-    
+
     // Collect attendance data
     const attendanceData = [];
     const eventId = {{ $eventJob->id }};
-    
+
     checkboxes.forEach(checkbox => {
         const promoterId = checkbox.getAttribute('data-promoter');
         const date = checkbox.getAttribute('data-date');
         const status = checkbox.checked ? 'attend' : 'absent';
-        
+
         attendanceData.push({
             promoter_id: parseInt(promoterId),
             date: date,
             status: status
         });
     });
-    
+
     console.log('Collected attendance data:', attendanceData);
-    
+
     // Show loading state
     updateSaveStatus('Saving attendance data...', 'info');
     const saveButton = document.querySelector('button[onclick="saveAllAttendance()"]');
@@ -1043,7 +1049,7 @@ function saveAllAttendance() {
         saveButton.disabled = true;
         saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
     }
-    
+
     // Send data to server
     fetch('{{ admin_url("event-jobs/bulk-update-attendance") }}', {
         method: 'POST',
@@ -1059,13 +1065,13 @@ function saveAllAttendance() {
     .then(response => response.json())
     .then(data => {
         console.log('Save response:', data);
-        
+
         if (data.success) {
             updateSaveStatus(`Successfully saved ${data.updated_count || attendanceData.length} attendance records!`, 'success');
-            
+
             // Update attendance counters
             updateAttendanceCounters();
-            
+
             // Show success message
             showNotification('Attendance saved successfully!', 'success');
         } else {
@@ -1090,15 +1096,15 @@ function saveAllAttendance() {
 function updateAttendanceCounters() {
     // Update present/absent counters for each promoter
     const rows = document.querySelectorAll('tbody tr');
-    
+
     rows.forEach(row => {
         const promoterId = row.querySelector('input[data-promoter]')?.getAttribute('data-promoter');
         if (!promoterId) return;
-        
+
         const checkboxes = row.querySelectorAll(`input[data-promoter="${promoterId}"]`);
         let presentCount = 0;
         let absentCount = 0;
-        
+
         checkboxes.forEach(checkbox => {
             if (checkbox.checked) {
                 presentCount++;
@@ -1106,11 +1112,11 @@ function updateAttendanceCounters() {
                 absentCount++;
             }
         });
-        
+
         // Update the counters in the row
         const presentBadge = row.querySelector(`#present-${promoterId}`);
         const absentBadge = row.querySelector(`#absent-${promoterId}`);
-        
+
         if (presentBadge) {
             presentBadge.textContent = presentCount;
         }
@@ -1129,15 +1135,15 @@ function showNotification(message, type = 'info') {
     notification.style.right = '20px';
     notification.style.zIndex = '9999';
     notification.style.minWidth = '300px';
-    
+
     notification.innerHTML = `
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     `;
-    
+
     // Add to page
     document.body.appendChild(notification);
-    
+
     // Auto remove after 5 seconds
     setTimeout(() => {
         if (notification.parentNode) {
@@ -1166,7 +1172,7 @@ function updateSaveStatus(message, type = 'info') {
 
 function filterPromoters() {
     console.log('=== FILTER PROMOTERS CALLED ===');
-    
+
     // Clear previous timeout to prevent multiple rapid calls
     clearTimeout(filterTimeout);
 
@@ -1179,7 +1185,7 @@ function filterPromoters() {
 
 function performFiltering() {
     console.log('=== PERFORM FILTERING STARTED ===');
-    
+
     const searchInput = document.getElementById('promoterSearch');
     const statusFilter = document.getElementById('statusFilter');
 
@@ -1194,10 +1200,10 @@ function performFiltering() {
     const searchTerm = searchInput.value.toLowerCase();
     const statusValue = statusFilter.value;
     const allRows = Array.from(document.querySelectorAll('tbody tr'));
-    
+
     console.log('Filtering with search term:', searchTerm, 'status:', statusValue);
     console.log('Found rows:', allRows.length);
-    
+
     if (allRows.length === 0) {
         console.warn('No table rows found!');
         return;
@@ -1240,7 +1246,7 @@ function performFiltering() {
     allRows.forEach((row, index) => {
         const isVisible = filteredRows.includes(row);
         row.style.display = isVisible ? '' : 'none';
-        
+
         // Add animation effect
         if (isVisible) {
             row.style.opacity = '0';
@@ -1249,16 +1255,16 @@ function performFiltering() {
             }, index * 10);
         }
     });
-    
+
     // Update filter results
     updateFilterResults(filteredRows.length);
-    
+
     // Update quick action buttons state
     updateQuickActionButtons(filteredRows.length > 0);
-    
+
     // Highlight search terms
     highlightSearchTerms(searchTerm);
-    
+
     console.log('=== PERFORM FILTERING COMPLETED ===');
     console.log('Filtered rows:', filteredRows.length);
 }
@@ -1436,7 +1442,7 @@ function showSearchSuggestions() {
         hideSearchSuggestions();
         return;
     }
-    
+
     const rows = document.querySelectorAll('tbody tr');
     const suggestions = new Set();
 
@@ -1620,12 +1626,221 @@ function testSearch() {
     }
 }
 
+// Missing Functions
+function markAllPresent() {
+    const eventId = {{ $eventJob->id }};
+    const today = new Date().toISOString().split('T')[0];
+
+    if (confirm('Mark all promoters as present for today (' + today + ')?')) {
+        fetch('{{ admin_url("event-jobs/mark-all-present") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                event_id: eventId,
+                date: today
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification(data.message, 'success');
+                location.reload(); // Reload to show updated attendance
+            } else {
+                showNotification('Error: ' + data.message, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Error marking all present: ' + error.message, 'error');
+        });
+    }
+}
+
+function exportAttendance() {
+    const eventId = {{ $eventJob->id }};
+    const eventName = '{{ $eventJob->job_name }}';
+
+    // Create CSV content
+    let csvContent = "Promoter Name,Promoter ID,Date,Status\n";
+
+    // Get all attendance data from the table
+    const rows = document.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+        const promoterCell = row.querySelector('td:first-child');
+        if (promoterCell) {
+            const cellText = promoterCell.textContent.trim();
+            const lines = cellText.split('\n');
+            const promoterName = lines[0] ? lines[0].trim() : '';
+            const promoterId = lines[1] ? lines[1].trim() : '';
+
+            // Get attendance checkboxes for this promoter
+            const checkboxes = row.querySelectorAll('.attendance-check');
+            checkboxes.forEach(checkbox => {
+                const date = checkbox.getAttribute('data-date');
+                const status = checkbox.checked ? 'Present' : 'Absent';
+                csvContent += `"${promoterName}","${promoterId}","${date}","${status}"\n`;
+            });
+        }
+    });
+
+    // Create and download CSV file
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${eventName}_attendance_export.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+
+    showNotification('Attendance data exported successfully!', 'success');
+}
+
+function clearSearch() {
+    document.getElementById('promoterSearch').value = '';
+    filterPromoters();
+}
+
+function clearFilters() {
+    document.getElementById('promoterSearch').value = '';
+    document.getElementById('statusFilter').value = '';
+    document.getElementById('sortBy').value = 'name';
+    filterPromoters();
+}
+
+function sortPromoters() {
+    const sortBy = document.getElementById('sortBy').value;
+    const rows = Array.from(document.querySelectorAll('tbody tr'));
+
+    rows.sort((a, b) => {
+        let aValue, bValue;
+
+        switch(sortBy) {
+            case 'name':
+                aValue = a.querySelector('td:first-child').textContent.toLowerCase();
+                bValue = b.querySelector('td:first-child').textContent.toLowerCase();
+                break;
+            case 'id':
+                const aId = a.querySelector('td:first-child').textContent.split('\n')[1] || '';
+                const bId = b.querySelector('td:first-child').textContent.split('\n')[1] || '';
+                aValue = parseInt(aId) || 0;
+                bValue = parseInt(bId) || 0;
+                break;
+            case 'present':
+                const aPresent = a.querySelector('.badge-success');
+                const bPresent = b.querySelector('.badge-success');
+                aValue = parseInt(aPresent ? aPresent.textContent : 0);
+                bValue = parseInt(bPresent ? bPresent.textContent : 0);
+                break;
+            case 'absent':
+                const aAbsent = a.querySelector('.badge-danger');
+                const bAbsent = b.querySelector('.badge-danger');
+                aValue = parseInt(aAbsent ? aAbsent.textContent : 0);
+                bValue = parseInt(bAbsent ? bAbsent.textContent : 0);
+                break;
+            default:
+                return 0;
+        }
+
+        return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
+    });
+
+    // Reorder rows in the table
+    const tbody = document.querySelector('tbody');
+    rows.forEach(row => tbody.appendChild(row));
+}
+
+function showSearchSuggestions() {
+    // Implementation for search suggestions
+    console.log('Show search suggestions');
+}
+
+function hideSearchSuggestions() {
+    // Implementation for hiding search suggestions
+    console.log('Hide search suggestions');
+}
+
+function updateAttendance(checkbox) {
+    const promoterId = checkbox.getAttribute('data-promoter');
+    const date = checkbox.getAttribute('data-date');
+    const status = checkbox.checked ? 'attend' : 'absent';
+    const eventId = {{ $eventJob->id }};
+
+    // Update the label icon
+    const label = checkbox.nextElementSibling;
+    if (label) {
+        label.innerHTML = checkbox.checked ?
+            '<i class="fas fa-check text-success"></i>' :
+            '<i class="fas fa-times text-danger"></i>';
+    }
+
+    // Update attendance counters
+    updateAttendanceCounters();
+
+    // Show save status
+    updateSaveStatus('Changes detected. Click Save All Changes to save.', 'warning');
+}
+
+function selectAllVisible() {
+    const visibleRows = document.querySelectorAll('tbody tr:not([style*="display: none"])');
+    let selectedCount = 0;
+
+    visibleRows.forEach(row => {
+        const checkboxes = row.querySelectorAll('.attendance-check');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = true;
+            const label = checkbox.nextElementSibling;
+            if (label) {
+                label.innerHTML = '<i class="fas fa-check text-success"></i>';
+            }
+            selectedCount++;
+        });
+    });
+
+    // Update counts for all promoters
+    const promoterIds = [...new Set(Array.from(document.querySelectorAll('.attendance-check')).map(cb => cb.dataset.promoter))];
+    promoterIds.forEach(promoterId => {
+        updateAttendanceCounts(promoterId);
+    });
+
+    updateSaveStatus(`${selectedCount} attendance records selected`, 'success');
+}
+
+function updateAttendanceCounts(promoterId) {
+    const checkboxes = document.querySelectorAll(`input[data-promoter="${promoterId}"]`);
+    let presentCount = 0;
+    let absentCount = 0;
+
+    checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            presentCount++;
+        } else {
+            absentCount++;
+        }
+    });
+
+    // Update the counters in the row
+    const presentBadge = document.querySelector(`#present-${promoterId}`);
+    const absentBadge = document.querySelector(`#absent-${promoterId}`);
+
+    if (presentBadge) {
+        presentBadge.textContent = presentCount;
+    }
+    if (absentBadge) {
+        absentBadge.textContent = absentCount;
+    }
+}
+
 // Salary Settings Functions
 function resetSalarySettings() {
     if (confirm('Are you sure you want to reset all salary settings to their original values?')) {
         // Reset form to original values
         document.getElementById('salary-settings-form').reset();
-        
+
         // Reload the page to get original values
         location.reload();
     }
@@ -1645,7 +1860,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function saveSalarySettings() {
     const form = document.getElementById('salary-settings-form');
     const formData = new FormData(form);
-    
+
     // Convert FormData to JSON
     const data = {
         event_id: {{ $eventJob->id }},
@@ -1654,13 +1869,13 @@ function saveSalarySettings() {
         salary_rules: formData.get('salary_rules'),
         special_note: formData.get('special_note')
     };
-    
+
     // Show loading state
     const saveButton = form.querySelector('button[type="submit"]');
     const originalText = saveButton.innerHTML;
     saveButton.disabled = true;
     saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-    
+
     // Send data to server
     fetch('{{ admin_url("event-jobs/update-salary-settings") }}', {
         method: 'POST',

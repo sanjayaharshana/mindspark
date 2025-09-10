@@ -61,16 +61,32 @@
 
                                 <div class="mb-3">
                                     <label for="promoter_salary_per_day" class="form-label">Daily Salary ($)</label>
-                                    <input type="number" class="form-control" id="promoter_salary_per_day" name="promoter_salary_per_day" step="0.01" min="0" required>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="promoter_salary_per_day" name="promoter_salary_per_day" step="0.01" min="0" value="{{ $eventJob->default_salary_promoter ?? '' }}" required>
+                                        <button type="button" class="btn btn-outline-secondary" onclick="resetToDefault('promoter_salary_per_day', {{ $eventJob->default_salary_promoter ?? 0 }})">
+                                            <i class="icon-refresh"></i> Reset
+                                        </button>
+                                    </div>
+                                    <small class="form-text text-muted">Default: ${{ number_format($eventJob->default_salary_promoter ?? 0, 2) }}</small>
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="supervisor_commission" class="form-label">Coordinator Commission ($)</label>
-                                    <input type="number" class="form-control" id="supervisor_commission" name="supervisor_commission" step="0.01" min="0" required>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="supervisor_commission" name="supervisor_commission" step="0.01" min="0" value="{{ $eventJob->default_commission_coordinator ?? '' }}" required>
+                                        <button type="button" class="btn btn-outline-secondary" onclick="resetToDefault('supervisor_commission', {{ $eventJob->default_commission_coordinator ?? 0 }})">
+                                            <i class="icon-refresh"></i> Reset
+                                        </button>
+                                    </div>
+                                    <small class="form-text text-muted">Default: ${{ number_format($eventJob->default_commission_coordinator ?? 0, 2) }}</small>
                                 </div>
 
-                                <button type="submit" class="btn btn-primary w-100">
+                                <button type="submit" class="btn btn-primary w-100 mb-2">
                                     <i class="icon-plus me-1"></i> Assign Promoter
+                                </button>
+                                
+                                <button type="button" class="btn btn-outline-secondary w-100" onclick="resetAllToDefaults()">
+                                    <i class="icon-refresh me-1"></i> Reset to Defaults
                                 </button>
                             </form>
                         </div>
@@ -191,6 +207,29 @@ function removeAssignment(assignmentId) {
         });
     }
 }
+
+// Function to reset field to default value
+function resetToDefault(fieldId, defaultValue) {
+    const field = document.getElementById(fieldId);
+    if (field) {
+        field.value = defaultValue;
+        field.focus();
+        
+        // Add visual feedback
+        field.style.backgroundColor = '#d4edda';
+        setTimeout(() => {
+            field.style.backgroundColor = '';
+        }, 1000);
+    }
+}
+
+// Function to reset all fields to default values
+function resetAllToDefaults() {
+    if (confirm('Reset all salary fields to default values?')) {
+        resetToDefault('promoter_salary_per_day', {{ $eventJob->default_salary_promoter ?? 0 }});
+        resetToDefault('supervisor_commission', {{ $eventJob->default_commission_coordinator ?? 0 }});
+    }
+}
 </script>
 
 <style>
@@ -225,5 +264,24 @@ function removeAssignment(assignmentId) {
 .table td {
     font-size: 0.875rem;
     vertical-align: middle;
+}
+
+.input-group .btn {
+    border-radius: 0 8px 8px 0;
+}
+
+.input-group .form-control {
+    border-radius: 8px 0 0 8px;
+}
+
+.form-text {
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
 }
 </style>
