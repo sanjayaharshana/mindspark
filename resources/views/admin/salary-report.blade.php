@@ -3,6 +3,15 @@
 
 
     <div class="container">
+        <!-- Back Button -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <a href="{{ route('admin.event-jobs.salary-sheet', $eventJob->id) }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Salary Sheet
+                </a>
+            </div>
+        </div>
+
         <!-- Summary -->
         <div class="row mb-4">
             <div class="col-md-3">
@@ -67,12 +76,15 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Promoter Details & Salary Breakdown</h5>
                 <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="window.print()">
+                    <a href="{{ route('admin.event-jobs.salary-report.print', $eventJob->id) }}" target="_blank" class="btn btn-outline-primary btn-sm">
                         <i class="fas fa-print"></i> Print Report
-                    </button>
+                    </a>
                     <button type="button" class="btn btn-outline-success btn-sm" onclick="exportToExcel()">
                         <i class="fas fa-file-excel"></i> Export Excel
                     </button>
+                    <a href="{{ route('admin.event-jobs.commission-sheet', $eventJob->id) }}" class="btn btn-outline-warning btn-sm">
+                        <i class="fas fa-user-tie"></i> Commission Sheet
+                    </a>
                 </div>
             </div>
             <div class="card-body">

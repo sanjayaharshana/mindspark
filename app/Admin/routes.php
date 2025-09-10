@@ -39,6 +39,8 @@ Route::group([
     
     // Salary report routes
     $router->get('event-jobs/{id}/salary-report', 'EventJobController@salaryReport')->name('event-jobs.salary-report');
+    $router->get('event-jobs/{id}/salary-report/print', 'EventJobController@salaryReportPrint')->name('event-jobs.salary-report.print');
+    $router->get('event-jobs/{id}/commission-sheet', 'EventJobController@commissionSheet')->name('event-jobs.commission-sheet');
     
     // Test route for debugging
     $router->get('test-attendance', function() {

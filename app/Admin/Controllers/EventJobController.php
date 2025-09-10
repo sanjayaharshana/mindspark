@@ -542,6 +542,74 @@ class EventJobController extends AdminController
     }
 
     /**
+     * Generate print view for salary report
+     */
+    public function salaryReportPrint($id, Content $content)
+    {
+        $eventJob = EventJob::findOrFail($id);
+        $assignedPromoters = $eventJob->assignedPromoters()->with(['promoter', 'coordinator'])->get();
+
+        // Load attendance data if event has dates set
+        $attendanceData = [];
+        $eventDates = [];
+        $days = [];
+        
+        if ($eventJob->activation_start_date && $eventJob->activation_end_date) {
+            $attendanceData = Attendance::getAttendanceForEvent(
+                $eventJob->id,
+                $eventJob->activation_start_date,
+                $eventJob->activation_end_date
+            );
+            
+            // Generate array of all event dates for the table headers
+            $startDate = \Carbon\Carbon::parse($eventJob->activation_start_date);
+            $endDate = \Carbon\Carbon::parse($eventJob->activation_end_date);
+            
+            $currentDate = $startDate->copy();
+            while ($currentDate->lte($endDate)) {
+                $eventDates[] = $currentDate->format('Y-m-d');
+                $days[] = $currentDate->copy();
+                $currentDate->addDay();
+            }
+        }
+
+        // Calculate salary summary based on actual present days
+        $totalPromoters = $assignedPromoters->count();
+        $totalDays = count($days);
+        $totalSalary = 0;
+        $totalCommission = 0;
+
+        foreach ($assignedPromoters as $assignment) {
+            // Calculate present days for this promoter
+            $presentDays = 0;
+            if (isset($attendanceData[$assignment->promoter_id])) {
+                $promoterAttendance = $attendanceData[$assignment->promoter_id];
+                $presentDays = $promoterAttendance->where('status', 'attend')->count();
+            }
+            
+            // Calculate salary and commission based on present days only
+            $promoterSalary = $assignment->promoter_salary_per_day * $presentDays;
+            $coordinatorCommission = $assignment->supervisor_commission * $presentDays;
+            
+            $totalSalary += $promoterSalary;
+            $totalCommission += $coordinatorCommission;
+        }
+
+        return view('admin.salary-report-print', [
+            'eventJob' => $eventJob,
+            'assignedPromoters' => $assignedPromoters,
+            'attendanceData' => $attendanceData,
+            'eventDates' => $eventDates,
+            'days' => $days,
+            'totalPromoters' => $totalPromoters,
+            'totalDays' => $totalDays,
+            'totalSalary' => $totalSalary,
+            'totalCommission' => $totalCommission,
+            'grandTotal' => $totalSalary + $totalCommission
+        ]);
+    }
+
+    /**
      * Generate coordinator commission sheet for an event job
      */
     public function commissionSheet($id, Content $content)
@@ -593,6 +661,7 @@ class EventJobController extends AdminController
                     'account_number' => $assignment->coordinator->account_number ?? 'N/A',
                     'promoters' => [],
                     'total_present_days' => 0,
+                    'total_absent_days' => 0,
                     'total_commission' => 0,
                 ];
             }
@@ -620,6 +689,7 @@ class EventJobController extends AdminController
             ];
 
             $coordinatorCommissions[$coordinatorId]['total_present_days'] += $presentDays;
+            $coordinatorCommissions[$coordinatorId]['total_absent_days'] = ($coordinatorCommissions[$coordinatorId]['total_absent_days'] ?? 0) + $absentDays;
             $coordinatorCommissions[$coordinatorId]['total_commission'] += $promoterCommission;
             $totalCommission += $promoterCommission;
         }

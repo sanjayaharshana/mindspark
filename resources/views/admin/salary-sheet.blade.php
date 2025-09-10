@@ -263,66 +263,35 @@
 
                     <!-- Salary Calculation Tab -->
                     <div class="tab-pane fade" id="calculation" role="tabpanel">
-                            <div class="mt-3">
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h6 class="m-0 font-weight-bold text-primary">
-                                                    <i class="fas fa-calculator"></i> Salary Calculation
-                                                </h6>
-                                            </div>
-                                            <div class="card-body">
-                                                <form id="salary-form">
-                                                    <div class="row">
-                                                        <div class="col-md-4">
-                                                            <div class="form-group">
-                                                                <label class="form-label">Daily Rate (Rs.)</label>
-                                                                <input type="number" class="form-control" id="daily_rate" placeholder="Enter daily rate">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <div class="form-group">
-                                                                <label class="form-label">Overtime Rate (Rs.)</label>
-                                                                <input type="number" class="form-control" id="overtime_rate" placeholder="Enter overtime rate">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <div class="form-group">
-                                                                <label class="form-label">Bonus (Rs.)</label>
-                                                                <input type="number" class="form-control" id="bonus" placeholder="Enter bonus amount">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="mt-3">
-                                                        <button type="button" class="btn btn-primary" onclick="calculateAllSalaries()">
-                                                            <i class="fas fa-calculator"></i> Calculate All Salaries
-                                                        </button>
-                                                        <button type="button" class="btn btn-success" onclick="generateSalarySheet()">
-                                                            <i class="fas fa-file"></i> Generate Report
-                                                        </button>
-                                                    </div>
-                                                </form>
-                                            </div>
+                        <div class="mt-3">
+                            <div class="row justify-content-center">
+                                <div class="col-md-10">
+                                    <div class="card border-info">
+                                        <div class="card-header bg-info text-white">
+                                            <h6 class="m-0 font-weight-bold">
+                                                <i class="fas fa-chart-line"></i> Detailed Reports
+                                            </h6>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h6 class="m-0 font-weight-bold text-success">
-                                                    <i class="fas fa-chart-pie"></i> Summary
-                                                </h6>
-                                            </div>
-                                            <div class="card-body" id="salary-summary">
-                                                <div class="text-center text-muted">
-                                                    <i class="fas fa-info-circle fa-2x mb-2"></i>
-                                                    <p>Set parameters and calculate to see summary</p>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <a href="{{ route('admin.event-jobs.salary-report', $eventJob->id) }}" class="btn btn-outline-primary w-100 mb-2">
+                                                        <i class="fas fa-users"></i> Promoter Salary Report
+                                                    </a>
+                                                    <small class="text-muted d-block">View detailed salary breakdown for all promoters</small>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <a href="{{ route('admin.event-jobs.commission-sheet', $eventJob->id) }}" class="btn btn-outline-warning w-100 mb-2">
+                                                        <i class="fas fa-user-tie"></i> Coordinator Commission Report
+                                                    </a>
+                                                    <small class="text-muted d-block">View commission details for all coordinators</small>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
                     </div>
 
                     <!-- Attendance Tab -->
