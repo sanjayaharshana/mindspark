@@ -37,6 +37,9 @@ Route::group([
     // Salary settings routes
     $router->post('event-jobs/update-salary-settings', 'EventJobController@updateSalarySettings')->name('event-jobs.update-salary-settings');
     
+    // Salary report routes
+    $router->get('event-jobs/{id}/salary-report', 'EventJobController@salaryReport')->name('event-jobs.salary-report');
+    
     // Test route for debugging
     $router->get('test-attendance', function() {
         try {

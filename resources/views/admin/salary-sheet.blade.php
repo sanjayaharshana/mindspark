@@ -935,7 +935,8 @@ function calculateAllSalaries() {
 }
 
 function generateSalarySheet() {
-    alert('Salary sheet generation functionality will be implemented here');
+    // Redirect to the salary report page
+    window.open('{{ admin_url("event-jobs/" . $eventJob->id . "/salary-report") }}', '_blank');
 }
 
 // Attendance management functions
