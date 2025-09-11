@@ -83,5 +83,17 @@ class AdminMenuSeeder extends Seeder
             'uri' => 'coordinators',
             'permission' => null,
         ]);
+
+        // Create Job Templates menu item
+        Menu::firstOrCreate([
+            'title' => 'Job Templates',
+        ], [
+            'parent_id' => $eventSalaryMenu->id,
+            'order' => 4,
+            'title' => 'Job Templates',
+            'icon' => 'icon-template',
+            'uri' => 'job-templates',
+            'permission' => null,
+        ]);
     }
 }

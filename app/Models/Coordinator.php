@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Coordinator extends Model
 {
     protected $fillable = [
-        'event_job_id',
         'coordinator_id',
         'coordinator_name',
         'nic_no',

@@ -35,10 +35,6 @@ class CoordinatorController extends AdminController
         $grid->column('bank_name', 'Bank Name')->sortable();
         $grid->column('bank_branch_name', 'Bank Branch')->sortable();
         $grid->column('account_number', 'Account Number')->sortable();
-        
-        // Show related event job
-        $grid->column('eventJob.job_name', 'Event Job')->sortable();
-        $grid->column('eventJob.job_number', 'Job Number')->sortable();
 
         $grid->column('created_at', 'Created At')->sortable();
         $grid->column('updated_at', 'Updated At')->sortable();
@@ -50,7 +46,6 @@ class CoordinatorController extends AdminController
             $filter->like('nic_no', 'NIC Number');
             $filter->like('phone_no', 'Phone Number');
             $filter->like('bank_name', 'Bank Name');
-            $filter->equal('event_job_id', 'Event Job')->select(EventJob::all()->pluck('job_name', 'id'));
         });
 
         return $grid;
@@ -77,17 +72,6 @@ class CoordinatorController extends AdminController
         $show->field('created_at', 'Created At');
         $show->field('updated_at', 'Updated At');
 
-        // Show related event job details
-        $show->field('eventJob.job_number', 'Event Job Number');
-        $show->field('eventJob.job_name', 'Event Job Name');
-        $show->field('eventJob.client_name', 'Client Name');
-        $show->field('eventJob.activation_start_date', 'Job Start Date')->as(function ($date) {
-            return $date ? date('Y-m-d', strtotime($date)) : '';
-        });
-        $show->field('eventJob.activation_end_date', 'Job End Date')->as(function ($date) {
-            return $date ? date('Y-m-d', strtotime($date)) : 'Ongoing';
-        });
-
         return $show;
     }
 
@@ -101,11 +85,6 @@ class CoordinatorController extends AdminController
         $form = new Form(new Coordinator());
 
         $form->tab('Basic Information', function ($form) {
-            $form->select('event_job_id', 'Event Job')
-                ->options(EventJob::all()->pluck('job_name', 'id'))
-                ->required()
-                ->help('Select the event job this coordinator will work on');
-            
             $form->text('coordinator_id', 'Coordinator ID')
                 ->required()
                 ->help('Unique coordinator identifier (e.g., COORD1001)');
@@ -126,13 +105,16 @@ class CoordinatorController extends AdminController
 
         $form->tab('Banking Information', function ($form) {
             $form->text('bank_name', 'Bank Name')
-                ->help('Name of the bank (optional)');
+                ->required()
+                ->help('Name of the bank');
             
             $form->text('bank_branch_name', 'Bank Branch')
-                ->help('Bank branch name (optional)');
+                ->required()
+                ->help('Bank branch name');
             
             $form->text('account_number', 'Account Number')
-                ->help('Bank account number (optional)');
+                ->required()
+                ->help('Bank account number');
         });
 
         return $form;
